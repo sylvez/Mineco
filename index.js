@@ -9,15 +9,16 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Servir archivos estáticos desde la carpeta "public"
+// Servir archivos estáticos desde la carpeta "front"
 app.use(express.static(path.join(__dirname, 'front')));
 
 // Conexión a la base de datos
 const db = mysql.createConnection({
-    host: '45.186.107.64', 
+    host: 'localhost',
     user: 'root',
     password: '',
-    database: 'hotel'
+    database: 'motel',
+    port: 3306 // Puerto predeterminado de MySQL
 });
 
 db.connect(err => {
@@ -28,8 +29,7 @@ db.connect(err => {
     console.log('Conectado a la base de datos');
 });
 
-// Ruta para servir el HTML
-
+// Rutas para servir el HTML
 app.get('/index', (req, res) => {
     res.sendFile(path.join(__dirname, 'front', 'index.html'));
 });
@@ -54,67 +54,12 @@ app.get('/productos', (req, res) => {
     res.sendFile(path.join(__dirname, 'front', 'productos.html'));
 });
 
-
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'front', 'index.html'));
 });
 
-// Rutas CRUD
-app.post('/habitaciones', (req, res) => {
-    const { numero_habitacion, precio_por_hora, accesorios, descripcion } = req.body;
-    const query = 'INSERT INTO hsbitaciones (numero_habitacion, precio_por_hora, accesorios, descripcion) VALUES (?, ?, ?, ?)';
-    db.query(query, [numero_habitacion, precio_por_hora, accesorios, descripcion], (err, result) => {
-        if (err) {
-            console.error('Error insertando en la base de datos:', err);
-            res.status(500).send('Error en el servidor');
-        } else {
-            res.status(201).send('Habitación creada con éxito');
-        }
-    });
-});
-
-app.get('/api/habitaciones', (req, res) => {
-    const query = 'SELECT * FROM hsbitaciones';
-    db.query(query, (err, results) => {
-        if (err) {
-            console.error('Error leyendo de la base de datos:', err);
-            res.status(500).send('Error en el servidor');
-        } else {
-            res.status(200).json(results);
-        }
-    });
-});
-
-app.put('/habitaciones/:id', (req, res) => {
-    const { id } = req.params;
-    const { numero_habitacion, precio_por_hora, accesorios, descripcion } = req.body;
-    const query = 'UPDATE hsbitaciones SET numero_habitacion = ?, precio_por_hora = ?, accesorios = ?, descripcion = ? WHERE ID = ?';
-    db.query(query, [numero_habitacion, precio_por_hora, accesorios, descripcion, id], (err, result) => {
-        if (err) {
-            console.error('Error actualizando en la base de datos:', err);
-            res.status(500).send('Error en el servidor');
-        } else {
-            res.status(200).send('Habitación actualizada con éxito');
-        }
-    });
-});
-
-app.delete('/habitaciones/:id', (req, res) => {
-    const { id } = req.params;
-    const query = 'DELETE FROM hsbitaciones WHERE ID = ?';
-    db.query(query, [id], (err, result) => {
-        if (err) {
-            console.error('Error eliminando de la base de datos:', err);
-            res.status(500).send('Error en el servidor');
-        } else {
-            res.status(200).send('Habitación eliminada con éxito');
-        }
-    });
-});
-
 // Iniciar el servidor
-const PORT = 3000;
+const PORT = process.env.PORT || 3000; // Usa el puerto proporcionado por Heroku o 3000 por defecto
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
-

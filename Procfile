@@ -1,1 +1,1 @@
-web: node programa_mineco/index.js
+web: node index.js
