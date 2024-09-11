@@ -14,7 +14,7 @@ app.use(express.static(path.join(__dirname, 'front')));
 
 // Conexión a la base de datos
 const db = mysql.createConnection({
-    host: '192.168.2.35', 
+    host: '45.186.107.64', 
     user: 'root',
     password: '',
     database: 'hotel'
