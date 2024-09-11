@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        .btn-custom {
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        .btn-custom:hover {
+            transform: scale(1.05);
+        }
+        .btn-custom i {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <h1 class="text-center mb-5">Panel de Control</h1>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <a href="http://192.168.2.35:3000/" class="btn btn-primary btn-custom w-100">
+                    <i class="bi bi-file-text"></i>
+                    Registro
+                </a>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <a href="http://192.168.2.35:3000/productos" class="btn btn-success btn-custom w-100">
+                    <i class="bi bi-box-seam"></i>
+                    Productos
+                </a>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <a href="http://192.168.2.35:3000/graficas" class="btn btn-info btn-custom w-100">
+                    <i class="bi bi-bar-chart"></i>
+                    Gráficas
+                </a>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <a href="http://192.168.2.35:3000/categorias" class="btn btn-warning btn-custom w-100">
+                    <i class="bi bi-table"></i>
+                    Categorías
+                </a>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <a href="http://192.168.2.35:3000/especificaciones" class="btn btn-danger btn-custom w-100">
+                    <i class="bi bi-clipboard-data"></i>
+                    especificaciones
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

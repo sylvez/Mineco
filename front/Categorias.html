@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario y Lista de Empleados</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
+        }
+        th {
+            background-color: #e6f2ff;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+        tr:hover {
+            background-color: #e8e8e8;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .flags {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        .flag {
+            width: 100px;
+            height: 60px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .credit {
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="footer-content"></div>
+    <div class="flags">
+        <img src="https://flagcdn.com/w320/eu.png" alt="Bandera de la Unión Europea" class="flag">
+        <img src="https://flagcdn.com/w320/gt.png" alt="Bandera de Guatemala" class="flag">
+    </div>
+    
+</div>
+    <div class="container">
+        <h1>Inventario y Lista de Empleados</h1>
+        
+        <h2>Categorías y Almacén</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Categorías</th>
+                    <th>Código</th>
+                    <th>Almacén</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Alimentos</td>
+                    <td>1</td>
+                    <td>Donación General</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Comunicación y visibilidad</td>
+                    <td>2</td>
+                    <td>Donación Visibilidad</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Enseres de cocina</td>
+                    <td>3</td>
+                    <td>Programa Mipymes y Cooperativas</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Enseres de limpieza</td>
+                    <td>4</td>
+                    <td>Programa Empleo Digno</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Materiales eléctricos</td>
+                    <td>5</td>
+                    <td>Programa Mipymes y Cooperativas</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Materiales limpieza de equipos</td>
+                    <td>6</td>
+                    <td>Programa Mipymes y Cooperativas</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Papelería y útiles de oficina</td>
+                    <td>7</td>
+                    <td>Programa Mipymes y Cooperativas</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>Suministros de Salud</td>
+                    <td>8</td>
+                    <td>Programa Mipymes y Cooperativas</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>Útiles de oficina</td>
+                    <td>9</td>
+                    <td>Programa Mipymes y Cooperativas</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Lista de Empleados</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>NOMBRES Y APELLIDOS</th>
+                    <th>ORGANIZACIÓN/INSTITUCIÓN</th>
+                    <th>Fecha de retiro</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Abdías Vásquez Rodríguez</td>
+                    <td>MINECO / Programa de Apoyo al Empleo Digno / Área Administrativa y Financiera</td>
+                    <td>2022</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Allan Quin</td>
+                    <td>MINECO / Programa de Apoyo al Empleo Digno / Área Jurídica</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Alex Laj</td>
+                    <td>MINECO / Programa de Apoyo al Empleo Digno / Área Administrativa y Financiera</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Aleida Yesenia Castañeda</td>
+                    <td>Unión Europea / Asistencia Técnica Internacional / Programa de Apoyo al Empleo Digno</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Ana Lisette Robles Midencey</td>
+                    <td>MINECO / Programa de Apoyo al Empleo Digno / Área Administrativa y Financiera</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Dora Patricia Ortiz Barrientos</td>
+                    <td>MINECO / Programa de Apoyo al Empleo Digno / Área Administrativa y Financiera</td>
+                    <td>2022</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Eric Yovani López</td>
+                    <td>Unión Europea / Asistencia Técnica Internacional Programa MIPYMES y Cooperativas</td>
+                    <td>2022</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>Esdras Estrada</td>
+                    <td>MINECO / Programa de Apoyo al Empleo Digno / Área Administrativa y Financiera</td>
+                    <td>16/11/2021</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>Graziano Tonelloto</td>
+                    <td>Unión Europea / Asistencia Técnica Internacional Programa de Apoyo al Empleo Digno</td>
+                    <td>3/09/2021</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>Gustavo Alfonso de León Gómez</td>
+                    <td>MINECO / Programa de Apoyo al Empleo Digno / Área Administrativa y Financiera</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>Heydl Marisol Ríos Guerra de González</td>
+                    <td>MINECO / Programa de Apoyo al Empleo Digno / Área Administrativa y Financiera</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>José Enrique Gil Natareno</td>
+                    <td>Unión Europea / Asistencia Técnica Internacional Programa de Apoyo al Empleo Digno</td>
+                    <td>2022</td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>José Fernando Portillo Chinchilla</td>
+                    <td>MINECO / Programa de Apoyo al Empleo Digno / Área Administrativa y Financiera</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td>José Luis Muñiz</td>
+                    <td>Unión Europea / Asistencia Técnica Internacional Programa MIPYMES y Cooperativas</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td>Josué Estuardo Paredes Ramírez</td>
+                    <td>MINECO / Programa de Apoyo al Empleo Digno / Área Administrativa y Financiera</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td>Juan Carlos Calca Magtzul</td>
+                    <td>MINECO / Programa de Apoyo al Empleo Digno / Área Administrativa y Financiera</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>17</td>
+                    <td>Juan José Monroy Baldeti</td>
+                    <td>Unión Europea / Asistencia Técnica Internacional Programa MIPYMES y Cooperativas</td>
+                    <td>10/10/2022</td>
+                </tr>
+                <tr>
+                    <td>18</td>
+                    <td>Julio René Aguilar</td>
+                    <td>Unión Europea / Asistencia Técnica Internacional Programa MIPYMES y Cooperativas</td>
+                    <td>10/10/2022</td>
+                </tr>
+                <tr>
+                    <td>19</td>
+                    <td>Laura Leticia Tobar Cardona de Barrios</td>
+                    <td>MINECO / Programa de Apoyo al Empleo Digno / Área Administrativa y Financiera</td>
+                    <td>16/09/2021</td>
+                </tr>
+                <tr>
+                    <td>20</td>
+                    <td>Ligia Carmina Vargas Nisthal</td>
+                    <td>MINECO / Programa de Apoyo al Empleo Digno / Área Técnica</td>
+                    <td>2022</td>
+                </tr>
+                <tr>
+                    <td>21</td>
+                    <td>Luis Espinoza</td>
+                    <td>Unión Europea / Asistencia Técnica Internacional / Programa de Apoyo al Empleo Digno</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>22</td>
+                    <td>Mario Santiago Yol Roche</td>
+                    <td>MINECO / Programa de Apoyo al Empleo Digno / Área Administrativa y Financiera</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>23</td>
+                    <td>Max Escobar</td>
+                    <td>Unión Europea / Asistencia Técnica Internacional Programa de Apoyo al Empleo Digno</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>24</td>
+                    <td>Milton Otoniel Roldán Lemus</td>
+                    <td>MINECO / Programa de Apoyo al Empleo Digno / Área Técnica</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>25</td>
+                    <td>Norma Vélez</td>
+                    <td>Unión Europea / Asistencia Técnica Internacional Programa MIPYMES y Cooperativas</td>
+                    <td>10/10/2022</td>
+                </tr>
+                <tr>
+                    <td>26</td>
+                    <td>Patricia Soto</td>
+                    <td>Unión Europea / Asistencia Técnica Internacional Programa de Apoyo al Empleo Digno</td>
+                    <td>31/08/2021</td>
+                </tr>
+                <tr>
+                    <td>27</td>
+                    <td>Roberto Fajardo</td>
+                    <td>Unión Europea / Asistencia Técnica Internacional Programa de Apoyo al Empleo Digno</td>
+                    <td>31/08/2021</td>
+                </tr>
+                <tr>
+                    <td>28</td>
+                    <td>Yaslin Kastillo Ramírez de Morales</td>
+                    <td>Ministerio de Economía / Programa MIPYMES y Cooperativas / Área Técnica</td>
+                    <td>2022</td>
+                </tr>
+                <tr>
+                    <td>29</td>
+                    <td>Rubiela Bosque</td>
+                    <td>Ministerio de Economía / Programa MIPYMES y Cooperativas / Área Técnica</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>30</td>
+                    <td>Mónica Gramajo Quemé</td>
+                    <td>Ministerio de Economía / Programa MIPYMES y Cooperativas / Área Técnica</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>31</td>
+                    <td>Ángel López</td>
+                    <td>Ministerio de Economía / Programa MIPYMES y Cooperativas / Área Técnica</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>32</td>
+                    <td>Claudia Ruiz</td>
+                    <td>Ministerio de Economía / Programa MIPYMES y Cooperativas / Área Técnica</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>33</td>
+                    <td>Sara Elizabeth Estrada</td>
+                    <td>Ministerio de Economía / Programa MIPYMES y Cooperativas / Área Técnica</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>34</td>
+                    <td>Walda Arrecis</td>
+                    <td>Ministerio de Economía / Programa MIPYMES y Cooperativas / Área Técnica</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+     <div class="footer-content"></div>
+      <div class="credit">
+        Creado por Alejandro Ramos 
+        Email: kv233308@gmail.com
+        phone: 4854-2751
+    </div>
+</div>
+</body>
+</html>

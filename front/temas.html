@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorías de Inventario</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #0078D4;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+        .cor {
+            width: 50px;
+            text-align: center;
+        }
+        .categoria {
+            width: 200px;
+        }
+        .concepto {
+            max-width: 600px;
+        }
+        @media (max-width: 768px) {
+            .container {
+                width: 100%;
+                overflow-x: auto;
+            }
+            table {
+                font-size: 14px;
+            }
+            th, td {
+                padding: 8px;
+            }
+            .categoria {
+                width: 150px;
+            }
+        }
+
+
+        footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .flags {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        .flag {
+            width: 100px;
+            height: 60px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .credit {
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="footer-content"></div>
+        <div class="flags">
+            <img src="https://flagcdn.com/w320/eu.png" alt="Bandera de la Unión Europea" class="flag">
+            <img src="https://flagcdn.com/w320/gt.png" alt="Bandera de Guatemala" class="flag">
+        </div>
+
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th class="cor">Cor.</th>
+                    <th class="categoria">Categoría</th>
+                    <th class="concepto">Concepto</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="cor">1</td>
+                    <td class="categoria">Alimentos</td>
+                    <td class="concepto">Incluye todos los alimentos de consumo humano, tales como: Azucar, café, té, cremora, etc.</td>
+                </tr>
+                <tr>
+                    <td class="cor">2</td>
+                    <td class="categoria">Comunicación y visibilidad</td>
+                    <td class="concepto">Incluye todos los artículos promocionales con la visibilidad del Programa, así como, los materiales impresos para su socialización entre otros.</td>
+                </tr>
+                <tr>
+                    <td class="cor">3</td>
+                    <td class="categoria">Enseres de cocina</td>
+                    <td class="concepto">Incluye productos de loza, cristalería y cubiertos; vasos, platos y cubiertos desechables; removedores; filtros para cafetera; servilletas, entre otros.</td>
+                </tr>
+                <tr>
+                    <td class="cor">4</td>
+                    <td class="categoria">Enseres de limpieza</td>
+                    <td class="concepto">Incluye bolsas para basura; limpiadores; escobas; trapeadores; cepillos; toallas; esponjas para trapear; desinfectante; jabón en polvo y en bola; ambientales; jabón líquido para manos; papel higiénico; papel para manos; cloro, entre otros.</td>
+                </tr>
+                <tr>
+                    <td class="cor">5</td>
+                    <td class="categoria">Materiales eléctricos</td>
+                    <td class="concepto">Incluye bombillas; lámparas; regletas entre otros.</td>
+                </tr>
+                <tr>
+                    <td class="cor">6</td>
+                    <td class="categoria">Materiales limpieza de equipos</td>
+                    <td class="concepto">Incluye bolas de wipe; algodón; espuma limpiadora; aire comprimido, alcohol, entre otros.</td>
+                </tr>
+                <tr>
+                    <td class="cor">7</td>
+                    <td class="categoria">Papelería y útiles de oficina</td>
+                    <td class="concepto">Incluye folder; archivadores; lapices; lapiceros; marcadores; sobres; protectores de hojas; separadores; cuadernos; libretas; block de notas; banderitas; notas adhesivas; hojas; clips; tintas; toner, entre otros.</td>
+                </tr>
+                <tr>
+                    <td class="cor">8</td>
+                    <td class="categoria">Suministros de Salud</td>
+                    <td class="concepto">Incluye gel antibacterial; guantes; mascarillas; caretas; atomizadores; termometros, entre otros.</td>
+                </tr>
+                <tr>
+                    <td class="cor">9</td>
+                    <td class="categoria">Útiles de oficina</td>
+                    <td class="concepto">Incluye artículos fungibles tales como: cajas plásticas; tijeras; engrapadoras; perforadores; dispensadores de tape; papeleras; organizadores, entre otros.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer-content"></div>
+    <div class="credit">
+        Creado por Alejandro Ramos 
+        Email: kv233308@gmail.com
+        phone: 4854-2751
+    </div>
+</div>
+
+</body>
+</html>

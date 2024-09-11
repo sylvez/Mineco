@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario de Productos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            cursor: pointer;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .search-container {
+            margin-bottom: 20px;
+        }
+        #searchInput {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            cursor: pointer;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .search-container {
+            margin-bottom: 20px;
+        }
+        #searchInput {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .filter-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        #okButton {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #agotadosButton {
+            background-color: #f44336;
+            color: white;
+        }
+        #minimoButton {
+            background-color: #ff9800;
+            color: white;
+        }
+        .filter-button:hover {
+            opacity: 0.8;
+        }
+
+        footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .flags {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        .flag {
+            width: 100px;
+            height: 60px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .credit {
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="footer-content"></div>
+        <div class="flags">
+            <img src="https://flagcdn.com/w320/eu.png" alt="Bandera de la Unión Europea" class="flag">
+            <img src="https://flagcdn.com/w320/gt.png" alt="Bandera de Guatemala" class="flag">
+        </div>
+        
+    </div>
+    <div class="container"></div>
+        <h1>Inventario de Productos</h1>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Buscar productos...">
+        </div>
+        <div class="button-container">
+            <button id="okButton" class="filter-button">OK</button>
+            <button id="agotadosButton" class="filter-button">AGOTADOS</button>
+            <button id="minimoButton" class="filter-button">MINIMO</button>
+        </div>
+        <table id="inventoryTable">
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)">No.</th>
+                    <th onclick="sortTable(1)">Descripción</th>
+                    <th onclick="sortTable(2)">Existencia al 31/07/2024</th>
+                    <th onclick="sortTable(3)">Existencia al 31/08/2024</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Los datos se insertarán aquí mediante JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer-content"></div>
+    <div class="credit">
+        Creado por Alejandro Ramos 
+        Email: kv233308@gmail.com
+        phone: 4854-2751
+    </div>
+</div>
+    <script>
+        const inventoryData = [
+        { "no": 1, "description": "Aceite Rojo, para limpiar muebles, Maderas, Molduras y pisos, bote de 8oz. (240ml)", "existencia31Jul": 0, "existencia31Aug": 0 },
+        { "no": 2, "description": "Aerosol Pledge, para limpieza de muebles, 378ml", "existencia31Jul": 33, "existencia31Aug": 33 },
+        { "no": 3, "description": "Aire comprimido para computadoras", "existencia31Jul": 6, "existencia31Aug": 6 },
+        { "no": 4, "description": "Alcohol liquido (galon) Silver", "existencia31Jul": 4, "existencia31Aug": 4 },
+        { "no": 5, "description": "Algodón Absorbente(libra)", "existencia31Jul": 3, "existencia31Aug": 3 },
+        { "no": 6, "description": "Almohadilla para sellos", "existencia31Jul": 4, "existencia31Aug": 4 },
+        { "no": 7, "description": "Aromatizante de Ambiente Aerosol glade", "existencia31Jul": 80, "existencia31Aug": 80 },
+        { "no": 8, "description": "Bloc de (70) hojas con líneas color amarillo", "existencia31Jul": 52, "existencia31Aug": 51 },
+        { "no": 9, "description": "Bolsa de azúcar blanca de 5LB.", "existencia31Jul": 17, "existencia31Aug": 17 },
+        { "no": 10, "description": "Bolsa para basura pequeña color blanca, paquetes de 10 unidades", "existencia31Jul": 0, "existencia31Aug": 0 },
+        { "no": 11, "description": "Bolsas para basura grandes color negro, paquetes de 10 unidades", "existencia31Jul": 48, "existencia31Aug": 48 },
+        { "no": 12, "description": "Bombilla de 25w Blanca tipo espiral", "existencia31Jul": 7, "existencia31Aug": 7 },
+        { "no": 13, "description": "Borrador color Blanco", "existencia31Jul": 15, "existencia31Aug": 15 },
+        { "no": 14, "description": "Bote pequeño para basura", "existencia31Jul": 7, "existencia31Aug": 7 },
+        { "no": 15, "description": "Café Molido, bolsa de 1 libra", "existencia31Jul": 13, "existencia31Aug": 13 },
+        { "no": 16, "description": "Café, Instantáneo Nescafe Clásico de 225 g", "existencia31Jul": 0, "existencia31Aug": 0 },
+        { "no": 17, "description": "Caja de Tachuelas tipo push pins", "existencia31Jul": 2, "existencia31Aug": 1 },
+        { "no": 18, "description": "Cajas plásticas para CD/DVD (protectores paquete 25 und)", "existencia31Jul": 75, "existencia31Aug": 75 },
+        { "no": 19, "description": "Calculadora, marca Casio de 12 digitos; color negra, MX-128-BK", "existencia31Jul": 11, "existencia31Aug": 11 },
+        { "no": 20, "description": "Caretas", "existencia31Jul": 30, "existencia31Aug": 30 },
+        { "no": 21, "description": "CD's 80min 700 MB unidades", "existencia31Jul": 101, "existencia31Aug": 93 },
+        { "no": 22, "description": "Cepillo para ropa", "existencia31Jul": 9, "existencia31Aug": 9 },
+        { "no": 23, "description": "Cepillo para sanitario tipo gusano", "existencia31Jul": 8, "existencia31Aug": 8 },
+        { "no": 24, "description": "Cinta de empaque de 2\" 50yd", "existencia31Jul": 12, "existencia31Aug": 11 },
+        { "no": 25, "description": "Cinta mágica (Tape )", "existencia31Jul": 48, "existencia31Aug": 48 },
+        { "no": 26, "description": "Clip (50mm grande caja de 100 unidades", "existencia31Jul": 12, "existencia31Aug": 12 },
+        { "no": 27, "description": "Clip Standard (33mm pequeño); Caja de 100 unidades", "existencia31Jul": 11, "existencia31Aug": 11 },
+        { "no": 28, "description": "Clip Tipo Mariposa (cajas)", "existencia31Jul": 9, "existencia31Aug": 9 },
+        { "no": 29, "description": "Cloro, 1 galón", "existencia31Jul": 17, "existencia31Aug": 17 },
+        { "no": 30, "description": "Corrector liquido, tipo pluma", "existencia31Jul": 10, "existencia31Aug": 10 },
+        { "no": 31, "description": "Cremora 1Kg Member's", "existencia31Jul": 8, "existencia31Aug": 8 },
+        { "no": 32, "description": "Cuaderno espiral universitario; 100 hojas con líneas", "existencia31Jul": 18, "existencia31Aug": 17 },
+        { "no": 33, "description": "Cucharas desechables, paquete de 25 unidades", "existencia31Jul": 47, "existencia31Aug": 47 },
+        { "no": 34, "description": "Cuenta Fácil (Humedecedor) 40 ml", "existencia31Jul": 25, "existencia31Aug": 25 },
+        { "no": 35, "description": "Dispensador de Gel", "existencia31Jul": 0, "existencia31Aug": 0 },
+        { "no": 36, "description": "Dispensador para tape mágico", "existencia31Jul": 12, "existencia31Aug": 12 },
+        { "no": 37, "description": "Dispensadores de clips", "existencia31Jul": 5, "existencia31Aug": 5 },
+        { "no": 38, "description": "Escobas grandes", "existencia31Jul": 6, "existencia31Aug": 6 },
+        { "no": 39, "description": "Esponja para trastos (unidad)", "existencia31Jul": 22, "existencia31Aug": 22 },
+        { "no": 40, "description": "Espuma limpiadora para equipos de computo", "existencia31Jul": 9, "existencia31Aug": 9 },
+        { "no": 41, "description": "Etiquetas para CD unidades", "existencia31Jul": 175, "existencia31Aug": 175 },
+        { "no": 42, "description": "Etiquetas para CD (unidades)", "existencia31Jul": 23, "existencia31Aug": 23 },
+        { "no": 43, "description": "Fasteners (caja de 50 juegos)", "existencia31Jul": 63, "existencia31Aug": 63 },
+        { "no": 44, "description": "Folder Manila tamaño carta", "existencia31Jul": 485, "existencia31Aug": 475 },
+        { "no": 45, "description": "Folder Manila tamaño oficio", "existencia31Jul": 329, "existencia31Aug": 304 },
+        { "no": 46, "description": "Folder tamaño carta plástico con gancho lateral", "existencia31Jul": 6, "existencia31Aug": 6 },
+        { "no": 47, "description": "Gel Antibacterial (Alcohol Gel 70% galon)", "existencia31Jul": 8, "existencia31Aug": 8 },
+        { "no": 48, "description": "Goma de pegar (Barra Pritt 42 grs)", "existencia31Jul": 6, "existencia31Aug": 6 },
+        { "no": 49, "description": "Grapas (Estándar 5000 unid 26/6)", "existencia31Jul": 17, "existencia31Aug": 17 },
+        { "no": 50, "description": "Grapas (Industrial, uso pesado (17mm (5/8)", "existencia31Jul": 1, "existencia31Aug": 1 },
+        { "no": 51, "description": "Guantes domésticos de látex (par)", "existencia31Jul": 5, "existencia31Aug": 5 },
+        { "no": 52, "description": "Papel bond t/carta para fotocopiadora (resmas)", "existencia31Jul": 190, "existencia31Aug": 175 },
+        { "no": 53, "description": "Papel bond t/oficio para fotocopiadora (resmas)", "existencia31Jul": 65, "existencia31Aug": 55 },
+        { "no": 54, "description": "Papel membretado t/carta (con sello (Dorado) de agua del Ministerio de Economía)", "existencia31Jul": 0, "existencia31Aug": 0 },
+        { "no": 55, "description": "Papel bond t/carta (120 gramos) unidad", "existencia31Jul": 1500, "existencia31Aug": 1500 },
+        { "no": 56, "description": "Papel membretado t/oficio (con sello de agua del Ministerio de Economía)", "existencia31Jul": 0, "existencia31Aug": 0 },
+        { "no": 57, "description": "Jabón en polvo 1 Kg", "existencia31Jul": 19, "existencia31Aug": 19 },
+        { "no": 58, "description": "Jabón en polvo bolsa de 25 libras", "existencia31Jul": 1, "existencia31Aug": 1 },
+        { "no": 59, "description": "Tubo Led (T8 60 centímetros 9 Vatios", "existencia31Jul": 4, "existencia31Aug": 4 },
+        { "no": 60, "description": "Lapiceros punta fina color azul (Bolígrafo)", "existencia31Jul": 129, "existencia31Aug": 112 },
+        { "no": 61, "description": "Lapiceros punta fina color negro (Bolígrafo)", "existencia31Jul": 118, "existencia31Aug": 103 },
+        { "no": 62, "description": "Lapiceros punta fina color rojo (Bolígrafo)", "existencia31Jul": 145, "existencia31Aug": 145 },
+        { "no": 63, "description": "Lapiceros punta mediana color azul (Bolígrafo)", "existencia31Jul": 54, "existencia31Aug": 54 },
+        { "no": 64, "description": "Lapiceros Punta mediana color negro (Bolígrafo)", "existencia31Jul": 163, "existencia31Aug": 163 },
+        { "no": 65, "description": "Lapiceros punta mediana color rojo (Bolígrafo)", "existencia31Jul": 153, "existencia31Aug": 153 },
+        { "no": 66, "description": "Lápiz con borrador", "existencia31Jul": 561, "existencia31Aug": 561 },
+        { "no": 67, "description": "Libro de Actas empastado (100 hojas)", "existencia31Jul": 5, "existencia31Aug": 5 },
+        { "no": 68, "description": "Limpia vidrios (galón)", "existencia31Jul": 0, "existencia31Aug": 0 },
+        { "no": 69, "description": "Limpiadores de tela, color amarillo (paño de microfibra 40 X 40 cm)", "existencia31Jul": 48, "existencia31Aug": 48 },
+        { "no": 70, "description": "Limpiadores de tela, grande; Iris", "existencia31Jul": 8, "existencia31Aug": 8 },
+        { "no": 71, "description": "Líquido para limpiar ventanas, Window Cleaner, (galón)", "existencia31Jul": 7, "existencia31Aug": 7 },
+        { "no": 72, "description": "Lysol desinfectante spray", "existencia31Jul": 2, "existencia31Aug": 2 },
+        { "no": 73, "description": "Marcador permanente punta fina (negro)", "existencia31Jul": 4, "existencia31Aug": 4 },
+        { "no": 74, "description": "Masking tape de 12mm x 25m (1/2 Pulgada)", "existencia31Jul": 24, "existencia31Aug": 24 },
+        { "no": 75, "description": "Masking tape de 24mm x 25m (1 Pulgada)", "existencia31Jul": 20, "existencia31Aug": 20 },
+        { "no": 76, "description": "Masking tape de 48mm x 25m (2 Pulgadas)", "existencia31Jul": 30, "existencia31Aug": 30 },
+        { "no": 77, "description": "Minas 0.5, para portaminas (0.5)", "existencia31Jul": 29, "existencia31Aug": 29 },
+        { "no": 78, "description": "Notas Adhesivas 1 block de notas con 100 hojas 7.62 cm x 7.62 cm) 3x3", "existencia31Jul": 85, "existencia31Aug": 85 },
+        { "no": 79, "description": "Notas Adhesivas ( 1 block de notas con 100 hojas (7.62 cm x 12.7cm) 3 in x 5", "existencia31Jul": 167, "existencia31Aug": 167 },
+        { "no": 80, "description": "Notas Adhesivas (Block de notas con 100 unidades 3.81 cm x 5.08 cm) 11/2 x 2", "existencia31Jul": 199, "existencia31Aug": 199 },
+        { "no": 81, "description": "Notas Adhesivas, banderitas (1.27 cm X 4.3 cm) 1/2 x 1 11/16; de cinco colores", "existencia31Jul": 57, "existencia31Aug": 57 },
+        { "no": 82, "description": "Notas adhesivas, banderitas (2.54cm x 4.3cm (1 x 1 11/16) de tres colores", "existencia31Jul": 52, "existencia31Aug": 52 },
+        { "no": 83, "description": "Palas para basura", "existencia31Jul": 1, "existencia31Aug": 1 },
+        { "no": 84, "description": "Papel carbón Mediano color negro tamaño carta (Kores)", "existencia31Jul": 580, "existencia31Aug": 580 },
+        { "no": 85, "description": "Papel fotográfico t/carta (Kodak Photo Papers)", "existencia31Jul": 3, "existencia31Aug": 3 },
+        { "no": 86, "description": "Papel periódico para rota folio block de 25 hojas (unidades)", "existencia31Jul": 18, "existencia31Aug": 18 },
+        { "no": 87, "description": "Pasta plástico para encuadernar, tamaño carta, varios colores", "existencia31Jul": 291, "existencia31Aug": 279 },
+        { "no": 88, "description": "Perforador Industrial", "existencia31Jul": 1, "existencia31Aug": 1 },
+        { "no": 89, "description": "Perforadora dos Oficios, marca swingline", "existencia31Jul": 3, "existencia31Aug": 3 },
+        { "no": 90, "description": "Pichel Capacidad; 1 Litro Material; Vidrio", "existencia31Jul": 0, "existencia31Aug": 0 },
+        { "no": 91, "description": "Pin Logo del Programa Mipymes y Cooperativas (dos banderas)", "existencia31Jul": 74, "existencia31Aug": 74 },
+        { "no": 92, "description": "Plato Material: Porcelana Tipo; Pastelero (mediano)", "existencia31Jul": 0, "existencia31Aug": 0 },
+        { "no": 93, "description": "Plato Material: Porcelana Tipo; Plano (grande)", "existencia31Jul": 0, "existencia31Aug": 0 },
+        { "no": 94, "description": "Platos grandes desechables, paquetes de 25 unidades", "existencia31Jul": 11, "existencia31Aug": 11 },
+        { "no": 95, "description": "Protectores de hojas tamaño carta", "existencia31Jul": 1103, "existencia31Aug": 1103 },
+        { "no": 96, "description": "Protectores de hojas tamaño oficio", "existencia31Jul": 1025, "existencia31Aug": 1025 },
+        { "no": 97, "description": "Reglas plástica de 30cm", "existencia31Jul": 15, "existencia31Aug": 15 },
+        { "no": 98, "description": "Sacagrapas Standard", "existencia31Jul": 4, "existencia31Aug": 4 },
+        { "no": 99, "description": "Sal, 1 libra de mesa", "existencia31Jul": 8, "existencia31Aug": 8 },
+        { "no": 100, "description": "Sanitizante concentrado sin aroma", "existencia31Jul": 11, "existencia31Aug": 11 },
+        { "no": 101, "description": "Separadores de cinco colores, de cartón (Paquete de Cinco unidades)", "existencia31Jul": 193, "existencia31Aug": 193 },
+        { "no": 102, "description": "Sobres Manila Carta", "existencia31Jul": 555, "existencia31Aug": 530 },
+        { "no": 103, "description": "Sobres Manila extra oficio", "existencia31Jul": 582, "existencia31Aug": 556 },
+        { "no": 104, "description": "Sobres Manila Oficio", "existencia31Jul": 620, "existencia31Aug": 595 },
+        { "no": 105, "description": "Té de Canela y Manzana, caja de 20 sobres", "existencia31Jul": 5, "existencia31Aug": 5 },
+        { "no": 106, "description": "Té de Canela, caja de 20 sobres", "existencia31Jul": 17, "existencia31Aug": 17 },
+        { "no": 107, "description": "Té de Rosa de Jamaica, caja de 20 sobres", "existencia31Jul": 19, "existencia31Aug": 19 },
+        { "no": 108, "description": "Té Negro, (sabor natural) caja de 20 sobres", "existencia31Jul": 21, "existencia31Aug": 21 },
+        { "no": 109, "description": "Cuchillos desechables, paquete de 25 unidades", "existencia31Jul": 14, "existencia31Aug": 14 },
+        { "no": 110, "description": "Tenedores desechables, paquete de 25 unidades", "existencia31Jul": 33, "existencia31Aug": 33 },
+        { "no": 111, "description": "Termómetro infrarrojo", "existencia31Jul": 2, "existencia31Aug": 2 },
+        { "no": 112, "description": "Tinta Cartucho para impresoras Laserjet HP/ 508x color negro CF360X", "existencia31Jul": 1, "existencia31Aug": 1 },
+        { "no": 113, "description": "Tinta Cartucho para impresoras Laserjet HP/ color Amarillo CF362XC", "existencia31Jul": 1, "existencia31Aug": 1 },
+        { "no": 114, "description": "Tinta Cartucho para impresoras Laserjet HP/ color Magenta CF363XC", "existencia31Jul": 2, "existencia31Aug": 2 },
+        { "no": 115, "description": "Tinta Epson 664-120 color Negro", "existencia31Jul": 53, "existencia31Aug": 53 },
+        { "no": 116, "description": "Tinta Epson 664-220 color Cyan", "existencia31Jul": 87, "existencia31Aug": 87 },
+        { "no": 117, "description": "Tinta Epson 664-320 color Magenta", "existencia31Jul": 88, "existencia31Aug": 88 },
+        { "no": 118, "description": "Tinta Epson 664-420 color Yellow", "existencia31Jul": 88, "existencia31Aug": 88 },
+        { "no": 119, "description": "Tinta para almohadilla color negro 28 ml", "existencia31Jul": 10, "existencia31Aug": 10 },
+        { "no": 120, "description": "Tinta para almohadilla para sellos gotero color azul", "existencia31Jul": 2, "existencia31Aug": 2 },
+        { "no": 121, "description": "Tinta para impresoras Laserjet HP M501/ color negro CF287A", "existencia31Jul": 12, "existencia31Aug": 12 },
+        { "no": 122, "description": "Tinta, cartucho de tinta para impresoras Canon, 140 color negro", "existencia31Jul": 1, "existencia31Aug": 1 },
+        { "no": 123, "description": "Tinta, cartucho de tinta para impresoras Canon, 141 colores", "existencia31Jul": 25, "existencia31Aug": 25 },
+        { "no": 124, "description": "Tinta, cartucho de tinta para impresoras Canon, 146 colores", "existencia31Jul": 4, "existencia31Aug": 4 },
+        { "no": 125, "description": "Tinta, cartucho de tinta para impresoras Canon, 210 color negro", "existencia31Jul": 3, "existencia31Aug": 3 },
+        { "no": 126, "description": "Tinta, cartucho de tinta para impresoras Canon, 211 colores", "existencia31Jul": 4, "existencia31Aug": 4 },
+        { "no": 127, "description": "Tinta, cartucho de tinta para impresoras HP/ Color negro 96", "existencia31Jul": 1, "existencia31Aug": 1 },
+        { "no": 128, "description": "Tinta, tóner 1VV22AL HP GT53 Negro 24", "existencia31Jul": 24, "existencia31Aug": 24 },
+        { "no": 129, "description": "Tinta, tóner Cartucho HP CE312A/ 126 A Yellow", "existencia31Jul": 1, "existencia31Aug": 1 },
+        { "no": 130, "description": "Tinta, tóner Cartucho HP CE313A/126 A Magenta", "existencia31Jul": 1, "existencia31Aug": 1 },
+        { "no": 131, "description": "Tinta, tóner MOHS4AL GT52 Cyan 26", "existencia31Jul": 26, "existencia31Aug": 26 },
+        { "no": 132, "description": "Tinta, tóner MOH55AL GT52 Magenta 26", "existencia31Jul": 26, "existencia31Aug": 26 },
+        { "no": 133, "description": "Tinta, tóner MOH56AL GT52 Amarillo 23", "existencia31Jul": 23, "existencia31Aug": 23 },
+        { "no": 134, "description": "Toalla doble para trapear 18", "existencia31Jul": 18, "existencia31Aug": 18 },
+        { "no": 135, "description": "Tóner, Tinta marca Konica Minulta tn 114", "existencia31Jul": 1, "existencia31Aug": 1 },
+        { "no": 136, "description": "Tóner, Tinta para impresora XEROX Phaser 3320", "existencia31Jul": 6, "existencia31Aug": 6 },
+        { "no": 137, "description": "Vaso de vidrio capacidad 12 onzas", "existencia31Jul": 0, "existencia31Aug": 0 },
+        { "no": 138, "description": "Vaso de vidrio capacidad, 10.59 onzas", "existencia31Jul": 0, "existencia31Aug": 0 },
+        { "no": 139, "description": "vasos plásticos desechables, paquete de 25 unidades (10 onzas)", "existencia31Jul": 0, "existencia31Aug": 0 },
+        { "no": 140, "description": "vasos plásticos desechables, paquete de 25 unidades (8 onzas)", "existencia31Jul": 13, "existencia31Aug": 13 },
+        { "no": 141, "description": "Wipe (Bola) 10", "existencia31Jul": 10, "existencia31Aug": 10 },
+        { "no": 142, "description": "Archivadores t/oficio 125", "existencia31Jul": 125, "existencia31Aug": 119 },
+        { "no": 143, "description": "Tinta Cartucho para impresoras Laserjet HP/ 508x color cyan CF361X", "existencia31Jul": 1, "existencia31Aug": 1 },
+        { "no": 144, "description": "Papel Higiénico Jumbo Roll de 500 m., caja de 12 Rollos) unidades", "existencia31Jul": 35, "existencia31Aug": 35 },
+        { "no": 145, "description": "Toalla de papel para manos (250 mts Caja de 12) unidades", "existencia31Jul": 28, "existencia31Aug": 28 },
+        { "no": 146, "description": "Jabón para trastos 450g, tarro de 425 gr", "existencia31Jul": 0, "existencia31Aug": 0 },
+        { "no": 147, "description": "Tijeras", "existencia31Jul": 12, "existencia31Aug": 12 },
+        { "no": 148, "description": "Espiral para encuadernar (diferentes medidas) unidades", "existencia31Jul": 2022, "existencia31Aug": 2022 },
+        { "no": 149, "description": "Folder Colgantes (cajas 25 unidades)", "existencia31Jul": 20, "existencia31Aug": 20 },
+        { "no": 150, "description": "Plástico autoadherible transparente (rollos)", "existencia31Jul": 4, "existencia31Aug": 4 },
+        { "no": 151, "description": "Marcador fluorecente (resaltador varios colores)", "existencia31Jul": 52, "existencia31Aug": 50 },
+        { "no": 152, "description": "Jabon en bola unidad", "existencia31Jul": 8, "existencia31Aug": 8 },
+        { "no": 153, "description": "Pastillas aromatizantes para baños", "existencia31Jul": 225, "existencia31Aug": 225 },
+        { "no": 154, "description": "Base metalica para mopa", "existencia31Jul": 0, "existencia31Aug": 0 },
+        { "no": 155, "description": "Limpiador en polvo (multiusos ajax)", "existencia31Jul": 36, "existencia31Aug": 36 },
+        { "no": 156, "description": "Mopa", "existencia31Jul": 4, "existencia31Aug": 4 },
+        { "no": 157, "description": "Jabón gel liquido para manos (Galones)", "existencia31Jul": 7, "existencia31Aug": 7 },
+        { "no": 158, "description": "Desinfectante para pisos", "existencia31Jul": 9, "existencia31Aug": 9 },
+        { "no": 159, "description": "Bote plastico para basura 60 litros", "existencia31Jul": 0, "existencia31Aug": 0 },
+        { "no": 160, "description": "Servilletas (fardo) paquetes de 100 unidades", "existencia31Jul": 100, "existencia31Aug": 100 },
+        { "no": 161, "description": "Filtros de Papel para cafetera (caja 100 un)", "existencia31Jul": 5, "existencia31Aug": 5 },
+        { "no": 162, "description": "Té de manzanilla, caja de 20 sobres", "existencia31Jul": 5, "existencia31Aug": 5 },
+        { "no": 163, "description": "Té de pericón, caja de 20 sobres", "existencia31Jul": 13, "existencia31Aug": 13 },
+        { "no": 164, "description": "Bolsa para basura pequeña color blanca, (paquetes de 50 unidades)", "existencia31Jul": 649, "existencia31Aug": 649 },
+        { "no": 165, "description": "Bolsas para basura extra grandes color negro, paquetes de 100 bolsas) unidades", "existencia31Jul": 359, "existencia31Aug": 359 },
+        { "no": 166, "description": "Sobres Manila Media Carta", "existencia31Jul": 100, "existencia31Aug": 90 },
+        { "no": 167, "description": "Archivadores /carta", "existencia31Jul": 76, "existencia31Aug": 76 },
+        { "no": 168, "description": "Caja Plastica", "existencia31Jul": 36, "existencia31Aug": 36 },
+        { "no": 169, "description": "Jabón liquido para trastos (Galon)", "existencia31Jul": 11, "existencia31Aug": 11 },
+        { "no": 170, "description": "Refuerzo para hojas perforadas 200 unidades (c", "existencia31Jul": 24, "existencia31Aug": 24 },
+        { "no": 171, "description": "Portaminas (0", "existencia31Jul": 23, "existencia31Aug": 23 },
+        { "no": 172, "description": "Marcador varios colores unidades (Plzarra)", "existencia31Jul": 29, "existencia31Aug": 29 },
+        { "no": 173, "description": "Binder Clip de 19 mm caja 12 unidades", "existencia31Jul": 17, "existencia31Aug": 16 },
+        { "no": 174, "description": "Binder Clip de 25mm caja 12 unidades", "existencia31Jul": 18, "existencia31Aug": 18 },
+        { "no": 175, "description": "Binder Clip de 32 mm caja 12 unidades", "existencia31Jul": 17, "existencia31Aug": 16 },
+        { "no": 176, "description": "Binder Clip de 41 mm caja 12 unidades", "existencia31Jul": 18, "existencia31Aug": 18 },
+        { "no": 177, "description": "Binder Clip de 51 mm caja 12 unidades", "existencia31Jul": 17, "existencia31Aug": 17 },
+        { "no": 178, "description": "Café Molido, paquete de 340 gr Full Roast", "existencia31Jul": 50, "existencia31Aug": 50 },
+        { "no": 179, "description": "Café Molido, paquete de 340 gr Exclusive Blend", "existencia31Jul": 50, "existencia31Aug": 50 },
+        { "no": 180, "description": "Café Molido, paquete de 340 gr Exclusive Legendary", "existencia31Jul": 50, "existencia31Aug": 50 }
+    ];
+
+        function populateTable(data) {
+            const tableBody = document.querySelector("#inventoryTable tbody");
+            tableBody.innerHTML = "";
+            data.forEach(item => {
+                const row = `<tr>
+                    <td>${item.no}</td>
+                    <td>${item.description}</td>
+                    <td>${item.existencia31Jul}</td>
+                    <td>${item.existencia31Aug}</td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        function sortTable(n) {
+            const table = document.getElementById("inventoryTable");
+            let rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            switching = true;
+            dir = "asc";
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("TD")[n];
+                    y = rows[i + 1].getElementsByTagName("TD")[n];
+                    if (dir == "asc") {
+                        if (n === 0 || n >= 2) {
+                            if (Number(x.innerHTML) > Number(y.innerHTML)) {
+                                shouldSwitch = true;
+                                break;
+                            }
+                        } else {
+                            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                                shouldSwitch = true;
+                                break;
+                            }
+                        }
+                    } else if (dir == "desc") {
+                        if (n === 0 || n >= 2) {
+                            if (Number(x.innerHTML) < Number(y.innerHTML)) {
+                                shouldSwitch = true;
+                                break;
+                            }
+                        } else {
+                            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                                shouldSwitch = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase();
+            const filteredData = inventoryData.filter(item => 
+                item.description.toLowerCase().includes(searchTerm) ||
+                item.no.toString().includes(searchTerm)
+            );
+            populateTable(filteredData);
+        });
+
+        // Inicializar la tabla
+        populateTable(inventoryData);
+
+
+        // Agregar estas nuevas funciones al final del script existente
+        function filterOk() {
+            const filteredData = inventoryData.filter(item => item.existencia31Aug > 100);
+            populateTable(filteredData);
+        }
+
+        function filterAgotados() {
+            const filteredData = inventoryData.filter(item => item.existencia31Aug === 0);
+            populateTable(filteredData);
+        }
+
+        function filterMinimo() {
+            const filteredData = inventoryData.filter(item => item.existencia31Aug > 0 && item.existencia31Aug < 100);
+            populateTable(filteredData);
+        }
+
+        document.getElementById('okButton').addEventListener('click', filterOk);
+        document.getElementById('agotadosButton').addEventListener('click', filterAgotados);
+        document.getElementById('minimoButton').addEventListener('click', filterMinimo);
+
+        // Inicializar la tabla
+        populateTable(inventoryData);
+    </script>
+</body>
+</html>
