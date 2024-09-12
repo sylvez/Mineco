@@ -567,7 +567,7 @@
                         <td>${getDescription(item.producto)}</td>
                         <td>Angel de Almacenamiento</td>
                         <td>Indefinido</td>
-                        <td><button class="edit-btn" data-index="${index}">✏</button></td>
+                        <td><button class="edit-btn" data-index="${index}">✏️</button></td>
                     </tr>
                 `;
                 tableBody.innerHTML += row;
@@ -599,7 +599,7 @@
         }
 
         function getDescription(producto) {
-            return 'Descripción breve de ${producto}';
+            return `Descripción breve de ${producto}`;
         }
 
         function filterByCategory(category) {
@@ -747,4 +747,4 @@
         renderTable();
     </script>
 </body>
-</html></html>
+</html>
