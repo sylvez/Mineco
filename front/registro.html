@@ -258,9 +258,13 @@
             <img src="https://flagcdn.com/w320/gt.png" alt="Bandera de Guatemala" class="flag">
         </div>
     </div>
+
     <h1>Registro de Entradas y Salidas</h1>
+    
     <button id="addButton" class="add-btn">Agregar Producto</button>
+
     <input type="text" id="searchInput" placeholder="Buscar por producto o código">
+
     <div class="categories" id="categoryButtons">
         <button class="category-btn" data-category="PAPELERÍA">PAPELERÍA</button>
         <button class="category-btn" data-category="ALIMENTOS">ALIMENTOS</button>
@@ -272,6 +276,7 @@
         <button class="category-btn" data-category="ÚTILES DE OFICINA">ÚTILES DE OFICINA</button>
         <button class="category-btn" data-category="OTROS">OTROS</button>
     </div>
+
     <table id="inventoryTable">
         <thead>
             <tr>
@@ -290,8 +295,10 @@
             </tr>
         </thead>
         <tbody>
+            <!-- Table rows will be dynamically added here -->
         </tbody>
     </table>
+
     <div id="passwordModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -304,6 +311,7 @@
             </div>
         </div>
     </div>
+
     <div id="addForm" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -335,6 +343,7 @@
             </div>
         </div>
     </div>
+
     <div id="editForm" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -366,6 +375,7 @@
             </div>
         </div>
     </div>
+
     <div id="orderPanel" class="order-panel">
         <div class="order-content">
             <h2>Realizar Pedido</h2>
@@ -376,6 +386,7 @@
             </div>
         </div>
     </div>
+
     <div class="footer-content">
         <div class="credit">
             Creado por Alejandro Ramos 
@@ -383,6 +394,7 @@
             phone: 4854-2751
         </div>
     </div>
+
     <script>
         let inventoryData = [];
         let filteredData = [];
@@ -497,6 +509,7 @@ Item('inventoryData');
                     { categoria: "MATERIALES ELECTRÓNICOS", producto: "Tinta, tóner MOH55AL GT52 Magenta 26", unidad: 26 },
                     { categoria: "MATERIALES ELECTRÓNICOS", producto: "Tinta, tóner MOH56AL GT52 Amarillo 23", unidad: 23 },
 
+                    // MATERIALES DE LIMPIEZA
                     { categoria: "MATERIALES DE LIMPIEZA", producto: "Esponja para trastos (unidad)", unidad: 22 },
                     { categoria: "MATERIALES DE LIMPIEZA", producto: "Escobas grandes", unidad: 6 },
                     { categoria: "MATERIALES DE LIMPIEZA", producto: "Espuma limpiadora para equipos de computo", unidad: 9 },
@@ -539,9 +552,11 @@ Item('inventoryData');
             }
             filteredData = inventoryData;
         }
+
         function saveInventoryData() {
             localStorage.setItem('inventoryData', JSON.stringify(inventoryData));
         }
+
         function renderTable() {
             const tableBody = document.querySelector('#inventoryTable tbody');
             tableBody.innerHTML = '';
@@ -570,18 +585,21 @@ Item('inventoryData');
                 `;
                 tableBody.innerHTML += row;
             });
+
             document.querySelectorAll('.edit-btn').forEach(button => {
                 button.addEventListener('click', (e) => {
                     e.stopPropagation();
                     showPasswordModal('edit', e.target.dataset.index);
                 });
             });
+
             document.querySelectorAll('.delete-btn').forEach(button => {
                 button.addEventListener('click', (e) => {
                     e.stopPropagation();
                     showPasswordModal('delete', e.target.dataset.index);
                 });
             });
+
             document.querySelectorAll('#inventoryTable tbody tr').forEach(row => {
                 row.addEventListener('click', () => {
                     const index = row.dataset.index;
@@ -589,6 +607,7 @@ Item('inventoryData');
                 });
             });
         }
+
         function getStatus(unidad) {
             if (unidad === 0) {
                 return { class: 'status-red', icon: '↓' };
@@ -598,9 +617,11 @@ Item('inventoryData');
                 return { class: 'status-green', icon: '↑' };
             }
         }
+
         function getDescription(producto) {
             return `Descripción breve de ${producto}`;
         }
+
         function filterByCategory(category) {
             const buttons = document.querySelectorAll('.category-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
@@ -609,6 +630,7 @@ Item('inventoryData');
             filteredData = inventoryData.filter(item => item.categoria === category);
             renderTable();
         }
+
         function filterBySearch(searchTerm) {
             filteredData = inventoryData.filter(item =>
                 item.producto.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -616,14 +638,17 @@ Item('inventoryData');
             );
             renderTable();
         }
+
         document.getElementById('searchInput').addEventListener('input', (e) => {
             filterBySearch(e.target.value);
         });
+
         document.querySelectorAll('.category-btn').forEach(button => {
             button.addEventListener('click', (e) => {
                 filterByCategory(e.target.dataset.category);
             });
         });
+
         const passwordModal = document.getElementById('passwordModal');
         const addButton = document.getElementById('addButton');
         const closeButtons = document.querySelectorAll('.close');
@@ -631,22 +656,28 @@ Item('inventoryData');
         const passwordInput = document.getElementById('passwordInput');
         const addForm = document.getElementById('addForm');
         const editForm = document.getElementById('editForm');
+
         addButton.addEventListener('click', () => showPasswordModal('add'));
+
         closeButtons.forEach(button => {
             button.addEventListener('click', closeModal);
         });
+
         submitPasswordButton.addEventListener('click', checkPassword);
+
         function showPasswordModal(action, index = -1) {
             currentAction = action;
             currentEditIndex = index;
             passwordModal.style.display = 'block';
             passwordInput.value = '';
         }
+
         function closeModal() {
             passwordModal.style.display = 'none';
             addForm.style.display = 'none';
             editForm.style.display = 'none';
         }
+
         function checkPassword() {
             if (passwordInput.value === '0000') {
                 closeModal();
@@ -661,9 +692,11 @@ Item('inventoryData');
                 alert('Contraseña incorrecta');
             }
         }
+
         function showAddForm() {
             addForm.style.display = 'block';
         }
+
         function showEditForm(index) {
             const item = filteredData[index];
             document.getElementById('editProductName').value = item.producto;
@@ -671,6 +704,7 @@ Item('inventoryData');
             document.getElementById('editProductUnits').value = item.unidad;
             editForm.style.display = 'block';
         }
+
         function deleteProduct(index) {
             const confirmDelete = confirm('¿Está seguro de que desea eliminar este producto?');
             if (confirmDelete) {
@@ -680,6 +714,7 @@ Item('inventoryData');
                 renderTable();
             }
         }
+
         document.getElementById('saveNewProduct').addEventListener('click', () => {
             const newProduct = {
                 producto: document.getElementById('newProductName').value,
@@ -692,6 +727,7 @@ Item('inventoryData');
             renderTable();
             closeModal();
         });
+
         document.getElementById('saveEditProduct').addEventListener('click', () => {
             const editedProduct = {
                 producto: document.getElementById('editProductName').value,
@@ -707,6 +743,7 @@ Item('inventoryData');
             renderTable();
             closeModal();
         });
+
         function showOrderPanel(product) {
             const panel = document.getElementById('orderPanel');
             const productNameSpan = document.getElementById('productName');
@@ -717,6 +754,7 @@ Item('inventoryData');
                 panel.style.opacity = '1';
             }, 10);
         }
+
         function hideOrderPanel() {
             const panel = document.getElementById('orderPanel');
             panel.style.transform = 'translate(-50%, -50%) scale(0.9)';
@@ -725,14 +763,18 @@ Item('inventoryData');
                 panel.style.display = 'none';
             }, 300);
         }
+
         function showOrderConfirmation() {
             alert("Puede enviar su solicitud a este correo para que su pedido sea tomado:\n\nAflopezu@mineco.gob.gt");
         }
+
         document.getElementById('confirmOrder').addEventListener('click', () => {
             hideOrderPanel();
             showOrderConfirmation();
         });
+
         document.getElementById('cancelOrder').addEventListener('click', hideOrderPanel);
+
         loadInventoryData();
         renderTable();
     </script>
