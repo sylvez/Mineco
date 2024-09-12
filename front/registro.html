@@ -161,8 +161,7 @@
         .form-group button:hover {
             background-color: #2980b9;
         }
-
-        footer-content {
+        .footer-content {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -186,39 +185,72 @@
             font-size: 14px;
             color: #333;
         }
-
-        * Estilos adicionales para el panel de pedido */
         .order-panel {
             display: none;
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%) scale(0.9);
             background-color: white;
             padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
             z-index: 1000;
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-width: 300px;
+            max-width: 90%;
         }
         .order-panel h2 {
             margin-top: 0;
+            color: #2c3e50;
+            font-size: 1.5em;
         }
-        .order-panel button {
-            margin-right: 10px;
+        .order-panel p {
+            margin-bottom: 20px;
+            color: #34495e;
         }
-
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn-confirm, .btn-cancel {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .btn-confirm {
+            background-color: #2ecc71;
+            color: white;
+        }
+        .btn-confirm:hover {
+            background-color: #27ae60;
+        }
+        .btn-cancel {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .btn-cancel:hover {
+            background-color: #c0392b;
+        }
     </style>
 </head>
 <body>
-    <div class="footer-content"></div>
+    <div class="footer-content">
         <div class="flags">
             <img src="https://flagcdn.com/w320/eu.png" alt="Bandera de la Unión Europea" class="flag">
             <img src="https://flagcdn.com/w320/gt.png" alt="Bandera de Guatemala" class="flag">
         </div>
-        
     </div>
 
-    
     <h1>Registro de Entradas y Salidas</h1>
     
     <button id="addButton" class="add-btn">Agregar Producto</button>
@@ -336,8 +368,18 @@
         </div>
     </div>
 
+    <div id="orderPanel" class="order-panel">
+        <div class="order-content">
+            <h2>Realizar Pedido</h2>
+            <p>¿Desea realizar un pedido para <span id="productName"></span>?</p>
+            <div class="button-group">
+                <button id="confirmOrder" class="btn-confirm">Sí</button>
+                <button id="cancelOrder" class="btn-cancel">No</button>
+            </div>
+        </div>
+    </div>
 
-    <div class="footer-content"></div>
+    <div class="footer-content">
         <div class="credit">
             Creado por Alejandro Ramos 
             Email: kv233308@gmail.com
@@ -345,29 +387,19 @@
         </div>
     </div>
 
-
-    <!-- Agrega este nuevo div para el panel de pedido -->
-    <div id="orderPanel" class="order-panel">
-        <h2>Realizar Pedido</h2>
-        <p>¿Desea realizar un pedido para <span id="productName"></span>?</p>
-        <button id="confirmOrder">Sí</button>
-        <button id="cancelOrder">No</button>
-    </div>
-    
-
     <script>
         let inventoryData = [];
-let filteredData = [];
-let currentAction = '';
-let currentEditIndex = -1;
+        let filteredData = [];
+        let currentAction = '';
+        let currentEditIndex = -1;
 
-function loadInventoryData() {
-    const storedData = localStorage.getItem('inventoryData');
-    if (storedData) {
-        inventoryData = JSON.parse(storedData);
-    } else {
-        inventoryData = [
-            // PAPELERÍA
+        function loadInventoryData() {
+            const storedData = localStorage.getItem('inventoryData');
+            if (storedData) {
+                inventoryData = JSON.parse(storedData);
+            } else {
+                inventoryData = [
+                    // PAPELERÍA
 { categoria: "PAPELERÍA", producto: "Bloc de (70) hojas con líneas color amarillo", unidad: 51 },
 { categoria: "PAPELERÍA", producto: "Cuaderno espiral universitario; 100 hojas con líneas", unidad: 17 },
 { categoria: "PAPELERÍA", producto: "Papel bond t/carta para fotocopiadora (resmas)", unidad: 175 },
@@ -507,207 +539,212 @@ function loadInventoryData() {
 { categoria: "ÚTILES DE OFICINA", producto: "Marcador varios colores unidades (Plzarra)", unidad: 29 },
 { categoria: "ÚTILES DE OFICINA", producto: "Espiral para encuadernar (diferentes medidas) unidades", unidad: 2022 },
 
-        ];
-        saveInventoryData();
-    }
-    filteredData = inventoryData;
-}
-
-function saveInventoryData() {
-    localStorage.setItem('inventoryData', JSON.stringify(inventoryData));
-}
-
-function renderTable() {
-    const tableBody = document.querySelector('#inventoryTable tbody');
-    tableBody.innerHTML = '';
-    filteredData.forEach((item, index) => {
-        const status = getStatus(item.unidad);
-        const row = `
-            <tr data-index="${index}">
-                <td>${new Date().toLocaleDateString()}</td>
-                <td>${index + 1}</td>
-                <td>${item.producto}</td>
-                <td>${item.categoria}</td>
-                <td>Almacenes Maybe</td>
-                <td>${item.unidad}</td>
-                <td class="${status.class}">${status.icon}</td>
-                <td>1</td>
-                <td>${getDescription(item.producto)}</td>
-                <td>Angel de Almacenamiento</td>
-                <td>Indefinido</td>
-                <td><button class="edit-btn" data-index="${index}">✏</button></td>
-            </tr>
-        `;
-        tableBody.innerHTML += row;
-    });
-
-    document.querySelectorAll('.edit-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.stopPropagation();
-            showPasswordModal('edit', e.target.dataset.index);
-        });
-    });
-
-    document.querySelectorAll('#inventoryTable tbody tr').forEach(row => {
-        row.addEventListener('click', () => {
-            const index = row.dataset.index;
-            showOrderPanel(filteredData[index]);
-        });
-    });
-}
-
-function getStatus(unidad) {
-    if (unidad === 0) {
-        return { class: 'status-red', icon: '↓' };
-    } else if (unidad < 10) {
-        return { class: 'status-yellow', icon: '→' };
-    } else {
-        return { class: 'status-green', icon: '↑' };
-    }
-}
-
-function getDescription(producto) {
-    return 'Descripción breve de ${producto}';
-}
-
-function filterByCategory(category) {
-    const buttons = document.querySelectorAll('.category-btn');
-    buttons.forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-
-    filteredData = inventoryData.filter(item => item.categoria === category);
-    renderTable();
-}
-
-function filterBySearch(searchTerm) {
-    filteredData = inventoryData.filter(item =>
-        item.producto.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.categoria.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    renderTable();
-}
-
-document.getElementById('searchInput').addEventListener('input', (e) => {
-    filterBySearch(e.target.value);
-});
-
-document.querySelectorAll('.category-btn').forEach(button => {
-    button.addEventListener('click', (e) => {
-        filterByCategory(e.target.dataset.category);
-    });
-});
-
-const passwordModal = document.getElementById('passwordModal');
-const addButton = document.getElementById('addButton');
-const closeButtons = document.querySelectorAll('.close');
-const submitPasswordButton = document.getElementById('submitPassword');
-const passwordInput = document.getElementById('passwordInput');
-const addForm = document.getElementById('addForm');
-const editForm = document.getElementById('editForm');
-
-addButton.addEventListener('click', () => showPasswordModal('add'));
-
-closeButtons.forEach(button => {
-    button.addEventListener('click', closeModal);
-});
-
-submitPasswordButton.addEventListener('click', checkPassword);
-
-function showPasswordModal(action, index = -1) {
-    currentAction = action;
-    currentEditIndex = index;
-    passwordModal.style.display = 'block';
-    passwordInput.value = '';
-}
-
-function closeModal() {
-    passwordModal.style.display = 'none';
-    addForm.style.display = 'none';
-    editForm.style.display = 'none';
-}
-
-function checkPassword() {
-    if (passwordInput.value === '0000') {
-        closeModal();
-        if (currentAction === 'add') {
-            showAddForm();
-        } else if (currentAction === 'edit') {
-            showEditForm(currentEditIndex);
+                ];
+                saveInventoryData();
+            }
+            filteredData = inventoryData;
         }
-    } else {
-        alert('Contraseña incorrecta');
-    }
-}
 
-function showAddForm() {
-    addForm.style.display = 'block';
-}
+        function saveInventoryData() {
+            localStorage.setItem('inventoryData', JSON.stringify(inventoryData));
+        }
 
-function showEditForm(index) {
-    const item = filteredData[index];
-    document.getElementById('editProductName').value = item.producto;
-    document.getElementById('editProductCategory').value = item.categoria;
-    document.getElementById('editProductUnits').value = item.unidad;
-    editForm.style.display = 'block';
-}
+        function renderTable() {
+            const tableBody = document.querySelector('#inventoryTable tbody');
+            tableBody.innerHTML = '';
+            filteredData.forEach((item, index) => {
+                const status = getStatus(item.unidad);
+                const row = `
+                    <tr data-index="${index}">
+                        <td>${new Date().toLocaleDateString()}</td>
+                        <td>${index + 1}</td>
+                        <td>${item.producto}</td>
+                        <td>${item.categoria}</td>
+                        <td>Almacenes Maybe</td>
+                        <td>${item.unidad}</td>
+                        <td class="${status.class}">${status.icon}</td>
+                        <td>1</td>
+                        <td>${getDescription(item.producto)}</td>
+                        <td>Angel de Almacenamiento</td>
+                        <td>Indefinido</td>
+                        <td><button class="edit-btn" data-index="${index}">✏</button></td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
 
-document.getElementById('saveNewProduct').addEventListener('click', () => {
-    const newProduct = {
-        producto: document.getElementById('newProductName').value,
-        categoria: document.getElementById('newProductCategory').value,
-        unidad: parseInt(document.getElementById('newProductUnits').value)
-    };
-    inventoryData.push(newProduct);
-    saveInventoryData();
-    filteredData = inventoryData;
-    renderTable();
-    closeModal();
-});
+            document.querySelectorAll('.edit-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showPasswordModal('edit', e.target.dataset.index);
+                });
+            });
 
-document.getElementById('saveEditProduct').addEventListener('click', () => {
-    const editedProduct = {
-        producto: document.getElementById('editProductName').value,
-        categoria: document.getElementById('editProductCategory').value,
-        unidad: parseInt(document.getElementById('editProductUnits').value)
-    };
-    const globalIndex = inventoryData.findIndex(item => item === filteredData[currentEditIndex]);
-    if (globalIndex !== -1) {
-        inventoryData[globalIndex] = editedProduct;
-    }
-    filteredData[currentEditIndex] = editedProduct;
-    saveInventoryData();
-    renderTable();
-    closeModal();
-});
+            document.querySelectorAll('#inventoryTable tbody tr').forEach(row => {
+                row.addEventListener('click', () => {
+                    const index = row.dataset.index;
+                    showOrderPanel(filteredData[index]);
+                });
+            });
+        }
 
-// Nuevas funciones para manejar el panel de pedido
-function showOrderPanel(product) {
-    const panel = document.getElementById('orderPanel');
-    const productNameSpan = document.getElementById('productName');
-    productNameSpan.textContent = product.producto;
-    panel.style.display = 'block';
-}
+        function getStatus(unidad) {
+            if (unidad === 0) {
+                return { class: 'status-red', icon: '↓' };
+            } else if (unidad < 10) {
+                return { class: 'status-yellow', icon: '→' };
+            } else {
+                return { class: 'status-green', icon: '↑' };
+            }
+        }
 
-function hideOrderPanel() {
-    const panel = document.getElementById('orderPanel');
-    panel.style.display = 'none';
-}
+        function getDescription(producto) {
+            return 'Descripción breve de ${producto}';
+        }
 
-function showOrderConfirmation() {
-    alert("Puede enviar su solicitud a este correo para que su pedido sea tomado:\n\nAflopezu@mineco.gob.gt");
-}
+        function filterByCategory(category) {
+            const buttons = document.querySelectorAll('.category-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
 
-// Event listeners para los botones del panel de pedido
-document.getElementById('confirmOrder').addEventListener('click', () => {
-    hideOrderPanel();
-    showOrderConfirmation();
-});
+            filteredData = inventoryData.filter(item => item.categoria === category);
+            renderTable();
+        }
 
-document.getElementById('cancelOrder').addEventListener('click', hideOrderPanel);
+        function filterBySearch(searchTerm) {
+            filteredData = inventoryData.filter(item =>
+                item.producto.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.categoria.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            renderTable();
+        }
 
-// Inicialización
-loadInventoryData();
-renderTable();
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            filterBySearch(e.target.value);
+        });
+
+        document.querySelectorAll('.category-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                filterByCategory(e.target.dataset.category);
+            });
+        });
+
+        const passwordModal = document.getElementById('passwordModal');
+        const addButton = document.getElementById('addButton');
+        const closeButtons = document.querySelectorAll('.close');
+        const submitPasswordButton = document.getElementById('submitPassword');
+        const passwordInput = document.getElementById('passwordInput');
+        const addForm = document.getElementById('addForm');
+        const editForm = document.getElementById('editForm');
+
+        addButton.addEventListener('click', () => showPasswordModal('add'));
+
+        closeButtons.forEach(button => {
+            button.addEventListener('click', closeModal);
+        });
+
+        submitPasswordButton.addEventListener('click', checkPassword);
+
+        function showPasswordModal(action, index = -1) {
+            currentAction = action;
+            currentEditIndex = index;
+            passwordModal.style.display = 'block';
+            passwordInput.value = '';
+        }
+
+        function closeModal() {
+            passwordModal.style.display = 'none';
+            addForm.style.display = 'none';
+            editForm.style.display = 'none';
+        }
+
+        function checkPassword() {
+            if (passwordInput.value === '0000') {
+                closeModal();
+                if (currentAction === 'add') {
+                    showAddForm();
+                } else if (currentAction === 'edit') {
+                    showEditForm(currentEditIndex);
+                }
+            } else {
+                alert('Contraseña incorrecta');
+            }
+        }
+
+        function showAddForm() {
+            addForm.style.display = 'block';
+        }
+
+        function showEditForm(index) {
+            const item = filteredData[index];
+            document.getElementById('editProductName').value = item.producto;
+            document.getElementById('editProductCategory').value = item.categoria;
+            document.getElementById('editProductUnits').value = item.unidad;
+            editForm.style.display = 'block';
+        }
+
+        document.getElementById('saveNewProduct').addEventListener('click', () => {
+            const newProduct = {
+                producto: document.getElementById('newProductName').value,
+                categoria: document.getElementById('newProductCategory').value,
+                unidad: parseInt(document.getElementById('newProductUnits').value)
+            };
+            inventoryData.push(newProduct);
+            saveInventoryData();
+            filteredData = inventoryData;
+            renderTable();
+            closeModal();
+        });
+
+        document.getElementById('saveEditProduct').addEventListener('click', () => {
+            const editedProduct = {
+                producto: document.getElementById('editProductName').value,
+                categoria: document.getElementById('editProductCategory').value,
+                unidad: parseInt(document.getElementById('editProductUnits').value)
+            };
+            const globalIndex = inventoryData.findIndex(item => item === filteredData[currentEditIndex]);
+            if (globalIndex !== -1) {
+                inventoryData[globalIndex] = editedProduct;
+            }
+            filteredData[currentEditIndex] = editedProduct;
+            saveInventoryData();
+            renderTable();
+            closeModal();
+        });
+
+        function showOrderPanel(product) {
+            const panel = document.getElementById('orderPanel');
+            const productNameSpan = document.getElementById('productName');
+            productNameSpan.textContent = product.producto;
+            panel.style.display = 'flex';
+            setTimeout(() => {
+                panel.style.transform = 'translate(-50%, -50%) scale(1)';
+                panel.style.opacity = '1';
+            }, 10);
+        }
+
+        function hideOrderPanel() {
+            const panel = document.getElementById('orderPanel');
+            panel.style.transform = 'translate(-50%, -50%) scale(0.9)';
+            panel.style.opacity = '0';
+            setTimeout(() => {
+                panel.style.display = 'none';
+            }, 300);
+        }
+
+        function showOrderConfirmation() {
+            alert("Puede enviar su solicitud a este correo para que su pedido sea tomado:\n\nAflopezu@mineco.gob.gt");
+        }
+
+        document.getElementById('confirmOrder').addEventListener('click', () => {
+            hideOrderPanel();
+            showOrderConfirmation();
+        });
+
+        document.getElementById('cancelOrder').addEventListener('click', hideOrderPanel);
+
+        loadInventoryData();
+        renderTable();
     </script>
 </body>
-</html>
+</html></html>
