@@ -30,8 +30,18 @@ db.connect(err => {
 });
 
 // Rutas para servir el HTML
+
+app.get('/registro2', (req, res) => {
+    res.sendFile(path.join(__dirname, 'front', 'regis.html'));
+});
+
+
 app.get('/registro', (req, res) => {
     res.sendFile(path.join(__dirname, 'front', 'registro.html'));
+});
+
+app.get('/control2', (req, res) => {
+    res.sendFile(path.join(__dirname, 'front', 'control2.html'));
 });
 
 app.get('/control', (req, res) => {
