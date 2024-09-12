@@ -30,9 +30,7 @@ db.connect(err => {
 });
 
 // Rutas para servir el HTML
-app.get('/index', (req, res) => {
-    res.sendFile(path.join(__dirname, 'front', 'index.html'));
-});
+
 
 app.get('/control', (req, res) => {
     res.sendFile(path.join(__dirname, 'front', 'control.html'));
