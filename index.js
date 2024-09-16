@@ -72,6 +72,68 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'front', 'index.html'));
 });
 
+// APIS REGISTRO
+
+app.post('/api/productos', (req, res) => {
+    const { categoria, nombre_producto, cantidad } = req.body;
+    const query = 'INSERT INTO productos (categoria, nombre_producto, cantidad) VALUES (?, ?, ?)';
+
+    db.query(query, [categoria, nombre_producto, cantidad], (err, result) => {
+        if (err) {
+            console.error('Error al agregar producto:', err);
+            return res.status(500).json({ error: 'Error al agregar producto' });
+        }
+        res.status(201).json({ id: result.insertId, categoria, nombre_producto, cantidad });
+    });
+});
+
+app.delete('/api/productos/:id', (req, res) => {
+    const { id } = req.params;
+    const query = 'DELETE FROM productos WHERE id = ?';
+
+    db.query(query, [id], (err, result) => {
+        if (err) {
+            console.error('Error al eliminar producto:', err);
+            return res.status(500).json({ error: 'Error al eliminar producto' });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Producto no encontrado' });
+        }
+        res.status(200).json({ message: 'Producto eliminado' });
+    });
+});
+
+
+app.put('/api/productos/:id', (req, res) => {
+    const { id } = req.params;
+    const { categoria, nombre_producto, cantidad } = req.body;
+    const query = 'UPDATE productos SET categoria = ?, nombre_producto = ?, cantidad = ? WHERE id = ?';
+
+    db.query(query, [categoria, nombre_producto, cantidad, id], (err, result) => {
+        if (err) {
+            console.error('Error al actualizar producto:', err);
+            return res.status(500).json({ error: 'Error al actualizar producto' });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Producto no encontrado' });
+        }
+        res.status(200).json({ id, categoria, nombre_producto, cantidad });
+    });
+});
+
+app.get('/api/productos', (req, res) => {
+    const query = 'SELECT * FROM productos';
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error al obtener productos:', err);
+            return res.status(500).json({ error: 'Error al obtener productos' });
+        }
+        res.status(200).json(results);
+    });
+});
+
+
 // Iniciar el servidor
 const PORT = process.env.PORT || 3000; // Usa el puerto proporcionado por Heroku o 3000 por defecto
 app.listen(PORT, () => {
