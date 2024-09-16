@@ -5,148 +5,125 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Entradas y Salidas</title>
     <link rel="stylesheet" href="diseño.css">
+   
 </head>
 <body>
-    <header>
-        <h1>Registro de Entradas y Salidas</h1>
-    </header>
+    <h1>Registro de Entradas y Salidas</h1>
+    
+    <button id="addButton" class="add-btn">Agregar Producto</button>
 
-    <main>
-        <section class="controls">
-            <button id="addButton" class="add-btn">Agregar Producto</button>
-            <div class="search-container">
-                <label for="searchInput" class="sr-only">Buscar producto o código</label>
-                <input type="text" id="searchInput" placeholder="Buscar por producto o código">
+    <input type="text" id="searchInput" placeholder="Buscar por producto o código">
+
+    <div class="categories" id="categoryButtons">
+        <button class="category-btn" data-category="PAPELERÍA">PAPELERÍA</button>
+        <button class="category-btn" data-category="ALIMENTOS">ALIMENTOS</button>
+        <button class="category-btn" data-category="COMUNICACIÓN Y VIDEO">COMUNICACIÓN Y VIDEO</button>
+        <button class="category-btn" data-category="ENCESER DE OFICINA">ENCESER DE OFICINA</button>
+        <button class="category-btn" data-category="ENCERES DE LIMPIEZA">ENCERES DE LIMPIEZA</button>
+        <button class="category-btn" data-category="MATERIALES ELECTRÓNICOS">MATERIALES ELECTRÓNICOS</button>
+        <button class="category-btn" data-category="MATERIALES DE LIMPIEZA">MATERIALES DE LIMPIEZA</button>
+        <button class="category-btn" data-category="ÚTILES DE OFICINA">ÚTILES DE OFICINA</button>
+        <button class="category-btn" data-category="OTROS">OTROS</button>
+    </div>
+
+    <table id="inventoryTable">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Código</th>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Almacén</th>
+                <th>Unidad</th>
+                <th>Existencia</th>
+                <th>Cantidad</th>
+                <th>Descripción</th>
+                <th>Persona que Entrega</th>
+                <th>Persona que Recibe</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Table rows will be dynamically added here -->
+        </tbody>
+    </table>
+
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Ingrese la contraseña</h2>
+            <div class="form-group">
+                <input type="password" id="passwordInput">
             </div>
-        </section>
-
-        <section class="categories" id="categoryButtons">
-            <h2 class="sr-only">Categorías de productos</h2>
-            <button class="category-btn" data-category="PAPELERÍA">PAPELERÍA</button>
-            <button class="category-btn" data-category="ALIMENTOS">ALIMENTOS</button>
-            <button class="category-btn" data-category="COMUNICACIÓN Y VIDEO">COMUNICACIÓN Y VIDEO</button>
-            <button class="category-btn" data-category="ENCESER DE OFICINA">ENCESER DE OFICINA</button>
-            <button class="category-btn" data-category="ENCERES DE LIMPIEZA">ENCERES DE LIMPIEZA</button>
-            <button class="category-btn" data-category="MATERIALES ELECTRÓNICOS">MATERIALES ELECTRÓNICOS</button>
-            <button class="category-btn" data-category="MATERIALES DE LIMPIEZA">MATERIALES DE LIMPIEZA</button>
-            <button class="category-btn" data-category="ÚTILES DE OFICINA">ÚTILES DE OFICINA</button>
-            <button class="category-btn" data-category="OTROS">OTROS</button>
-        </section>
-
-        <section class="inventory">
-            <h2 class="sr-only">Lista de inventario</h2>
-            <table id="inventoryTable">
-                <caption class="sr-only">Inventario de productos</caption>
-                <thead>
-                    <tr>
-                        <th scope="col">Fecha</th>
-                        <th scope="col">Código</th>
-                        <th scope="col">Producto</th>
-                        <th scope="col">Categoría</th>
-                        <th scope="col">Almacén</th>
-                        <th scope="col">Unidad</th>
-                        <th scope="col">Existencia</th>
-                        <th scope="col">Cantidad</th>
-                        <th scope="col">Descripción</th>
-                        <th scope="col">Persona que Entrega</th>
-                        <th scope="col">Persona que Recibe</th>
-                        <th scope="col">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Table rows will be dynamically added here -->
-                </tbody>
-            </table>
-        </section>
-    </main>
-
-    <div id="passwordModal" class="modal" aria-labelledby="passwordModalTitle" aria-modal="true" role="dialog">
-        <div class="modal-content">
-            <h2 id="passwordModalTitle">Ingrese la contraseña</h2>
-            <button class="close" aria-label="Cerrar">&times;</button>
-            <form id="passwordForm">
-                <div class="form-group">
-                    <label for="passwordInput">Contraseña:</label>
-                    <input type="password" id="passwordInput" required>
-                </div>
-                <div class="form-group">
-                    <button type="submit" id="submitPassword">Enviar</button>
-                </div>
-            </form>
+            <div class="form-group">
+                <button id="submitPassword">Enviar</button>
+            </div>
         </div>
     </div>
 
-    <div id="addForm" class="modal" aria-labelledby="addFormTitle" aria-modal="true" role="dialog">
+    <div id="addForm" class="modal">
         <div class="modal-content">
-            <h2 id="addFormTitle">Agregar Nuevo Producto</h2>
-            <button class="close" aria-label="Cerrar">&times;</button>
-            <form id="newProductForm">
-                <div class="form-group">
-                    <label for="newProductName">Nombre del Producto</label>
-                    <input type="text" id="newProductName" required>
-                </div>
-                <div class="form-group">
-                    <label for="newProductCategory">Categoría</label>
-                    <select id="newProductCategory" required>
-                        <option value="">Seleccione una categoría</option>
-                        <option value="PAPELERÍA">PAPELERÍA</option>
-                        <option value="ALIMENTOS">ALIMENTOS</option>
-                        <option value="COMUNICACIÓN Y VIDEO">COMUNICACIÓN Y VIDEO</option>
-                        <option value="ENCESER DE OFICINA">ENCESER DE OFICINA</option>
-                        <option value="ENCERES DE LIMPIEZA">ENCERES DE LIMPIEZA</option>
-                        <option value="MATERIALES ELECTRÓNICOS">MATERIALES ELECTRÓNICOS</option>
-                        <option value="MATERIALES DE LIMPIEZA">MATERIALES DE LIMPIEZA</option>
-                        <option value="ÚTILES DE OFICINA">ÚTILES DE OFICINA</option>
-                        <option value="OTROS">OTROS</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="newProductUnits">Unidades</label>
-                    <input type="number" id="newProductUnits" required min="0">
-                </div>
-                <div class="form-group">
-                    <button type="submit" id="saveNewProduct">Guardar</button>
-                </div>
-            </form>
+            <span class="close">&times;</span>
+            <h2>Agregar Nuevo Producto</h2>
+            <div class="form-group">
+                <label for="newProductName">Nombre del Producto</label>
+                <input type="text" id="newProductName">
+            </div>
+            <div class="form-group">
+                <label for="newProductCategory">Categoría</label>
+                <select id="newProductCategory">
+                    <option value="PAPELERÍA">PAPELERÍA</option>
+                    <option value="ALIMENTOS">ALIMENTOS</option>
+                    <option value="COMUNICACIÓN Y VIDEO">COMUNICACIÓN Y VIDEO</option>
+                    <option value="ENCESER DE OFICINA">ENCESER DE OFICINA</option>
+                    <option value="ENCERES DE LIMPIEZA">ENCERES DE LIMPIEZA</option>
+                    <option value="MATERIALES ELECTRÓNICOS">MATERIALES ELECTRÓNICOS</option>
+                    <option value="MATERIALES DE LIMPIEZA">MATERIALES DE LIMPIEZA</option>
+                    <option value="ÚTILES DE OFICINA">ÚTILES DE OFICINA</option>
+                    <option value="OTROS">OTROS</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="newProductUnits">Unidades</label>
+                <input type="number" id="newProductUnits">
+            </div>
+            <div class="form-group">
+                <button id="saveNewProduct">Guardar</button>
+            </div>
         </div>
     </div>
 
-    <div id="editForm" class="modal" aria-labelledby="editFormTitle" aria-modal="true" role="dialog">
+    <div id="editForm" class="modal">
         <div class="modal-content">
-            <h2 id="editFormTitle">Editar Producto</h2>
-            <button class="close" aria-label="Cerrar">&times;</button>
-            <form id="editProductForm">
-                <div class="form-group">
-                    <label for="editProductName">Nombre del Producto</label>
-                    <input type="text" id="editProductName" required>
-                </div>
-                <div class="form-group">
-                    <label for="editProductCategory">Categoría</label>
-                    <select id="editProductCategory" required>
-                        <option value="">Seleccione una categoría</option>
-                        <option value="PAPELERÍA">PAPELERÍA</option>
-                        <option value="ALIMENTOS">ALIMENTOS</option>
-                        <option value="COMUNICACIÓN Y VIDEO">COMUNICACIÓN Y VIDEO</option>
-                        <option value="ENCESER DE OFICINA">ENCESER DE OFICINA</option>
-                        <option value="ENCERES DE LIMPIEZA">ENCERES DE LIMPIEZA</option>
-                        <option value="MATERIALES ELECTRÓNICOS">MATERIALES ELECTRÓNICOS</option>
-                        <option value="MATERIALES DE LIMPIEZA">MATERIALES DE LIMPIEZA</option>
-                        <option value="ÚTILES DE OFICINA">ÚTILES DE OFICINA</option>
-                        <option value="OTROS">OTROS</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="editProductUnits">Unidades</label>
-                    <input type="number" id="editProductUnits" required min="0">
-                </div>
-                <div class="form-group">
-                    <button type="submit" id="saveEditProduct">Guardar</button>
-                </div>
-            </form>
+            <span class="close">&times;</span>
+            <h2>Editar Producto</h2>
+            <div class="form-group">
+                <label for="editProductName">Nombre del Producto</label>
+                <input type="text" id="editProductName">
+            </div>
+            <div class="form-group">
+                <label for="editProductCategory">Categoría</label>
+                <select id="editProductCategory">
+                    <option value="PAPELERÍA">PAPELERÍA</option>
+                    <option value="ALIMENTOS">ALIMENTOS</option>
+                    <option value="COMUNICACIÓN Y VIDEO">COMUNICACIÓN Y VIDEO</option>
+                    <option value="ENCESER DE OFICINA">ENCESER DE OFICINA</option>
+                    <option value="ENCERES DE LIMPIEZA">ENCERES DE LIMPIEZA</option>
+                    <option value="MATERIALES ELECTRÓNICOS">MATERIALES ELECTRÓNICOS</option>
+                    <option value="MATERIALES DE LIMPIEZA">MATERIALES DE LIMPIEZA</option>
+                    <option value="ÚTILES DE OFICINA">ÚTILES DE OFICINA</option>
+                    <option value="OTROS">OTROS</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="editProductUnits">Unidades</label>
+                <input type="number" id="editProductUnits">
+            </div>
+            <div class="form-group">
+                <button id="saveEditProduct">Guardar</button>
+            </div>
         </div>
     </div>
-
-    <div id="loadingIndicator" style="display: none;">Cargando...</div>
 
     <script src="main.js"></script>
 </body>
