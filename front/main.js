@@ -30,6 +30,7 @@ function loadInventoryDataWithRetry(retries = 3) {
             inventoryData = data;
             filteredData = inventoryData;
             renderTable();
+            updateCategoryButtons();
         })
         .catch(error => {
             console.error('Error al cargar los productos:', error);
@@ -88,6 +89,20 @@ function renderTable() {
     });
 }
 
+function updateCategoryButtons() {
+    const categories = [...new Set(inventoryData.map(item => item.categoria))];
+    const categoryButtonsContainer = document.getElementById('categoryButtons');
+    categoryButtonsContainer.innerHTML = '';
+    categories.forEach(category => {
+        const button = document.createElement('button');
+        button.className = 'category-btn';
+        button.textContent = category;
+        button.dataset.category = category;
+        button.addEventListener('click', (e) => filterByCategory(category));
+        categoryButtonsContainer.appendChild(button);
+    });
+}
+
 function getStatus(cantidad) {
     if (cantidad === 0) {
         return { class: 'status-red', icon: '↓' };
@@ -124,7 +139,7 @@ function validateProductData(product) {
         throw new Error('El nombre del producto no puede estar vacío');
     }
     if (!product.categoria || product.categoria.trim() === '') {
-        throw new Error('Debe seleccionar una categoría');
+        throw new Error('La categoría no puede estar vacía');
     }
     if (isNaN(product.cantidad) || product.cantidad < 0) {
         throw new Error('La cantidad debe ser un número no negativo');
@@ -134,12 +149,6 @@ function validateProductData(product) {
 
 document.getElementById('searchInput').addEventListener('input', (e) => {
     filterBySearch(e.target.value);
-});
-
-document.querySelectorAll('.category-btn').forEach(button => {
-    button.addEventListener('click', (e) => {
-        filterByCategory(e.target.dataset.category);
-    });
 });
 
 const passwordModal = document.getElementById('passwordModal');
@@ -186,6 +195,11 @@ function checkPassword() {
 
 function showAddForm() {
     addForm.style.display = 'block';
+    const categorySelect = document.getElementById('newProductCategory');
+    const categories = [...new Set(inventoryData.map(item => item.categoria))];
+    categorySelect.innerHTML = categories.map(category => 
+        `<option value="${category}">${category}</option>`
+    ).join('');
 }
 
 function showEditForm(index) {
@@ -194,6 +208,12 @@ function showEditForm(index) {
     document.getElementById('editProductCategory').value = item.categoria;
     document.getElementById('editProductUnits').value = item.cantidad;
     editForm.style.display = 'block';
+
+    const categorySelect = document.getElementById('editProductCategory');
+    const categories = [...new Set(inventoryData.map(item => item.categoria))];
+    categorySelect.innerHTML = categories.map(category => 
+        `<option value="${category}" ${item.categoria === category ? 'selected' : ''}>${category}</option>`
+    ).join('');
 }
 
 function deleteProduct(index) {
@@ -207,7 +227,7 @@ function deleteProduct(index) {
             return response.json();
         })
         .then(data => {
-            loadInventoryDataWithRetry(); // Recargar los datos después de eliminar
+            loadInventoryDataWithRetry();
         })
         .catch(error => {
             console.error('Error al eliminar el producto:', error);
@@ -248,7 +268,7 @@ document.getElementById('newProductForm').addEventListener('submit', (e) => {
         return response.json();
     })
     .then(data => {
-        loadInventoryDataWithRetry(); // Recargar los datos después de agregar
+        loadInventoryDataWithRetry();
         closeModal();
     })
     .catch(error => {
@@ -291,7 +311,7 @@ document.getElementById('editProductForm').addEventListener('submit', (e) => {
         return response.json();
     })
     .then(data => {
-        loadInventoryDataWithRetry(); // Recargar los datos después de editar
+        loadInventoryDataWithRetry();
         closeModal();
     })
     .catch(error => {
