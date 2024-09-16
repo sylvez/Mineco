@@ -30,7 +30,6 @@ db.connect(err => {
 });
 
 // Rutas para servir el HTML
-
 app.get('/mantenimiento', (req, res) => {
     res.sendFile(path.join(__dirname, 'front', 'stop.html'));
 });
@@ -38,7 +37,6 @@ app.get('/mantenimiento', (req, res) => {
 app.get('/registro2', (req, res) => {
     res.sendFile(path.join(__dirname, 'front', 'regis.html'));
 });
-
 
 app.get('/registro', (req, res) => {
     res.sendFile(path.join(__dirname, 'front', 'registro.html'));
@@ -76,45 +74,44 @@ app.get('/', (req, res) => {
 
 app.post('/api/productos', (req, res) => {
     const { categoria, nombre_producto, cantidad } = req.body;
-    const query = 'INSERT INTO productos (categoria, nombre_producto, cantidad) VALUES (?, ?, ?)';
+    const consulta = 'INSERT INTO productos (categoria, nombre_producto, cantidad) VALUES (?, ?, ?)';
 
-    db.query(query, [categoria, nombre_producto, cantidad], (err, result) => {
+    db.query(consulta, [categoria, nombre_producto, cantidad], (err, resultado) => {
         if (err) {
             console.error('Error al agregar producto:', err);
             return res.status(500).json({ error: 'Error al agregar producto' });
         }
-        res.status(201).json({ id: result.insertId, categoria, nombre_producto, cantidad });
+        res.status(201).json({ id: resultado.insertId, categoria, nombre_producto, cantidad });
     });
 });
 
 app.delete('/api/productos/:id', (req, res) => {
     const { id } = req.params;
-    const query = 'DELETE FROM productos WHERE id = ?';
+    const consulta = 'DELETE FROM productos WHERE id = ?';
 
-    db.query(query, [id], (err, result) => {
+    db.query(consulta, [id], (err, resultado) => {
         if (err) {
             console.error('Error al eliminar producto:', err);
             return res.status(500).json({ error: 'Error al eliminar producto' });
         }
-        if (result.affectedRows === 0) {
+        if (resultado.affectedRows === 0) {
             return res.status(404).json({ error: 'Producto no encontrado' });
         }
-        res.status(200).json({ message: 'Producto eliminado' });
+        res.status(200).json({ mensaje: 'Producto eliminado' });
     });
 });
-
 
 app.put('/api/productos/:id', (req, res) => {
     const { id } = req.params;
     const { categoria, nombre_producto, cantidad } = req.body;
-    const query = 'UPDATE productos SET categoria = ?, nombre_producto = ?, cantidad = ? WHERE id = ?';
+    const consulta = 'UPDATE productos SET categoria = ?, nombre_producto = ?, cantidad = ? WHERE id = ?';
 
-    db.query(query, [categoria, nombre_producto, cantidad, id], (err, result) => {
+    db.query(consulta, [categoria, nombre_producto, cantidad, id], (err, resultado) => {
         if (err) {
             console.error('Error al actualizar producto:', err);
             return res.status(500).json({ error: 'Error al actualizar producto' });
         }
-        if (result.affectedRows === 0) {
+        if (resultado.affectedRows === 0) {
             return res.status(404).json({ error: 'Producto no encontrado' });
         }
         res.status(200).json({ id, categoria, nombre_producto, cantidad });
@@ -122,20 +119,19 @@ app.put('/api/productos/:id', (req, res) => {
 });
 
 app.get('/api/productos', (req, res) => {
-    const query = 'SELECT * FROM productos';
+    const consulta = 'SELECT * FROM productos';
 
-    db.query(query, (err, results) => {
+    db.query(consulta, (err, resultados) => {
         if (err) {
             console.error('Error al obtener productos:', err);
             return res.status(500).json({ error: 'Error al obtener productos' });
         }
-        res.status(200).json(results);
+        res.status(200).json(resultados);
     });
 });
 
-
 // Iniciar el servidor
-const PORT = process.env.PORT || 3000; // Usa el puerto proporcionado por Heroku o 3000 por defecto
-app.listen(PORT, () => {
-    console.log(`Servidor corriendo en el puerto ${PORT}`);
+const PUERTO = process.env.PORT || 3000; // Usa el puerto proporcionado por Heroku o 3000 por defecto
+app.listen(PUERTO, () => {
+    console.log(`Servidor corriendo en el puerto ${PUERTO}`);
 });
