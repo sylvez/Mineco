@@ -5,6 +5,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
+const { URL } = require('url');
 
 // Configurar middlewares
 app.use(cors());
@@ -14,12 +15,15 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'front')));
 
 // Conexión a la base de datos
+const databaseUrl = process.env.DATABASE_URL;
+const parsedUrl = new URL(databaseUrl);
+
 const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT
+    host: parsedUrl.hostname,
+    user: parsedUrl.username,
+    password: parsedUrl.password,
+    database: parsedUrl.pathname.slice(1),
+    port: parsedUrl.port
 });
 
 db.connect(err => {
