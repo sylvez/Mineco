@@ -3,15 +3,47 @@ let filteredData = [];
 let currentAction = '';
 let currentEditIndex = -1;
 
-function loadInventoryData() {
+function showLoadingIndicator() {
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    if (loadingIndicator) {
+        loadingIndicator.style.display = 'block';
+    }
+}
+
+function hideLoadingIndicator() {
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    if (loadingIndicator) {
+        loadingIndicator.style.display = 'none';
+    }
+}
+
+function loadInventoryDataWithRetry(retries = 3) {
+    showLoadingIndicator();
     fetch('/api/productos')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             inventoryData = data;
             filteredData = inventoryData;
             renderTable();
         })
-        .catch(error => console.error('Error al cargar los productos:', error));
+        .catch(error => {
+            console.error('Error al cargar los productos:', error);
+            if (retries > 0) {
+                console.log(`Reintentando cargar datos. Intentos restantes: ${retries - 1}`);
+                setTimeout(() => loadInventoryDataWithRetry(retries - 1), 2000);
+            } else {
+                console.error('No se pudieron cargar los datos después de varios intentos');
+                alert('No se pudieron cargar los productos. Por favor, recargue la página.');
+            }
+        })
+        .finally(() => {
+            hideLoadingIndicator();
+        });
 }
 
 function renderTable() {
@@ -87,6 +119,19 @@ function filterBySearch(searchTerm) {
     renderTable();
 }
 
+function validateProductData(product) {
+    if (!product.nombre_producto || product.nombre_producto.trim() === '') {
+        throw new Error('El nombre del producto no puede estar vacío');
+    }
+    if (!product.categoria || product.categoria.trim() === '') {
+        throw new Error('Debe seleccionar una categoría');
+    }
+    if (isNaN(product.cantidad) || product.cantidad < 0) {
+        throw new Error('La cantidad debe ser un número no negativo');
+    }
+    return true;
+}
+
 document.getElementById('searchInput').addEventListener('input', (e) => {
     filterBySearch(e.target.value);
 });
@@ -153,20 +198,42 @@ function showEditForm(index) {
 
 function deleteProduct(index) {
     const productId = filteredData[index].id;
+    showLoadingIndicator();
     fetch(`/api/productos/${productId}`, { method: 'DELETE' })
-        .then(response => response.json())
-        .then(data => {
-            loadInventoryData(); // Recargar los datos después de eliminar
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
         })
-        .catch(error => console.error('Error al eliminar el producto:', error));
+        .then(data => {
+            loadInventoryDataWithRetry(); // Recargar los datos después de eliminar
+        })
+        .catch(error => {
+            console.error('Error al eliminar el producto:', error);
+            alert('No se pudo eliminar el producto. Por favor, intente de nuevo.');
+        })
+        .finally(() => {
+            hideLoadingIndicator();
+        });
 }
 
-document.getElementById('saveNewProduct').addEventListener('click', () => {
+document.getElementById('newProductForm').addEventListener('submit', (e) => {
+    e.preventDefault();
     const newProduct = {
         nombre_producto: document.getElementById('newProductName').value,
         categoria: document.getElementById('newProductCategory').value,
         cantidad: parseInt(document.getElementById('newProductUnits').value)
     };
+    
+    try {
+        validateProductData(newProduct);
+    } catch (error) {
+        alert(error.message);
+        return;
+    }
+
+    showLoadingIndicator();
     fetch('/api/productos', {
         method: 'POST',
         headers: {
@@ -174,21 +241,42 @@ document.getElementById('saveNewProduct').addEventListener('click', () => {
         },
         body: JSON.stringify(newProduct)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
-        loadInventoryData(); // Recargar los datos después de agregar
+        loadInventoryDataWithRetry(); // Recargar los datos después de agregar
         closeModal();
     })
-    .catch(error => console.error('Error al agregar el producto:', error));
+    .catch(error => {
+        console.error('Error al agregar el producto:', error);
+        alert('No se pudo agregar el producto. Por favor, intente de nuevo.');
+    })
+    .finally(() => {
+        hideLoadingIndicator();
+    });
 });
 
-document.getElementById('saveEditProduct').addEventListener('click', () => {
+document.getElementById('editProductForm').addEventListener('submit', (e) => {
+    e.preventDefault();
     const editedProduct = {
         nombre_producto: document.getElementById('editProductName').value,
         categoria: document.getElementById('editProductCategory').value,
         cantidad: parseInt(document.getElementById('editProductUnits').value)
     };
+
+    try {
+        validateProductData(editedProduct);
+    } catch (error) {
+        alert(error.message);
+        return;
+    }
+
     const productId = filteredData[currentEditIndex].id;
+    showLoadingIndicator();
     fetch(`/api/productos/${productId}`, {
         method: 'PUT',
         headers: {
@@ -196,12 +284,25 @@ document.getElementById('saveEditProduct').addEventListener('click', () => {
         },
         body: JSON.stringify(editedProduct)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
-        loadInventoryData(); // Recargar los datos después de editar
+        loadInventoryDataWithRetry(); // Recargar los datos después de editar
         closeModal();
     })
-    .catch(error => console.error('Error al editar el producto:', error));
+    .catch(error => {
+        console.error('Error al editar el producto:', error);
+        alert('No se pudo editar el producto. Por favor, intente de nuevo.');
+    })
+    .finally(() => {
+        hideLoadingIndicator();
+    });
 });
 
-loadInventoryData();
+document.addEventListener('DOMContentLoaded', () => {
+    loadInventoryDataWithRetry();
+});
