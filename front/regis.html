@@ -14,24 +14,40 @@
         h1 {
             text-align: center;
         }
-        .categories {
+        .categories, .status-buttons {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 20px;
         }
-        .category-btn {
+        .category-btn, .status-btn {
             padding: 10px;
-            background-color: #e0e0e0;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             flex-grow: 1;
             text-align: center;
         }
+        .category-btn {
+            background-color: #e0e0e0;
+        }
+        .category-btn.active, .status-btn.active {
+            color: white;
+        }
         .category-btn.active {
             background-color: #007bff;
+        }
+        .status-btn-disponible {
+            background-color: #28a745;
             color: white;
+        }
+        .status-btn-agotado {
+            background-color: #dc3545;
+            color: white;
+        }
+        .status-btn-bajo {
+            background-color: #ffc107;
+            color: black;
         }
         #searchInput {
             width: 100%;
@@ -60,15 +76,15 @@
             cursor: pointer;
         }
         .status-red {
-            color: red;
+            color: #dc3545;
             font-weight: bold;
         }
         .status-yellow {
-            color: orange;
+            color: #ffc107;
             font-weight: bold;
         }
         .status-green {
-            color: green;
+            color: #28a745;
             font-weight: bold;
         }
         .modal {
@@ -127,6 +143,12 @@
 
     <div class="categories" id="categoryButtons"></div>
 
+    <div class="status-buttons">
+        <button class="status-btn status-btn-disponible" data-status="disponible">Disponible</button>
+        <button class="status-btn status-btn-agotado" data-status="agotado">Agotado</button>
+        <button class="status-btn status-btn-bajo" data-status="bajo">Bajo</button>
+    </div>
+
     <table id="inventoryTable">
         <thead>
             <tr>
@@ -163,6 +185,11 @@
     <script>
         let inventoryData = [];
         let categories = new Set();
+        let currentFilter = {
+            category: null,
+            status: null,
+            search: ''
+        };
 
         // Fetch data from the API
         fetch('/api/productos')
@@ -220,20 +247,56 @@
             buttons.forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
 
-            const filteredData = inventoryData.filter(item => item.categoria === category);
-            renderTable(filteredData);
+            currentFilter.category = category;
+            applyFilters();
+        }
+
+        function filterByStatus(status) {
+            const buttons = document.querySelectorAll('.status-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            currentFilter.status = status;
+            applyFilters();
         }
 
         function filterBySearch(searchTerm) {
-            const filteredData = inventoryData.filter(item =>
-                item.nombre_producto.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                item.id.toString().includes(searchTerm)
-            );
+            currentFilter.search = searchTerm.toLowerCase();
+            applyFilters();
+        }
+
+        function applyFilters() {
+            let filteredData = inventoryData;
+
+            if (currentFilter.category) {
+                filteredData = filteredData.filter(item => item.categoria === currentFilter.category);
+            }
+
+            if (currentFilter.status) {
+                filteredData = filteredData.filter(item => {
+                    const status = getStatus(item.cantidad);
+                    return status.text.toLowerCase() === currentFilter.status;
+                });
+            }
+
+            if (currentFilter.search) {
+                filteredData = filteredData.filter(item =>
+                    item.nombre_producto.toLowerCase().includes(currentFilter.search) ||
+                    item.id.toString().includes(currentFilter.search)
+                );
+            }
+
             renderTable(filteredData);
         }
 
         document.getElementById('searchInput').addEventListener('input', (e) => {
             filterBySearch(e.target.value);
+        });
+
+        document.querySelectorAll('.status-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                filterByStatus(e.target.dataset.status);
+            });
         });
 
         // Función para abrir el modal
