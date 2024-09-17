@@ -123,7 +123,12 @@ function getDescription(producto) {
 
 function filterByCategory(category) {
     console.log('Filtrando por categoría:', category);
-    filteredData = inventoryData.filter(item => item.categoria.trim().toUpperCase() === category.trim().toUpperCase());
+    filteredData = inventoryData.filter(item => {
+        const itemCategory = item.categoria.trim().toUpperCase();
+        const selectedCategory = category.trim().toUpperCase();
+        console.log(`Comparando: "${itemCategory}" con "${selectedCategory}"`);
+        return itemCategory === selectedCategory;
+    });
     console.log('Datos filtrados:', filteredData);
     renderTable();
 }
@@ -322,6 +327,32 @@ document.getElementById('saveEditProduct').addEventListener('click', (e) => {
     });
 });
 
+function populateCategoryDropdowns() {
+    const categories = [
+        "PAPELERIA",
+        "ALIMENTOS",
+        "COMUNICACION Y VIDEO",
+        "ENCER DE OFICINA",
+        "ENCER DE LIMPIEZA",
+        "MATERIALES ELECTRONICOS",
+        "MATERIALES DE LIMPIEZA",
+        "UTILES DE OFICINA",
+        "OTROS"
+    ];
+
+    const newProductCategory = document.getElementById('newProductCategory');
+    const editProductCategory = document.getElementById('editProductCategory');
+
+    categories.forEach(category => {
+        newProductCategory.innerHTML += `<option value="${category}">${category}</option>`;
+        editProductCategory.innerHTML += `<option value="${category}">${category}</option>`;
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     loadInventoryDataWithRetry();
+    populateCategoryDropdowns();
 });
+
+
+
