@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventario y Pronóstico</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -32,6 +34,20 @@
             padding: 10px;
             font-size: 16px;
         }
+        #printPdfButton {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #printPdfButton:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -41,6 +57,7 @@
         <div id="chartContainer">
             <canvas id="inventoryChart"></canvas>
         </div>
+        <button id="printPdfButton">Imprimir PDF</button>
     </div>
 
     <script>
@@ -88,10 +105,17 @@
             createChart(filteredData);
         }
 
+        function getColor(quantity) {
+            if (quantity === 0) return 'rgba(255, 0, 0, 0.8)'; // Red
+            if (quantity <= 10) return 'rgba(255, 255, 0, 0.8)'; // Yellow
+            return 'rgba(0, 255, 0, 0.8)'; // Green
+        }
+
         function createChart(data) {
             const ctx = document.getElementById('inventoryChart').getContext('2d');
             const labels = data.map(item => item.nombre_producto);
             const quantities = data.map(item => item.cantidad);
+            const backgroundColors = data.map(item => getColor(item.cantidad));
 
             if (chart) {
                 chart.destroy();
@@ -104,8 +128,8 @@
                     datasets: [{
                         label: 'Cantidad en inventario',
                         data: quantities,
-                        backgroundColor: 'rgba(75, 192, 192, 0.8)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: backgroundColors,
+                        borderColor: 'rgba(0, 0, 0, 1)',
                         borderWidth: 1
                     }]
                 },
@@ -147,6 +171,62 @@
                     }
                 }
             });
+        }
+
+        document.getElementById('printPdfButton').addEventListener('click', generatePDF);
+
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            let yOffset = 20;
+
+            categories.forEach((category, index) => {
+                if (index > 0) {
+                    doc.addPage();
+                    yOffset = 20;
+                }
+
+                doc.setFontSize(16);
+                doc.text(category, 14, yOffset);
+                yOffset += 10;
+
+                const categoryData = inventoryData.filter(item => item.categoria === category);
+                
+                // Create table data
+                const tableData = categoryData.map(item => [
+                    item.nombre_producto,
+                    item.cantidad.toString(),
+                    item.cantidad === 0 ? 'Agotado' : (item.cantidad <= 10 ? 'Bajo' : 'Disponible')
+                ]);
+
+                // Add table to PDF
+                doc.autoTable({
+                    head: [['Producto', 'Cantidad', 'Estado']],
+                    body: tableData,
+                    startY: yOffset,
+                    styles: { fontSize: 8 },
+                    columnStyles: {
+                        0: { cellWidth: 100 },
+                        1: { cellWidth: 30 },
+                        2: { cellWidth: 30 }
+                    },
+                    didDrawCell: (data) => {
+                        if (data.section === 'body' && data.column.index === 1) {
+                            const quantity = parseInt(data.cell.raw);
+                            const color = getColor(quantity);
+                            doc.setFillColor(color);
+                            doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, 'F');
+                            doc.setTextColor(0, 0, 0);
+                            doc.text(data.cell.raw.toString(), data.cell.x + data.cell.width / 2, data.cell.y + data.cell.height / 2, { align: 'center', baseline: 'middle' });
+                        }
+                    }
+                });
+
+                yOffset = doc.lastAutoTable.finalY + 20;
+            });
+
+            doc.save('inventario.pdf');
         }
     </script>
 </body>
