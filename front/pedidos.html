@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pedidos</title>
+    <title>Historial de Pedidos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -55,24 +55,8 @@
 </head>
 <body>
     <div class="container">
-        <h1>Gestión de Pedidos</h1>
-        <form id="pedido-form">
-            <div class="mb-3">
-                <label for="producto_id" class="form-label">ID del Producto</label>
-                <input type="number" class="form-control" id="producto_id" required>
-            </div>
-            <div class="mb-3">
-                <label for="nombre_producto" class="form-label">Nombre del Producto</label>
-                <input type="text" class="form-control" id="nombre_producto" required>
-            </div>
-            <div class="mb-3">
-                <label for="cantidad" class="form-label">Cantidad</label>
-                <input type="number" class="form-control" id="cantidad" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Agregar Pedido</button>
-        </form>
-
-        <table id="pedidos-table" class="mt-4">
+        <h1>Historial de Pedidos</h1>
+        <table id="pedidos-table">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -80,7 +64,6 @@
                     <th>Nombre del Producto</th>
                     <th>Cantidad</th>
                     <th>Fecha de Solicitud</th>
-                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -92,30 +75,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             fetchPedidos();
-
-            // Manejo del formulario para agregar un nuevo pedido
-            document.getElementById('pedido-form').addEventListener('submit', (event) => {
-                event.preventDefault();
-                const producto_id = document.getElementById('producto_id').value;
-                const nombre_producto = document.getElementById('nombre_producto').value;
-                const cantidad = document.getElementById('cantidad').value;
-
-                fetch('/api/pedidos', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ producto_id, nombre_producto, cantidad }),
-                })
-                .then(response => response.json())
-                .then(() => {
-                    fetchPedidos();
-                    document.getElementById('pedido-form').reset();
-                })
-                .catch(error => {
-                    console.error('Error al agregar pedido:', error);
-                });
-            });
         });
 
         function fetchPedidos() {
@@ -134,9 +93,6 @@
                             <td>${pedido.nombre_producto}</td>
                             <td>${pedido.cantidad}</td>
                             <td>${new Date(pedido.fecha_solicitud).toLocaleString()}</td>
-                            <td>
-                                <button class="btn btn-danger btn-sm" onclick="deletePedido(${pedido.id})">Eliminar</button>
-                            </td>
                         `;
 
                         tableBody.appendChild(row);
@@ -145,19 +101,6 @@
                 .catch(error => {
                     console.error('Error al obtener pedidos:', error);
                 });
-        }
-
-        function deletePedido(id) {
-            fetch(`/api/pedidos/${id}`, {
-                method: 'DELETE',
-            })
-            .then(response => response.json())
-            .then(() => {
-                fetchPedidos();
-            })
-            .catch(error => {
-                console.error('Error al eliminar pedido:', error);
-            });
         }
     </script>
 </body>

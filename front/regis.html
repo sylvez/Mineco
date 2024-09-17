@@ -88,7 +88,15 @@
             padding: 20px;
             border-radius: 5px;
             width: 300px;
-            text-align: center;
+        }
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .modal-form input[type="number"] {
+            width: 100%;
+            padding: 5px;
         }
         .modal-buttons {
             display: flex;
@@ -137,12 +145,18 @@
     <!-- Modal para confirmar pedido -->
     <div id="orderModal" class="modal">
         <div class="modal-content">
-            <p id="modalText">¿Quieres pedir este producto?</p>
-            <p>Mandanos<strong> tu solicitud</strong> para solicitarlo.</p>
-            <div class="modal-buttons">
-                <button class="confirm">Sí</button>
-                <button class="cancel">Cancelar</button>
-            </div>
+            <h2>Realizar Pedido</h2>
+            <form id="orderForm" class="modal-form">
+                <input type="hidden" id="producto_id" name="producto_id">
+                <label for="nombre_producto">Producto:</label>
+                <input type="text" id="nombre_producto" name="nombre_producto" readonly>
+                <label for="cantidad">Cantidad:</label>
+                <input type="number" id="cantidad" name="cantidad" min="1" required>
+                <div class="modal-buttons">
+                    <button type="submit" class="confirm">Confirmar Pedido</button>
+                    <button type="button" class="cancel">Cancelar</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -179,7 +193,7 @@
             data.forEach((item) => {
                 const status = getStatus(item.cantidad);
                 const row = `
-                    <tr onclick="openOrderModal('${item.nombre_producto}')">
+                    <tr onclick="openOrderModal(${item.id}, '${item.nombre_producto}')">
                         <td>${item.id}</td>
                         <td>${item.categoria}</td>
                         <td>${item.nombre_producto}</td>
@@ -223,10 +237,14 @@
         });
 
         // Función para abrir el modal
-        function openOrderModal(producto) {
+        function openOrderModal(productId, productName) {
             const modal = document.getElementById('orderModal');
-            const modalText = document.getElementById('modalText');
-            modalText.textContent = `¿Quieres pedir el producto: ${producto}?`;
+            const form = document.getElementById('orderForm');
+            
+            document.getElementById('producto_id').value = productId;
+            document.getElementById('nombre_producto').value = productName;
+            document.getElementById('cantidad').value = 1;
+
             modal.style.display = 'flex';
 
             // Cerrar modal en cancelar
@@ -234,10 +252,37 @@
                 modal.style.display = 'none';
             });
 
-            // Cerrar modal al confirmar
-            document.querySelector('.confirm').addEventListener('click', () => {
-                alert('Puedes pedir el producto escribiendo a Aflopezu@mineco.gob.gt');
-                modal.style.display = 'none';
+            // Manejar el envío del formulario
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                submitOrder();
+            };
+        }
+
+        // Función para enviar el pedido
+        function submitOrder() {
+            const formData = new FormData(document.getElementById('orderForm'));
+            const orderData = {
+                producto_id: formData.get('producto_id'),
+                nombre_producto: formData.get('nombre_producto'),
+                cantidad: formData.get('cantidad')
+            };
+
+            fetch('/api/pedidos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(`Pedido realizado con éxito. ID del pedido: ${data.id}`);
+                document.getElementById('orderModal').style.display = 'none';
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Hubo un error al realizar el pedido. Por favor, intente nuevamente.');
             });
         }
     </script>
