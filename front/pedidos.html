@@ -58,10 +58,11 @@
             margin-top: 20px;
         }
 
-        .btn-confirmado {
+        .btn-confirmado, .btn-denegar {
             margin: 0;
             padding: 5px 10px;
             font-size: 12px;
+            margin-right: 5px;
         }
     </style>
 </head>
@@ -108,7 +109,10 @@
                             <td>${pedido.nombre_producto}</td>
                             <td>${pedido.cantidad}</td>
                             <td>${new Date(pedido.fecha_solicitud).toLocaleString()}</td>
-                            <td><button class="btn btn-success btn-confirmado" data-id="${pedido.id}">Confirmado</button></td>
+                            <td>
+                                <button class="btn btn-success btn-confirmado" data-id="${pedido.id}">Confirmado</button>
+                                <button class="btn btn-danger btn-denegar" data-id="${pedido.id}">Denegar</button>
+                            </td>
                         `;
 
                         tableBody.appendChild(row);
@@ -116,6 +120,13 @@
 
                     // Añadir eventos a los botones
                     document.querySelectorAll('.btn-confirmado').forEach(button => {
+                        button.addEventListener('click', () => {
+                            const id = button.getAttribute('data-id');
+                            deletePedido(id, button);
+                        });
+                    });
+
+                    document.querySelectorAll('.btn-denegar').forEach(button => {
                         button.addEventListener('click', () => {
                             const id = button.getAttribute('data-id');
                             deletePedido(id, button);
