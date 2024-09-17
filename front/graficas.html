@@ -106,9 +106,9 @@
         }
 
         function getColor(quantity) {
-            if (quantity === 0) return 'rgba(255, 0, 0, 0.8)'; // Red
-            if (quantity <= 10) return 'rgba(255, 255, 0, 0.8)'; // Yellow
-            return 'rgba(0, 255, 0, 0.8)'; // Green
+            if (quantity === 0) return '#FF0000'; // Red
+            if (quantity <= 10) return '#FFFF00'; // Yellow
+            return '#00FF00'; // Green
         }
 
         function createChart(data) {
@@ -129,7 +129,7 @@
                         label: 'Cantidad en inventario',
                         data: quantities,
                         backgroundColor: backgroundColors,
-                        borderColor: 'rgba(0, 0, 0, 1)',
+                        borderColor: '#000000',
                         borderWidth: 1
                     }]
                 },
@@ -207,7 +207,7 @@
                     startY: yOffset,
                     styles: { fontSize: 8 },
                     columnStyles: {
-                        0: { cellWidth: 100 },
+                        0: { cellWidth: 80 },
                         1: { cellWidth: 30 },
                         2: { cellWidth: 30 }
                     },
@@ -215,7 +215,7 @@
                         if (data.section === 'body' && data.column.index === 1) {
                             const quantity = parseInt(data.cell.raw);
                             const color = getColor(quantity);
-                            doc.setFillColor(color);
+                            doc.setFillColor(...hexToRgb(color));
                             doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, 'F');
                             doc.setTextColor(0, 0, 0);
                             doc.text(data.cell.raw.toString(), data.cell.x + data.cell.width / 2, data.cell.y + data.cell.height / 2, { align: 'center', baseline: 'middle' });
@@ -227,6 +227,23 @@
             });
 
             doc.save('inventario.pdf');
+        }
+
+        function hexToRgb(hex) {
+            let r = 0, g = 0, b = 0;
+            // 3 digits
+            if (hex.length === 4) {
+                r = parseInt(hex[1] + hex[1], 16);
+                g = parseInt(hex[2] + hex[2], 16);
+                b = parseInt(hex[3] + hex[3], 16);
+            }
+            // 6 digits
+            else if (hex.length === 7) {
+                r = parseInt(hex[1] + hex[2], 16);
+                g = parseInt(hex[3] + hex[4], 16);
+                b = parseInt(hex[5] + hex[6], 16);
+            }
+            return [r, g, b];
         }
     </script>
 </body>
