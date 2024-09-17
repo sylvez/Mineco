@@ -12,6 +12,7 @@
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
         }
+
         .container {
             width: 80%;
             margin: 0 auto;
@@ -20,39 +21,47 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
         }
+
         h1 {
             text-align: center;
             color: #333;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
+
         table, th, td {
             border: 1px solid #ddd;
         }
+
         th, td {
             padding: 12px;
             text-align: left;
         }
+
         thead {
             background-color: #f4f4f4;
         }
+
         tbody tr:nth-child(even) {
             background-color: #f9f9f9;
         }
+
         tbody tr:hover {
             background-color: #e9e9e9;
         }
+
         #printButton {
             margin-top: 20px;
         }
-        .btn-confirmado, .btn-denegar {
+
+        .btn-confirmado {
             margin: 0;
             padding: 5px 10px;
             font-size: 12px;
-            margin-right: 5px;
         }
     </style>
 </head>
@@ -99,10 +108,7 @@
                             <td>${pedido.nombre_producto}</td>
                             <td>${pedido.cantidad}</td>
                             <td>${new Date(pedido.fecha_solicitud).toLocaleString()}</td>
-                            <td>
-                                <button class="btn btn-success btn-confirmado" data-id="${pedido.id}">Confirmar</button>
-                                <button class="btn btn-danger btn-denegar" data-id="${pedido.id}">Denegar</button>
-                            </td>
+                            <td><button class="btn btn-success btn-confirmado" data-id="${pedido.id}">Confirmado</button></td>
                         `;
 
                         tableBody.appendChild(row);
@@ -112,14 +118,7 @@
                     document.querySelectorAll('.btn-confirmado').forEach(button => {
                         button.addEventListener('click', () => {
                             const id = button.getAttribute('data-id');
-                            confirmPedido(id);
-                        });
-                    });
-
-                    document.querySelectorAll('.btn-denegar').forEach(button => {
-                        button.addEventListener('click', () => {
-                            const id = button.getAttribute('data-id');
-                            denegarPedido(id);
+                            deletePedido(id, button);
                         });
                     });
                 })
@@ -128,47 +127,24 @@
                 });
         }
 
-        function confirmPedido(id) {
-            fetch(`/api/pedidos/${id}/confirmar`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+        function deletePedido(id, button) {
+            fetch(`/api/pedidos/${id}`, {
+                method: 'DELETE',
             })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Confirmar pedido:', data); // Añade este log
-                if (data.message) {
-                    fetchPedidos(); // Refrescar la tabla
+            .then(response => {
+                if (response.ok) {
+                    button.closest('tr').remove(); // Eliminar la fila de la tabla
                 } else {
-                    console.error('Error al confirmar el pedido:', data.error);
+                    return response.json().then(data => {
+                        console.error('Error al eliminar el pedido:', data.error);
+                    });
                 }
             })
             .catch(error => {
-                console.error('Error al confirmar el pedido:', error);
+                console.error('Error al eliminar el pedido:', error);
             });
         }
-        
-        function denegarPedido(id) {
-            fetch(`/api/pedidos/${id}/denegar`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Denegar pedido:', data); // Añade este log
-                if (data.message) {
-                    fetchPedidos(); // Refrescar la tabla
-                } else {
-                    console.error('Error al denegar el pedido:', data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error al denegar el pedido:', error);
-            });
-        }
+
         function generatePDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
