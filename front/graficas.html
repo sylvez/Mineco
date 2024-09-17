@@ -80,63 +80,18 @@
             updateChart('all');
         }
 
-        function calculateConsumption(data) {
-            return data.map(item => ({
-                ...item,
-                consumption: item.existencia31Jul - item.existencia31Aug,
-                currentStock: item.existencia31Aug
-            }));
-        }
-
-        function forecastInventory(data) {
-            const months = ['Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-            return data.map(item => {
-                const monthlyForecast = months.map((month, index) => {
-                    const projectedStock = Math.max(0, item.currentStock - item.consumption * (index + 1));
-                    let status;
-                    if (projectedStock === 0) {
-                        status = 'red';
-                    } else if (projectedStock < item.consumption * (4 - index)) {
-                        status = 'yellow';
-                    } else {
-                        status = 'green';
-                    }
-                    return { month, projectedStock, status };
-                });
-                return { ...item, forecast: monthlyForecast };
-            });
-        }
-
         function updateChart(selectedCategory) {
             const filteredData = selectedCategory === 'all' 
                 ? inventoryData 
                 : inventoryData.filter(item => item.categoria === selectedCategory);
 
-            const consumptionData = calculateConsumption(filteredData);
-            const forecastData = forecastInventory(consumptionData);
-
-            createChart(forecastData);
+            createChart(filteredData);
         }
 
         function createChart(data) {
             const ctx = document.getElementById('inventoryChart').getContext('2d');
-            const labels = ['Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-            const datasets = data.map(item => ({
-                label: item.nombre_producto,
-                data: [item.currentStock, ...item.forecast.map(f => f.projectedStock)],
-                backgroundColor: [
-                    'rgba(75, 192, 192, 0.8)',
-                    ...item.forecast.map(f => {
-                        switch (f.status) {
-                            case 'red': return 'rgba(255, 0, 0, 0.8)';
-                            case 'yellow': return 'rgba(255, 255, 0, 0.8)';
-                            case 'green': return 'rgba(144, 238, 144, 0.8)';
-                        }
-                    })
-                ],
-                borderColor: 'rgba(0, 0, 0, 1)',
-                borderWidth: 1
-            }));
+            const labels = data.map(item => item.nombre_producto);
+            const quantities = data.map(item => item.cantidad);
 
             if (chart) {
                 chart.destroy();
@@ -146,7 +101,13 @@
                 type: 'bar',
                 data: {
                     labels: labels,
-                    datasets: datasets
+                    datasets: [{
+                        label: 'Cantidad en inventario',
+                        data: quantities,
+                        backgroundColor: 'rgba(75, 192, 192, 0.8)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
                 },
                 options: {
                     responsive: true,
@@ -156,26 +117,30 @@
                             beginAtZero: true,
                             title: {
                                 display: true,
-                                text: 'Cantidad en inventario'
+                                text: 'Cantidad'
                             }
                         },
                         x: {
                             title: {
                                 display: true,
-                                text: 'Meses'
+                                text: 'Productos'
+                            },
+                            ticks: {
+                                autoSkip: false,
+                                maxRotation: 90,
+                                minRotation: 90
                             }
                         }
                     },
                     plugins: {
                         legend: {
-                            display: false
+                            display: true,
+                            position: 'top'
                         },
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    const label = context.dataset.label || '';
-                                    const value = context.parsed.y;
-                                    return `${label}: ${value}`;
+                                    return `Cantidad: ${context.parsed.y}`;
                                 }
                             }
                         }
