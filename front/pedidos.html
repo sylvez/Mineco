@@ -108,7 +108,7 @@
                             <td>${pedido.cantidad}</td>
                             <td>${new Date(pedido.fecha_solicitud).toLocaleString()}</td>
                             <td class="action-buttons">
-                                <button class="btn btn-danger btn-sm" onclick="deletePedido(${pedido.id})">Eliminar</button>
+                                <button class="btn btn-danger btn-sm" onclick="denegarPedido(${pedido.id})">Denegar</button>
                                 <button class="btn btn-secondary btn-sm" onclick="confirmarPedido(${pedido.id})">Confirmar</button>
                             </td>
                         `;
@@ -139,7 +139,7 @@
             doc.save('historial_pedidos.pdf');
         }
 
-        function deletePedido(id) {
+        function denegarPedido(id) {
             fetch(`/api/pedidos/${id}/denegar`, {
                 method: 'PUT',
                 headers: {
@@ -148,16 +148,16 @@
             })
             .then(response => {
                 if (response.ok) {
-                    // Si la eliminación fue exitosa, actualiza la tabla
+                    alert('Pedido denegado correctamente');
                     fetchPedidos();
                 } else {
                     return response.json().then(data => {
-                        alert(data.error || 'Error al eliminar el pedido');
+                        alert(data.error || 'Error al denegar el pedido');
                     });
                 }
             })
             .catch(error => {
-                console.error('Error al eliminar el pedido:', error);
+                console.error('Error al denegar el pedido:', error);
             });
         }
 
@@ -185,5 +185,4 @@
     </script>
 </body>
 </html>
-
 
