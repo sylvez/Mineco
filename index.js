@@ -272,6 +272,18 @@ app.put('/api/pedidos/:id/denegar', (req, res) => {
         res.status(200).json({ message: 'Pedido denegado correctamente' });
     });
 });
+// API para obtener la bitácora de pedidos
+app.get('/api/bitacora_pedidos', (req, res) => {
+    const query = 'SELECT * FROM bitacora_pedidos ORDER BY fecha_cambio DESC';
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error al obtener la bitácora de pedidos:', err);
+            return res.status(500).json({ error: 'Error al obtener la bitácora de pedidos' });
+        }
+        res.status(200).json(results);
+    });
+});
 
 // API para obtener el historial de pedidos
 app.get('/api/historial_pedidos', (req, res) => {
