@@ -137,6 +137,7 @@
             })
             .then(response => response.json())
             .then(data => {
+                console.log('Confirmar pedido:', data); // Añade este log
                 if (data.message) {
                     fetchPedidos(); // Refrescar la tabla
                 } else {
@@ -147,7 +148,7 @@
                 console.error('Error al confirmar el pedido:', error);
             });
         }
-
+        
         function denegarPedido(id) {
             fetch(`/api/pedidos/${id}/denegar`, {
                 method: 'PUT',
@@ -157,6 +158,7 @@
             })
             .then(response => response.json())
             .then(data => {
+                console.log('Denegar pedido:', data); // Añade este log
                 if (data.message) {
                     fetchPedidos(); // Refrescar la tabla
                 } else {
@@ -167,7 +169,6 @@
                 console.error('Error al denegar el pedido:', error);
             });
         }
-
         function generatePDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();

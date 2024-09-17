@@ -239,23 +239,6 @@ app.delete('/api/pedidos/:id', (req, res) => {
     });
 });
 
-// API para denegar un pedido
-app.put('/api/pedidos/:id/denegar', (req, res) => {
-    const { id } = req.params;
-    const query = 'UPDATE pedidos SET estado = ? WHERE id = ?';
-
-    db.query(query, ['Denegado', id], (err, result) => {
-        if (err) {
-            console.error('Error al denegar el pedido:', err);
-            return res.status(500).json({ error: 'Error al denegar el pedido' });
-        }
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Pedido no encontrado' });
-        }
-        res.status(200).json({ message: 'Pedido denegado correctamente' });
-    });
-});
-
 // API para confirmar un pedido
 app.put('/api/pedidos/:id/confirmar', (req, res) => {
     const { id } = req.params;
@@ -270,6 +253,23 @@ app.put('/api/pedidos/:id/confirmar', (req, res) => {
             return res.status(404).json({ error: 'Pedido no encontrado' });
         }
         res.status(200).json({ message: 'Pedido confirmado correctamente' });
+    });
+});
+
+// API para denegar un pedido
+app.put('/api/pedidos/:id/denegar', (req, res) => {
+    const { id } = req.params;
+    const query = 'UPDATE pedidos SET estado = ? WHERE id = ?';
+
+    db.query(query, ['Denegado', id], (err, result) => {
+        if (err) {
+            console.error('Error al denegar el pedido:', err);
+            return res.status(500).json({ error: 'Error al denegar el pedido' });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Pedido no encontrado' });
+        }
+        res.status(200).json({ message: 'Pedido denegado correctamente' });
     });
 });
 
