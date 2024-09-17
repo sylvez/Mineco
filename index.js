@@ -256,7 +256,6 @@ app.put('/api/pedidos/:id/denegar', (req, res) => {
     });
 });
 
-
 // API para confirmar un pedido
 app.put('/api/pedidos/:id/confirmar', (req, res) => {
     const { id } = req.params;
@@ -273,7 +272,6 @@ app.put('/api/pedidos/:id/confirmar', (req, res) => {
         res.status(200).json({ message: 'Pedido confirmado correctamente' });
     });
 });
-
 // API para obtener el historial de pedidos
 app.get('/api/historial_pedidos', (req, res) => {
     const query = 'SELECT * FROM historial_pedidos ORDER BY fecha DESC';
