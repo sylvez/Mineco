@@ -181,7 +181,7 @@
             
             let yOffset = 20;
 
-            categories.forEach((category, index) => {
+            Array.from(categories).forEach((category, index) => {
                 if (index > 0) {
                     doc.addPage();
                     yOffset = 20;
