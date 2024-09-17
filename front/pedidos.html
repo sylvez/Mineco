@@ -59,13 +59,14 @@
             gap: 10px;
         }
 
-        #printButton {
+        #printButton, #redirectButton {
             margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <button id="redirectButton" class="btn btn-info">Ir a Pedidos2</button>
         <h1>Historial de Pedidos</h1>
         <table id="pedidos-table">
             <thead>
@@ -89,6 +90,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             fetchPedidos();
             document.getElementById('printButton').addEventListener('click', generatePDF);
+            document.getElementById('redirectButton').addEventListener('click', () => {
+                window.location.href = 'https://programa-f5ac50e1f085.herokuapp.com/pedidos2';
+            });
         });
 
         function fetchPedidos() {
@@ -185,4 +189,5 @@
     </script>
 </body>
 </html>
+
 
