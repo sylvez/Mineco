@@ -66,6 +66,10 @@ app.get('/productos', (req, res) => {
     res.sendFile(path.join(__dirname, 'front', 'productos.html'));
 });
 
+app.get('/historial', (req, res) => {
+    res.sendFile(path.join(__dirname, 'front', 'historial.html'));
+});
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'front', 'index.html'));
 });
@@ -129,6 +133,20 @@ app.get('/api/productos', (req, res) => {
         res.status(200).json(results);
     });
 });
+
+// Ruta para obtener la bitácora de productos
+app.get('/api/bitacora', (req, res) => {
+    const query = 'SELECT * FROM bitacora_productos ORDER BY timestamp DESC'; // Ordenar por fecha más reciente
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error al obtener la bitácora:', err);
+            return res.status(500).json({ error: 'Error al obtener la bitácora' });
+        }
+        res.status(200).json(results);
+    });
+});
+
 
 // Iniciar el servidor
 const PORT = process.env.PORT || 3000; // Usa el puerto proporcionado por Heroku o 3000 por defecto
