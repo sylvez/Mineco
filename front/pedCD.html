@@ -58,11 +58,19 @@
             margin-top: 20px;
         }
 
-        .btn-confirmado, .btn-denegar {
-            margin: 0;
-            padding: 5px 10px;
-            font-size: 12px;
-            margin-right: 5px;
+        .estado-confirmado {
+            color: green;
+            font-weight: bold;
+        }
+
+        .estado-denegado {
+            color: red;
+            font-weight: bold;
+        }
+
+        .estado-pendiente {
+            color: orange;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -94,7 +102,7 @@
         });
 
         function fetchHistorialPedidos() {
-            fetch('/api/historial_pedidos')
+            fetch('/api/bitacora_pedidos')
                 .then(response => response.json())
                 .then(data => {
                     const tableBody = document.querySelector('#historial-table tbody');
@@ -102,6 +110,16 @@
 
                     data.forEach(pedido => {
                         const row = document.createElement('tr');
+
+                        // Determinar la clase según el estado del pedido
+                        let estadoClass = '';
+                        if (pedido.estado === 'Confirmado') {
+                            estadoClass = 'estado-confirmado';
+                        } else if (pedido.estado === 'Denegado') {
+                            estadoClass = 'estado-denegado';
+                        } else {
+                            estadoClass = 'estado-pendiente';
+                        }
                         
                         row.innerHTML = `
                             <td>${pedido.id}</td>
@@ -109,7 +127,7 @@
                             <td>${pedido.nombre_producto}</td>
                             <td>${pedido.cantidad}</td>
                             <td>${new Date(pedido.fecha).toLocaleString()}</td>
-                            <td>${pedido.estado}</td>
+                            <td class="${estadoClass}">${pedido.estado}</td>
                         `;
 
                         tableBody.appendChild(row);
@@ -140,3 +158,4 @@
     </script>
 </body>
 </html>
+
