@@ -1,5 +1,5 @@
 const express = require('express');
-const mysql = require('mysql');
+const mysql = require('mysql2');  // Cambié a mysql2 para mejor compatibilidad
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -12,12 +12,12 @@ app.use(bodyParser.json());
 // Servir archivos estáticos desde la carpeta "front"
 app.use(express.static(path.join(__dirname, 'front')));
 
-// Conexión a la base de datos
+// Conexión a la base de datos JawsDB MySQL
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'motel',
+    host: 'w1h4cr5sb73o944p.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+    user: 'du5pwoiajvdsl7zx',
+    password: 'p0zutpb7umrxfais',
+    database: 'txc02wsymohsmhxu',
     port: 3306 // Puerto predeterminado de MySQL
 });
 
@@ -26,11 +26,10 @@ db.connect(err => {
         console.error('Error conectando a la base de datos:', err);
         return;
     }
-    console.log('Conectado a la base de datos');
+    console.log('Conectado a la base de datos JawsDB MySQL');
 });
 
 // Rutas para servir el HTML
-
 app.get('/mantenimiento', (req, res) => {
     res.sendFile(path.join(__dirname, 'front', 'stop.html'));
 });
@@ -38,7 +37,6 @@ app.get('/mantenimiento', (req, res) => {
 app.get('/registro2', (req, res) => {
     res.sendFile(path.join(__dirname, 'front', 'regis.html'));
 });
-
 
 app.get('/registro', (req, res) => {
     res.sendFile(path.join(__dirname, 'front', 'registro.html'));
@@ -103,7 +101,6 @@ app.delete('/api/productos/:id', (req, res) => {
     });
 });
 
-
 app.put('/api/productos/:id', (req, res) => {
     const { id } = req.params;
     const { categoria, nombre_producto, cantidad } = req.body;
@@ -132,7 +129,6 @@ app.get('/api/productos', (req, res) => {
         res.status(200).json(results);
     });
 });
-
 
 // Iniciar el servidor
 const PORT = process.env.PORT || 3000; // Usa el puerto proporcionado por Heroku o 3000 por defecto
