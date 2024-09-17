@@ -2,6 +2,7 @@ let inventoryData = [];
 let filteredData = [];
 let currentAction = '';
 let currentEditIndex = -1;
+let { jsPDF } = window.jspdf;
 
 function showLoadingIndicator() {
     let loadingIndicator = document.getElementById('loadingIndicator');
@@ -225,9 +226,8 @@ function deleteProduct(index) {
     showLoadingIndicator();
     fetch(`/api/productos/${productId}`, { method: 'DELETE' })
         .then(response => {
-            if (!response.ok) {
+            if (!response.ok)
                 throw new Error(`HTTP error! status: ${response.status}`);
-            }
             return response.json();
         })
         .then(data => {
@@ -266,9 +266,8 @@ document.getElementById('saveNewProduct').addEventListener('click', (e) => {
         body: JSON.stringify(newProduct)
     })
     .then(response => {
-        if (!response.ok) {
+        if (!response.ok)
             throw new Error(`HTTP error! status: ${response.status}`);
-        }
         return response.json();
     })
     .then(data => {
@@ -309,9 +308,8 @@ document.getElementById('saveEditProduct').addEventListener('click', (e) => {
         body: JSON.stringify(editedProduct)
     })
     .then(response => {
-        if (!response.ok) {
+        if (!response.ok)
             throw new Error(`HTTP error! status: ${response.status}`);
-        }
         return response.json();
     })
     .then(data => {
@@ -348,6 +346,71 @@ function populateCategoryDropdowns() {
         editProductCategory.innerHTML += `<option value="${category}">${category}</option>`;
     });
 }
+
+function generatePDF() {
+    const doc = new jsPDF();
+    
+    // Set font size and style for the title
+    doc.setFontSize(18);
+    doc.setFont(undefined, 'bold');
+    doc.text('Inventario de Productos por Categoría', 14, 20);
+    
+    // Reset font for the content
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'normal');
+
+    // Group products by category
+    const groupedProducts = inventoryData.reduce((acc, product) => {
+        if (!acc[product.categoria]) {
+            acc[product.categoria] = [];
+        }
+        acc[product.categoria].push(product);
+        return acc;
+    }, {});
+
+    let yOffset = 30;
+
+    // Iterate through each category
+    Object.keys(groupedProducts).sort().forEach(category => {
+        // Add a new page if there's not enough space
+        if (yOffset > 250) {
+            doc.addPage();
+            yOffset = 20;
+        }
+
+        // Write category name
+        doc.setFont(undefined, 'bold');
+        doc.text(category, 14, yOffset);
+        yOffset += 10;
+
+        // Sort products alphabetically
+        const sortedProducts = groupedProducts[category].sort((a, b) => 
+            a.nombre_producto.localeCompare(b.nombre_producto)
+        );
+
+        // Create table for products in this category
+        const tableData = sortedProducts.map(product => [
+            product.nombre_producto,
+            product.cantidad.toString()
+        ]);
+
+        doc.autoTable({
+            startY: yOffset,
+            head: [['Producto', 'Cantidad']],
+            body: tableData,
+            margin: { left: 14 },
+            tableWidth: 180
+        });
+
+        yOffset = doc.lastAutoTable.finalY + 15;
+    });
+
+    // Save the PDF
+    doc.save('inventario_por_categoria.pdf');
+}
+
+// Add event listener for the PDF generation button
+document.getElementById('generatePdfButton').addEventListener('click', generatePDF);
 
 document.addEventListener('DOMContentLoaded', () => {
     loadInventoryDataWithRetry();

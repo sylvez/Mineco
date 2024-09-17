@@ -5,12 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Entradas y Salidas</title>
     <link rel="stylesheet" href="diseño.css">
-   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
     <h1>Registro de Entradas y Salidas</h1>
     
     <button id="addButton" class="add-btn">Agregar Producto</button>
+    <button id="generatePdfButton" class="add-btn">Generar PDF</button>
 
     <input type="text" id="searchInput" placeholder="Buscar por producto o código">
 
