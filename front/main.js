@@ -40,11 +40,11 @@ function loadInventoryDataWithRetry(retries = 3) {
             return response.json();
         })
         .then(data => {
-            console.log('Datos recibidos:', data); // Para depuración
+            console.log('Datos recibidos:', data);
             inventoryData = data;
             filteredData = inventoryData;
             renderTable();
-            console.log('Datos renderizados:', filteredData); // Para depuración
+            console.log('Datos renderizados:', filteredData);
         })
         .catch(error => {
             console.error('Error al cargar los productos:', error);
@@ -118,9 +118,9 @@ function getDescription(producto) {
 }
 
 function filterByCategory(category) {
-    console.log('Filtrando por categoría:', category); // Para depuración
+    console.log('Filtrando por categoría:', category);
     filteredData = inventoryData.filter(item => item.categoria === category);
-    console.log('Datos filtrados:', filteredData); // Para depuración
+    console.log('Datos filtrados:', filteredData);
     renderTable();
 }
 
@@ -152,12 +152,171 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
 document.querySelectorAll('.category-btn').forEach(button => {
     button.addEventListener('click', (e) => {
         const category = e.target.dataset.category;
-        console.log('Categoría seleccionada:', category); // Para depuración
+        console.log('Categoría seleccionada:', category);
         filterByCategory(category);
     });
 });
 
-// ... (el resto del código permanece igual)
+const passwordModal = document.getElementById('passwordModal');
+const addButton = document.getElementById('addButton');
+const closeButtons = document.querySelectorAll('.close');
+const submitPasswordButton = document.getElementById('submitPassword');
+const passwordInput = document.getElementById('passwordInput');
+const addForm = document.getElementById('addForm');
+const editForm = document.getElementById('editForm');
+
+addButton.addEventListener('click', () => showPasswordModal('add'));
+closeButtons.forEach(button => {
+    button.addEventListener('click', closeModal);
+});
+submitPasswordButton.addEventListener('click', checkPassword);
+
+function showPasswordModal(action, index = -1) {
+    currentAction = action;
+    currentEditIndex = index;
+    passwordModal.style.display = 'block';
+    passwordInput.value = '';
+}
+
+function closeModal() {
+    passwordModal.style.display = 'none';
+    addForm.style.display = 'none';
+    editForm.style.display = 'none';
+}
+
+function checkPassword() {
+    if (passwordInput.value === '0000') {
+        closeModal();
+        if (currentAction === 'add') {
+            showAddForm();
+        } else if (currentAction === 'edit') {
+            showEditForm(currentEditIndex);
+        } else if (currentAction === 'delete') {
+            deleteProduct(currentEditIndex);
+        }
+    } else {
+        alert('Contraseña incorrecta');
+    }
+}
+
+function showAddForm() {
+    addForm.style.display = 'block';
+}
+
+function showEditForm(index) {
+    const item = filteredData[index];
+    document.getElementById('editProductName').value = item.nombre_producto;
+    document.getElementById('editProductCategory').value = item.categoria;
+    document.getElementById('editProductUnits').value = item.cantidad;
+    editForm.style.display = 'block';
+}
+
+function deleteProduct(index) {
+    const productId = filteredData[index].id;
+    showLoadingIndicator();
+    fetch(`/api/productos/${productId}`, { method: 'DELETE' })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            loadInventoryDataWithRetry();
+        })
+        .catch(error => {
+            console.error('Error al eliminar el producto:', error);
+            alert('No se pudo eliminar el producto. Por favor, intente de nuevo.');
+        })
+        .finally(() => {
+            hideLoadingIndicator();
+        });
+}
+
+document.getElementById('saveNewProduct').addEventListener('click', (e) => {
+    e.preventDefault();
+    const newProduct = {
+        nombre_producto: document.getElementById('newProductName').value,
+        categoria: document.getElementById('newProductCategory').value,
+        cantidad: parseInt(document.getElementById('newProductUnits').value)
+    };
+    
+    try {
+        validateProductData(newProduct);
+    } catch (error) {
+        alert(error.message);
+        return;
+    }
+
+    showLoadingIndicator();
+    fetch('/api/productos', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newProduct)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        loadInventoryDataWithRetry();
+        closeModal();
+    })
+    .catch(error => {
+        console.error('Error al agregar el producto:', error);
+        alert('No se pudo agregar el producto. Por favor, intente de nuevo.');
+    })
+    .finally(() => {
+        hideLoadingIndicator();
+    });
+});
+
+document.getElementById('saveEditProduct').addEventListener('click', (e) => {
+    e.preventDefault();
+    const editedProduct = {
+        nombre_producto: document.getElementById('editProductName').value,
+        categoria: document.getElementById('editProductCategory').value,
+        cantidad: parseInt(document.getElementById('editProductUnits').value)
+    };
+
+    try {
+        validateProductData(editedProduct);
+    } catch (error) {
+        alert(error.message);
+        return;
+    }
+
+    const productId = filteredData[currentEditIndex].id;
+    showLoadingIndicator();
+    fetch(`/api/productos/${productId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(editedProduct)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        loadInventoryDataWithRetry();
+        closeModal();
+    })
+    .catch(error => {
+        console.error('Error al editar el producto:', error);
+        alert('No se pudo editar el producto. Por favor, intente de nuevo.');
+    })
+    .finally(() => {
+        hideLoadingIndicator();
+    });
+});
 
 document.addEventListener('DOMContentLoaded', () => {
     loadInventoryDataWithRetry();
