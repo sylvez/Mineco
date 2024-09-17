@@ -88,6 +88,10 @@ function renderTable() {
         tableBody.innerHTML += row;
     });
 
+    addEventListenersToButtons();
+}
+
+function addEventListenersToButtons() {
     document.querySelectorAll('.edit-btn').forEach(button => {
         button.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -119,7 +123,7 @@ function getDescription(producto) {
 
 function filterByCategory(category) {
     console.log('Filtrando por categoría:', category);
-    filteredData = inventoryData.filter(item => item.categoria === category);
+    filteredData = inventoryData.filter(item => item.categoria.trim().toUpperCase() === category.trim().toUpperCase());
     console.log('Datos filtrados:', filteredData);
     renderTable();
 }
