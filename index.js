@@ -236,6 +236,8 @@ app.delete('/api/pedidos/:id', (req, res) => {
 
 
 
+
+
 // Iniciar el servidor
 const PORT = process.env.PORT || 3000; // Usa el puerto proporcionado por Heroku o 3000 por defecto
 app.listen(PORT, () => {
