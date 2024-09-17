@@ -136,7 +136,7 @@ app.get('/api/productos', (req, res) => {
 
 // Ruta para obtener la bitácora de productos
 app.get('/api/bitacora', (req, res) => {
-    const query = 'SELECT * FROM bitacora_productos ORDER BY timestamp DESC'; // Ordenar por fecha más reciente
+    const query = 'SELECT * FROM bitacora_productos ORDER BY fecha DESC';
 
     db.query(query, (err, results) => {
         if (err) {
@@ -146,6 +146,7 @@ app.get('/api/bitacora', (req, res) => {
         res.status(200).json(results);
     });
 });
+
 
 
 // Iniciar el servidor
