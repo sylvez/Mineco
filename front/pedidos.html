@@ -54,14 +54,13 @@
             background-color: #e9e9e9;
         }
 
-        #printButton {
-            margin-top: 20px;
+        .action-buttons {
+            display: flex;
+            gap: 10px;
         }
 
-        .btn-confirmado {
-            margin: 0;
-            padding: 5px 10px;
-            font-size: 12px;
+        #printButton {
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -108,41 +107,18 @@
                             <td>${pedido.nombre_producto}</td>
                             <td>${pedido.cantidad}</td>
                             <td>${new Date(pedido.fecha_solicitud).toLocaleString()}</td>
-                            <td><button class="btn btn-success btn-confirmado" data-id="${pedido.id}">Confirmado</button></td>
+                            <td class="action-buttons">
+                                <button class="btn btn-danger btn-sm" onclick="deletePedido(${pedido.id})">Eliminar</button>
+                                <button class="btn btn-secondary btn-sm" onclick="confirmarPedido(${pedido.id})">Confirmar</button>
+                            </td>
                         `;
 
                         tableBody.appendChild(row);
-                    });
-
-                    // Añadir eventos a los botones
-                    document.querySelectorAll('.btn-confirmado').forEach(button => {
-                        button.addEventListener('click', () => {
-                            const id = button.getAttribute('data-id');
-                            deletePedido(id, button);
-                        });
                     });
                 })
                 .catch(error => {
                     console.error('Error al obtener pedidos:', error);
                 });
-        }
-
-        function deletePedido(id, button) {
-            fetch(`/api/pedidos/${id}`, {
-                method: 'DELETE',
-            })
-            .then(response => {
-                if (response.ok) {
-                    button.closest('tr').remove(); // Eliminar la fila de la tabla
-                } else {
-                    return response.json().then(data => {
-                        console.error('Error al eliminar el pedido:', data.error);
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error al eliminar el pedido:', error);
-            });
         }
 
         function generatePDF() {
@@ -162,6 +138,45 @@
             // Guardar el PDF
             doc.save('historial_pedidos.pdf');
         }
+
+        function deletePedido(id) {
+            fetch(`/api/pedidos/${id}`, {
+                method: 'DELETE',
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Si la eliminación fue exitosa, actualiza la tabla
+                    fetchPedidos();
+                } else {
+                    return response.json().then(data => {
+                        alert(data.error);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error al eliminar el pedido:', error);
+            });
+        }
+
+        function confirmarPedido(id) {
+            fetch(`/api/pedidos/${id}/confirmar`, {
+                method: 'PUT',
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Pedido confirmado correctamente');
+                    fetchPedidos();
+                } else {
+                    return response.json().then(data => {
+                        alert(data.error);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error al confirmar el pedido:', error);
+            });
+        }
     </script>
 </body>
 </html>
+
