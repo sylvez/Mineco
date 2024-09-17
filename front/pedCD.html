@@ -77,13 +77,18 @@
 <body>
     <div class="container">
         <h1>Historial de Pedidos</h1>
+        <div class="mb-3">
+            <label for="estadoSelect" class="form-label">Seleccionar estado</label>
+            <select id="estadoSelect" class="form-select">
+                <option value="Confirmado">Confirmado</option>
+                <option value="Denegado">Denegado</option>
+            </select>
+        </div>
         <table id="historial-table">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Producto ID</th>
-                    <th>Nombre del Producto</th>
-                    <th>Cantidad</th>
                     <th>Fecha de Solicitud</th>
                     <th>Estado</th>
                 </tr>
@@ -97,12 +102,16 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            fetchHistorialPedidos();
+            const estadoSelect = document.getElementById('estadoSelect');
+            estadoSelect.addEventListener('change', fetchHistorialPedidos);
+            fetchHistorialPedidos(); // Llamar por defecto al cargar la página
+
             document.getElementById('printButton').addEventListener('click', generatePDF);
         });
 
         function fetchHistorialPedidos() {
-            fetch('/api/bitacora_pedidos')
+            const estado = document.getElementById('estadoSelect').value;
+            fetch(`/api/pedidos/estado/${estado}`)
                 .then(response => response.json())
                 .then(data => {
                     const tableBody = document.querySelector('#historial-table tbody');
@@ -117,16 +126,12 @@
                             estadoClass = 'estado-confirmado';
                         } else if (pedido.estado === 'Denegado') {
                             estadoClass = 'estado-denegado';
-                        } else {
-                            estadoClass = 'estado-pendiente';
                         }
                         
                         row.innerHTML = `
                             <td>${pedido.id}</td>
                             <td>${pedido.producto_id}</td>
-                            <td>${pedido.nombre_producto}</td>
-                            <td>${pedido.cantidad}</td>
-                            <td>${new Date(pedido.fecha).toLocaleString()}</td>
+                            <td>${new Date(pedido.fecha_solicitud).toLocaleString()}</td>
                             <td class="${estadoClass}">${pedido.estado}</td>
                         `;
 
@@ -158,4 +163,3 @@
     </script>
 </body>
 </html>
-

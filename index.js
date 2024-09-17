@@ -273,6 +273,33 @@ app.put('/api/pedidos/:id/denegar', (req, res) => {
     });
 });
 
+// pedidos 2
+// API para obtener pedidos confirmados o denegados
+app.get('/api/pedidos/estado/:estado', (req, res) => {
+    const { estado } = req.params;
+    const validEstados = ['Confirmado', 'Denegado'];
+    
+    // Validar el estado
+    if (!validEstados.includes(estado)) {
+        return res.status(400).json({ error: 'Estado inválido' });
+    }
+
+    const query = 'SELECT id, producto_id, fecha_solicitud FROM nuevos_pedidos WHERE estado = ?';
+    
+    db.query(query, [estado], (err, results) => {
+        if (err) {
+            console.error('Error al obtener los pedidos:', err);
+            return res.status(500).json({ error: 'Error al obtener los pedidos' });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'No se encontraron pedidos con el estado especificado' });
+        }
+
+        res.status(200).json(results);
+    });
+});
+
 
 // API para obtener la bitácora de pedidos
 app.get('/api/bitacora_pedidos', (req, res) => {
