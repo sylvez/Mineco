@@ -16,16 +16,18 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px 0;
+  padding: 20px 0;
   background-color: #f0f0f0;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .flag {
-  width: 80px;
+  width: 120px;  /* Increased from 80px to 120px */
   height: auto;
-  margin: 0 10px;
+  margin: 0 20px;  /* Increased from 10px to 20px */
 }
+
+/* El resto del CSS permanece igual */
 
 .categories {
   display: flex;
