@@ -163,7 +163,7 @@ app.get('/api/bitacora', (req, res) => {
 // Crear un nuevo pedido
 app.post('/api/pedidos', (req, res) => {
     const { producto_id, nombre_producto, cantidad } = req.body;
-    const query = 'INSERT INTO pedidos (producto_id, nombre_producto, cantidad) VALUES (?, ?, ?)';
+    const query = 'INSERT INTO nuevos_pedidos (producto_id, nombre_producto, cantidad) VALUES (?, ?, ?)';
 
     db.query(query, [producto_id, nombre_producto, cantidad], (err, result) => {
         if (err) {
@@ -176,7 +176,7 @@ app.post('/api/pedidos', (req, res) => {
 
 // Obtener todos los pedidos
 app.get('/api/pedidos', (req, res) => {
-    const query = 'SELECT * FROM pedidos';
+    const query = 'SELECT * FROM nuevos_pedidos';
 
     db.query(query, (err, results) => {
         if (err) {
@@ -190,7 +190,7 @@ app.get('/api/pedidos', (req, res) => {
 // Obtener un pedido por ID
 app.get('/api/pedidos/:id', (req, res) => {
     const { id } = req.params;
-    const query = 'SELECT * FROM pedidos WHERE id = ?';
+    const query = 'SELECT * FROM nuevos_pedidos WHERE id = ?';
 
     db.query(query, [id], (err, results) => {
         if (err) {
@@ -208,7 +208,7 @@ app.get('/api/pedidos/:id', (req, res) => {
 app.put('/api/pedidos/:id', (req, res) => {
     const { id } = req.params;
     const { producto_id, nombre_producto, cantidad } = req.body;
-    const query = 'UPDATE pedidos SET producto_id = ?, nombre_producto = ?, cantidad = ? WHERE id = ?';
+    const query = 'UPDATE nuevos_pedidos SET producto_id = ?, nombre_producto = ?, cantidad = ? WHERE id = ?';
 
     db.query(query, [producto_id, nombre_producto, cantidad, id], (err, result) => {
         if (err) {
@@ -225,7 +225,7 @@ app.put('/api/pedidos/:id', (req, res) => {
 // Eliminar un pedido por ID
 app.delete('/api/pedidos/:id', (req, res) => {
     const { id } = req.params;
-    const query = 'DELETE FROM pedidos WHERE id = ?';
+    const query = 'DELETE FROM nuevos_pedidos WHERE id = ?';
 
     db.query(query, [id], (err, result) => {
         if (err) {
@@ -242,7 +242,7 @@ app.delete('/api/pedidos/:id', (req, res) => {
 // API para confirmar un pedido
 app.put('/api/pedidos/:id/confirmar', (req, res) => {
     const { id } = req.params;
-    const query = 'UPDATE pedidos SET estado = ? WHERE id = ?';
+    const query = 'UPDATE nuevos_pedidos SET estado = ? WHERE id = ?';
 
     db.query(query, ['Confirmado', id], (err, result) => {
         if (err) {
@@ -257,10 +257,9 @@ app.put('/api/pedidos/:id/confirmar', (req, res) => {
 });
 
 // API para denegar un pedido
-// API para denegar un pedido
 app.put('/api/pedidos/:id/denegar', (req, res) => {
     const { id } = req.params;
-    const query = 'UPDATE pedidos SET estado = ? WHERE id = ?';
+    const query = 'UPDATE nuevos_pedidos SET estado = ? WHERE id = ?';
 
     db.query(query, ['Denegado', id], (err, result) => {
         if (err) {
@@ -273,6 +272,7 @@ app.put('/api/pedidos/:id/denegar', (req, res) => {
         res.status(200).json({ message: 'Pedido denegado correctamente' });
     });
 });
+
 
 // API para obtener la bitácora de pedidos
 app.get('/api/bitacora_pedidos', (req, res) => {
