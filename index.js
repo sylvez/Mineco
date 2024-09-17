@@ -234,6 +234,54 @@ app.delete('/api/pedidos/:id', (req, res) => {
     });
 });
 
+// API para denegar un pedido
+app.put('/api/pedidos/:id/denegar', (req, res) => {
+    const { id } = req.params;
+    const query = 'UPDATE pedidos SET estado = ? WHERE id = ?';
+
+    db.query(query, ['Denegado', id], (err, result) => {
+        if (err) {
+            console.error('Error al denegar el pedido:', err);
+            return res.status(500).json({ error: 'Error al denegar el pedido' });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Pedido no encontrado' });
+        }
+        res.status(200).json({ message: 'Pedido denegado correctamente' });
+    });
+});
+
+
+// API para confirmar un pedido
+app.put('/api/pedidos/:id/confirmar', (req, res) => {
+    const { id } = req.params;
+    const query = 'UPDATE pedidos SET estado = ? WHERE id = ?';
+
+    db.query(query, ['Confirmado', id], (err, result) => {
+        if (err) {
+            console.error('Error al confirmar el pedido:', err);
+            return res.status(500).json({ error: 'Error al confirmar el pedido' });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Pedido no encontrado' });
+        }
+        res.status(200).json({ message: 'Pedido confirmado correctamente' });
+    });
+});
+
+// API para obtener el historial de pedidos
+app.get('/api/historial_pedidos', (req, res) => {
+    const query = 'SELECT * FROM historial_pedidos ORDER BY fecha DESC';
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error al obtener el historial de pedidos:', err);
+            return res.status(500).json({ error: 'Error al obtener el historial de pedidos' });
+        }
+        res.status(200).json(results);
+    });
+});
+
 // Ruta para revertir una acción de la bitácora
 app.post('/api/revertir/:id', (req, res) => {
     const { id } = req.params;

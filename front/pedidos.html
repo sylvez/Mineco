@@ -110,7 +110,7 @@
                             <td>${pedido.cantidad}</td>
                             <td>${new Date(pedido.fecha_solicitud).toLocaleString()}</td>
                             <td>
-                                <button class="btn btn-success btn-confirmado" data-id="${pedido.id}">Confirmado</button>
+                                <button class="btn btn-success btn-confirmado" data-id="${pedido.id}">Confirmar</button>
                                 <button class="btn btn-danger btn-denegar" data-id="${pedido.id}">Denegar</button>
                             </td>
                         `;
@@ -122,14 +122,14 @@
                     document.querySelectorAll('.btn-confirmado').forEach(button => {
                         button.addEventListener('click', () => {
                             const id = button.getAttribute('data-id');
-                            deletePedido(id, button);
+                            confirmPedido(id, button);
                         });
                     });
 
                     document.querySelectorAll('.btn-denegar').forEach(button => {
                         button.addEventListener('click', () => {
                             const id = button.getAttribute('data-id');
-                            deletePedido(id, button);
+                            denegarPedido(id, button);
                         });
                     });
                 })
@@ -138,21 +138,37 @@
                 });
         }
 
-        function deletePedido(id, button) {
-            fetch(`/api/pedidos/${id}`, {
-                method: 'DELETE',
+        function confirmPedido(id, button) {
+            fetch(`/api/pedidos/${id}/confirmar`, {
+                method: 'PUT',
             })
-            .then(response => {
-                if (response.ok) {
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
                     button.closest('tr').remove(); // Eliminar la fila de la tabla
                 } else {
-                    return response.json().then(data => {
-                        console.error('Error al eliminar el pedido:', data.error);
-                    });
+                    console.error('Error al confirmar el pedido:', data.error);
                 }
             })
             .catch(error => {
-                console.error('Error al eliminar el pedido:', error);
+                console.error('Error al confirmar el pedido:', error);
+            });
+        }
+
+        function denegarPedido(id, button) {
+            fetch(`/api/pedidos/${id}/denegar`, {
+                method: 'PUT',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    button.closest('tr').remove(); // Eliminar la fila de la tabla
+                } else {
+                    console.error('Error al denegar el pedido:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error al denegar el pedido:', error);
             });
         }
 
