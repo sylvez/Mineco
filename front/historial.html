@@ -52,6 +52,21 @@
         tbody tr:hover {
             background-color: #e9e9e9;
         }
+
+        /* Estilos para el botón */
+        .revert-button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .revert-button:hover {
+            background-color: #d32f2f;
+        }
     </style>
 </head>
 <body>
@@ -67,6 +82,7 @@
                     <th>Nombre del Producto</th>
                     <th>Cantidad</th>
                     <th>Fecha y Hora</th>
+                    <th>Acciones</th> <!-- Nueva columna para el botón -->
                 </tr>
             </thead>
             <tbody>
@@ -76,12 +92,14 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Obtener los datos de la bitácora
             fetch('/api/bitacora')
                 .then(response => response.json())
                 .then(data => {
                     const tableBody = document.querySelector('#bitacora-table tbody');
                     tableBody.innerHTML = ''; // Limpiar el contenido de la tabla
 
+                    // Iterar sobre cada registro de la bitácora
                     data.forEach(record => {
                         const row = document.createElement('tr');
                         
@@ -93,9 +111,33 @@
                             <td>${record.nombre_producto}</td>
                             <td>${record.cantidad}</td>
                             <td>${new Date(record.fecha).toLocaleString()}</td>
+                            <td><button class="revert-button" data-id="${record.id}">Revertir</button></td> <!-- Botón de revertir -->
                         `;
 
                         tableBody.appendChild(row);
+                    });
+
+                    // Agregar el evento de clic para cada botón de revertir
+                    document.querySelectorAll('.revert-button').forEach(button => {
+                        button.addEventListener('click', () => {
+                            const id = button.getAttribute('data-id');
+                            
+                            // Confirmar antes de revertir
+                            if (confirm('¿Estás seguro de que deseas revertir esta acción?')) {
+                                fetch(`/api/revertir/${id}`, {
+                                    method: 'POST'
+                                })
+                                .then(response => response.json())
+                                .then(result => {
+                                    alert(result.message || 'Acción revertida correctamente.');
+                                    location.reload(); // Recargar la página para ver los cambios
+                                })
+                                .catch(error => {
+                                    console.error('Error al revertir la acción:', error);
+                                    alert('Hubo un error al intentar revertir la acción.');
+                                });
+                            }
+                        });
                     });
                 })
                 .catch(error => {

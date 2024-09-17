@@ -234,6 +234,58 @@ app.delete('/api/pedidos/:id', (req, res) => {
     });
 });
 
+// Ruta para revertir una acción de la bitácora
+app.post('/api/revertir/:id', (req, res) => {
+    const { id } = req.params;
+
+    // Obtener la acción de la bitácora por su ID
+    const query = 'SELECT * FROM bitacora_productos WHERE id = ?';
+    db.query(query, [id], (err, results) => {
+        if (err) {
+            console.error('Error al obtener la bitácora:', err);
+            return res.status(500).json({ error: 'Error al obtener la bitácora' });
+        }
+        
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Registro de bitácora no encontrado' });
+        }
+
+        const accion = results[0];
+        
+        // Determinar qué tipo de acción fue y revertirla
+        if (accion.accion === 'INSERT') {
+            // Si fue una inserción, se elimina el producto
+            const deleteQuery = 'DELETE FROM productos WHERE id = ?';
+            db.query(deleteQuery, [accion.producto_id], (err, result) => {
+                if (err) {
+                    console.error('Error al eliminar producto:', err);
+                    return res.status(500).json({ error: 'Error al revertir la adición del producto' });
+                }
+                res.status(200).json({ message: 'Producto eliminado correctamente' });
+            });
+        } else if (accion.accion === 'DELETE') {
+            // Si fue una eliminación, se vuelve a agregar el producto
+            const insertQuery = 'INSERT INTO productos (id, categoria, nombre_producto, cantidad) VALUES (?, ?, ?, ?)';
+            db.query(insertQuery, [accion.producto_id, accion.categoria, accion.nombre_producto, accion.cantidad], (err, result) => {
+                if (err) {
+                    console.error('Error al agregar producto:', err);
+                    return res.status(500).json({ error: 'Error al revertir la eliminación del producto' });
+                }
+                res.status(200).json({ message: 'Producto restaurado correctamente' });
+            });
+        } else if (accion.accion === 'UPDATE') {
+            // Si fue una actualización, revertir al estado anterior
+            const updateQuery = 'UPDATE productos SET categoria = ?, nombre_producto = ?, cantidad = ? WHERE id = ?';
+            db.query(updateQuery, [accion.categoria, accion.nombre_producto, accion.cantidad, accion.producto_id], (err, result) => {
+                if (err) {
+                    console.error('Error al actualizar producto:', err);
+                    return res.status(500).json({ error: 'Error al revertir la actualización del producto' });
+                }
+                res.status(200).json({ message: 'Producto revertido a estado anterior correctamente' });
+            });
+        }
+    });
+});
 
 
 
