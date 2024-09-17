@@ -149,7 +149,7 @@
             .then(response => {
                 if (response.ok) {
                     alert('Pedido denegado correctamente');
-                    fetchPedidos();
+                    fetchPedidos(); // Actualiza la tabla después de denegar
                 } else {
                     return response.json().then(data => {
                         alert(data.error || 'Error al denegar el pedido');

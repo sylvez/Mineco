@@ -257,6 +257,7 @@ app.put('/api/pedidos/:id/confirmar', (req, res) => {
 });
 
 // API para denegar un pedido
+// API para denegar un pedido
 app.put('/api/pedidos/:id/denegar', (req, res) => {
     const { id } = req.params;
     const query = 'UPDATE pedidos SET estado = ? WHERE id = ?';
@@ -272,6 +273,7 @@ app.put('/api/pedidos/:id/denegar', (req, res) => {
         res.status(200).json({ message: 'Pedido denegado correctamente' });
     });
 });
+
 // API para obtener la bitácora de pedidos
 app.get('/api/bitacora_pedidos', (req, res) => {
     const query = 'SELECT * FROM bitacora_pedidos ORDER BY fecha_cambio DESC';
