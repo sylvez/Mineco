@@ -70,9 +70,15 @@ app.get('/historial', (req, res) => {
     res.sendFile(path.join(__dirname, 'front', 'historial.html'));
 });
 
+app.get('/pedidos', (req, res) => {
+    res.sendFile(path.join(__dirname, 'front', 'pedidos.html'));
+});
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'front', 'index.html'));
 });
+
+
 
 // APIS REGISTRO
 
@@ -144,6 +150,87 @@ app.get('/api/bitacora', (req, res) => {
             return res.status(500).json({ error: 'Error al obtener la bitácora' });
         }
         res.status(200).json(results);
+    });
+});
+
+// API PEDIDOS
+
+// Crear un nuevo pedido
+app.post('/api/pedidos', (req, res) => {
+    const { producto_id, nombre_producto, cantidad } = req.body;
+    const query = 'INSERT INTO pedidos (producto_id, nombre_producto, cantidad) VALUES (?, ?, ?)';
+
+    db.query(query, [producto_id, nombre_producto, cantidad], (err, result) => {
+        if (err) {
+            console.error('Error al agregar pedido:', err);
+            return res.status(500).json({ error: 'Error al agregar pedido' });
+        }
+        res.status(201).json({ id: result.insertId, producto_id, nombre_producto, cantidad });
+    });
+});
+
+// Obtener todos los pedidos
+app.get('/api/pedidos', (req, res) => {
+    const query = 'SELECT * FROM pedidos';
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error al obtener pedidos:', err);
+            return res.status(500).json({ error: 'Error al obtener pedidos' });
+        }
+        res.status(200).json(results);
+    });
+});
+
+// Obtener un pedido por ID
+app.get('/api/pedidos/:id', (req, res) => {
+    const { id } = req.params;
+    const query = 'SELECT * FROM pedidos WHERE id = ?';
+
+    db.query(query, [id], (err, results) => {
+        if (err) {
+            console.error('Error al obtener el pedido:', err);
+            return res.status(500).json({ error: 'Error al obtener el pedido' });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Pedido no encontrado' });
+        }
+        res.status(200).json(results[0]);
+    });
+});
+
+// Actualizar un pedido por ID
+app.put('/api/pedidos/:id', (req, res) => {
+    const { id } = req.params;
+    const { producto_id, nombre_producto, cantidad } = req.body;
+    const query = 'UPDATE pedidos SET producto_id = ?, nombre_producto = ?, cantidad = ? WHERE id = ?';
+
+    db.query(query, [producto_id, nombre_producto, cantidad, id], (err, result) => {
+        if (err) {
+            console.error('Error al actualizar el pedido:', err);
+            return res.status(500).json({ error: 'Error al actualizar el pedido' });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Pedido no encontrado' });
+        }
+        res.status(200).json({ id, producto_id, nombre_producto, cantidad });
+    });
+});
+
+// Eliminar un pedido por ID
+app.delete('/api/pedidos/:id', (req, res) => {
+    const { id } = req.params;
+    const query = 'DELETE FROM pedidos WHERE id = ?';
+
+    db.query(query, [id], (err, result) => {
+        if (err) {
+            console.error('Error al eliminar el pedido:', err);
+            return res.status(500).json({ error: 'Error al eliminar el pedido' });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Pedido no encontrado' });
+        }
+        res.status(200).json({ message: 'Pedido eliminado' });
     });
 });
 
