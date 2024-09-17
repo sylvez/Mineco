@@ -140,8 +140,8 @@
         }
 
         function deletePedido(id) {
-            fetch(`/api/pedidos/${id}`, {
-                method: 'DELETE',
+            fetch(`/api/pedidos/${id}/denegar`, {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 }
