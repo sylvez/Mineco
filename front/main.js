@@ -4,10 +4,24 @@ let currentAction = '';
 let currentEditIndex = -1;
 
 function showLoadingIndicator() {
-    const loadingIndicator = document.getElementById('loadingIndicator');
-    if (loadingIndicator) {
-        loadingIndicator.style.display = 'block';
+    // Crear un elemento de carga si no existe
+    let loadingIndicator = document.getElementById('loadingIndicator');
+    if (!loadingIndicator) {
+        loadingIndicator = document.createElement('div');
+        loadingIndicator.id = 'loadingIndicator';
+        loadingIndicator.textContent = 'Cargando...';
+        loadingIndicator.style.position = 'fixed';
+        loadingIndicator.style.top = '50%';
+        loadingIndicator.style.left = '50%';
+        loadingIndicator.style.transform = 'translate(-50%, -50%)';
+        loadingIndicator.style.padding = '20px';
+        loadingIndicator.style.background = 'rgba(0,0,0,0.7)';
+        loadingIndicator.style.color = 'white';
+        loadingIndicator.style.borderRadius = '5px';
+        loadingIndicator.style.zIndex = '1000';
+        document.body.appendChild(loadingIndicator);
     }
+    loadingIndicator.style.display = 'block';
 }
 
 function hideLoadingIndicator() {
@@ -218,7 +232,7 @@ function deleteProduct(index) {
         });
 }
 
-document.getElementById('newProductForm').addEventListener('submit', (e) => {
+document.getElementById('saveNewProduct').addEventListener('click', (e) => {
     e.preventDefault();
     const newProduct = {
         nombre_producto: document.getElementById('newProductName').value,
@@ -260,7 +274,7 @@ document.getElementById('newProductForm').addEventListener('submit', (e) => {
     });
 });
 
-document.getElementById('editProductForm').addEventListener('submit', (e) => {
+document.getElementById('saveEditProduct').addEventListener('click', (e) => {
     e.preventDefault();
     const editedProduct = {
         nombre_producto: document.getElementById('editProductName').value,
