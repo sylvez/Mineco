@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historial de Pedidos Confirmados y Denegados</title>
+    <title>Historial de Pedidos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
@@ -14,7 +14,7 @@
         }
 
         .container {
-            width: 90%;
+            width: 80%;
             margin: 0 auto;
             padding: 20px;
             background: #fff;
@@ -25,10 +25,6 @@
         h1 {
             text-align: center;
             color: #333;
-        }
-
-        .table-container {
-            margin-top: 20px;
         }
 
         table {
@@ -61,48 +57,33 @@
         #printButton {
             margin-top: 20px;
         }
+
+        .btn-confirmado, .btn-denegar {
+            margin: 0;
+            padding: 5px 10px;
+            font-size: 12px;
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Historial de Pedidos Confirmados y Denegados</h1>
-        
-        <div class="table-container">
-            <h2>Pedidos Confirmados</h2>
-            <table id="confirmados-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Producto ID</th>
-                        <th>Nombre del Producto</th>
-                        <th>Cantidad</th>
-                        <th>Fecha de Solicitud</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Los datos de pedidos confirmados se insertarán aquí mediante JavaScript -->
-                </tbody>
-            </table>
-        </div>
-        
-        <div class="table-container">
-            <h2>Pedidos Denegados</h2>
-            <table id="denegados-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Producto ID</th>
-                        <th>Nombre del Producto</th>
-                        <th>Cantidad</th>
-                        <th>Fecha de Solicitud</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Los datos de pedidos denegados se insertarán aquí mediante JavaScript -->
-                </tbody>
-            </table>
-        </div>
-        
+        <h1>Historial de Pedidos</h1>
+        <table id="historial-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Producto ID</th>
+                    <th>Nombre del Producto</th>
+                    <th>Cantidad</th>
+                    <th>Fecha de Solicitud</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Los datos se insertarán aquí mediante JavaScript -->
+            </tbody>
+        </table>
         <button id="printButton" class="btn btn-primary">Imprimir PDF</button>
     </div>
 
@@ -113,48 +94,29 @@
         });
 
         function fetchHistorialPedidos() {
-            fetch('/api/pedidos/confirmados')
+            fetch('/api/historial_pedidos')
                 .then(response => response.json())
                 .then(data => {
-                    const tableBody = document.querySelector('#confirmados-table tbody');
+                    const tableBody = document.querySelector('#historial-table tbody');
                     tableBody.innerHTML = ''; // Limpiar el contenido de la tabla
 
                     data.forEach(pedido => {
                         const row = document.createElement('tr');
+                        
                         row.innerHTML = `
                             <td>${pedido.id}</td>
                             <td>${pedido.producto_id}</td>
                             <td>${pedido.nombre_producto}</td>
                             <td>${pedido.cantidad}</td>
-                            <td>${new Date(pedido.fecha_solicitud).toLocaleString()}</td>
+                            <td>${new Date(pedido.fecha).toLocaleString()}</td>
+                            <td>${pedido.estado}</td>
                         `;
+
                         tableBody.appendChild(row);
                     });
                 })
                 .catch(error => {
-                    console.error('Error al obtener pedidos confirmados:', error);
-                });
-
-            fetch('/api/pedidos/denegados')
-                .then(response => response.json())
-                .then(data => {
-                    const tableBody = document.querySelector('#denegados-table tbody');
-                    tableBody.innerHTML = ''; // Limpiar el contenido de la tabla
-
-                    data.forEach(pedido => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${pedido.id}</td>
-                            <td>${pedido.producto_id}</td>
-                            <td>${pedido.nombre_producto}</td>
-                            <td>${pedido.cantidad}</td>
-                            <td>${new Date(pedido.fecha_solicitud).toLocaleString()}</td>
-                        `;
-                        tableBody.appendChild(row);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error al obtener pedidos denegados:', error);
+                    console.error('Error al obtener el historial de pedidos:', error);
                 });
         }
 
@@ -164,15 +126,13 @@
 
             // Título del documento
             doc.setFontSize(18);
-            doc.text('Historial de Pedidos Confirmados y Denegados', 14, 22);
+            doc.text('Historial de Pedidos', 14, 22);
 
-            // Obtener datos de las tablas
-            const confirmadosTable = document.getElementById('confirmados-table');
-            const denegadosTable = document.getElementById('denegados-table');
-
+            // Obtener datos de la tabla
+            const table = document.getElementById('historial-table');
+            
             // Generar la tabla en el PDF
-            doc.autoTable({ html: confirmadosTable, startY: 30 });
-            doc.autoTable({ html: denegadosTable, startY: doc.lastAutoTable.finalY + 10 });
+            doc.autoTable({ html: table });
 
             // Guardar el PDF
             doc.save('historial_pedidos.pdf');
