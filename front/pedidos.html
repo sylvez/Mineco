@@ -142,6 +142,9 @@
         function deletePedido(id) {
             fetch(`/api/pedidos/${id}`, {
                 method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             })
             .then(response => {
                 if (response.ok) {
@@ -149,7 +152,7 @@
                     fetchPedidos();
                 } else {
                     return response.json().then(data => {
-                        alert(data.error);
+                        alert(data.error || 'Error al eliminar el pedido');
                     });
                 }
             })
@@ -161,6 +164,9 @@
         function confirmarPedido(id) {
             fetch(`/api/pedidos/${id}/confirmar`, {
                 method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             })
             .then(response => {
                 if (response.ok) {
@@ -168,7 +174,7 @@
                     fetchPedidos();
                 } else {
                     return response.json().then(data => {
-                        alert(data.error);
+                        alert(data.error || 'Error al confirmar el pedido');
                     });
                 }
             })
@@ -179,4 +185,5 @@
     </script>
 </body>
 </html>
+
 
