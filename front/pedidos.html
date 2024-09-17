@@ -57,6 +57,12 @@
         #printButton {
             margin-top: 20px;
         }
+
+        .btn-confirmado {
+            margin: 0;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
@@ -70,6 +76,7 @@
                     <th>Nombre del Producto</th>
                     <th>Cantidad</th>
                     <th>Fecha de Solicitud</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -101,14 +108,41 @@
                             <td>${pedido.nombre_producto}</td>
                             <td>${pedido.cantidad}</td>
                             <td>${new Date(pedido.fecha_solicitud).toLocaleString()}</td>
+                            <td><button class="btn btn-success btn-confirmado" data-id="${pedido.id}">Confirmado</button></td>
                         `;
 
                         tableBody.appendChild(row);
+                    });
+
+                    // Añadir eventos a los botones
+                    document.querySelectorAll('.btn-confirmado').forEach(button => {
+                        button.addEventListener('click', () => {
+                            const id = button.getAttribute('data-id');
+                            deletePedido(id, button);
+                        });
                     });
                 })
                 .catch(error => {
                     console.error('Error al obtener pedidos:', error);
                 });
+        }
+
+        function deletePedido(id, button) {
+            fetch(`/api/pedidos/${id}`, {
+                method: 'DELETE',
+            })
+            .then(response => {
+                if (response.ok) {
+                    button.closest('tr').remove(); // Eliminar la fila de la tabla
+                } else {
+                    return response.json().then(data => {
+                        console.error('Error al eliminar el pedido:', data.error);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error al eliminar el pedido:', error);
+            });
         }
 
         function generatePDF() {
