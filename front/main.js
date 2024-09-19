@@ -80,6 +80,7 @@ function loadWarehouseData() {
         });
 }
 
+
 function populateWarehouseDropdowns() {
     const newProductWarehouse = document.getElementById('newProductWarehouse');
     const editProductWarehouse = document.getElementById('editProductWarehouse');
@@ -176,6 +177,7 @@ function filterBySearch(searchTerm) {
     renderTable();
 }
 
+
 function validateProductData(product) {
     if (!product.nombre_producto || product.nombre_producto.trim() === '') {
         throw new Error('El nombre del producto no puede estar vacío');
@@ -269,9 +271,7 @@ function saveNewProduct(e) {
     const newProduct = {
         nombre_producto: document.getElementById('newProductName').value,
         categoria: document.getElementById('newProductCategory').value,
-        cantidad: parseInt(document.getElementById('newProductUn
-
-its').value),
+        cantidad: parseInt(document.getElementById('newProductUnits').value),
         almacen_id: document.getElementById('newProductWarehouse').value
     };
     
@@ -354,6 +354,7 @@ function saveEditProduct(e) {
     });
 }
 
+
 function populateCategoryDropdowns() {
     const categories = [
         "PAPELERIA",
@@ -430,7 +431,9 @@ function generatePDF() {
 }
 
 function addNewWarehouse() {
-    const warehouseName = prompt("Ingrese el nombre del nuevo almacén:");
+    const 
+
+ouseName = prompt("Ingrese el nombre del nuevo almacén:");
     if (warehouseName) {
         fetch('/api/almacenes', {
             method: 'POST',
@@ -488,4 +491,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.log('All event listeners set up');
 });
-//nada
+
