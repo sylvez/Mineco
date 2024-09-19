@@ -186,7 +186,7 @@ function validateProductData(product) {
     if (isNaN(product.cantidad) || product.cantidad < 0) {
         throw new Error('La cantidad debe ser un número no negativo');
     }
-    if (!product.almacen_id || (isNaN(product.almacen_id) && typeof product.almacen_id !== 'string')) {
+    if (!product.almacen_id || product.almacen_id === '') {
         throw new Error('Debe seleccionar un almacén válido');
     }
     return true;
