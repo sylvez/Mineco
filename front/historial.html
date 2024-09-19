@@ -67,11 +67,30 @@
         .revert-button:hover {
             background-color: #d32f2f;
         }
+
+        .print-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .print-button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Historial de Productos</h1>
+        <button id="printPDF" class="print-button">Imprimir PDF</button>
         <table id="bitacora-table">
             <thead>
                 <tr>
@@ -144,7 +163,22 @@
                     console.error('Error al obtener la bitácora:', error);
                 });
         });
+
+        document.getElementById('printPDF').addEventListener('click', function() {
+            const element = document.querySelector('.container');
+            const opt = {
+                margin:       10,
+                filename:     'historial_productos.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            };
+
+            // New Promise-based usage:
+            html2pdf().set(opt).from(element).save();
+        });
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </body>
 </html>
 
