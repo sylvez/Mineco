@@ -192,47 +192,25 @@ function validateProductData(product) {
     return true;
 }
 
-document.getElementById('searchInput').addEventListener('input', (e) => {
-    filterBySearch(e.target.value);
-});
-
-document.querySelectorAll('.category-btn').forEach(button => {
-    button.addEventListener('click', (e) => {
-        const category = e.target.dataset.category;
-        console.log('Categoría seleccionada:', category);
-        filterByCategory(category);
-    });
-});
-
-const passwordModal = document.getElementById('passwordModal');
-const addButton = document.getElementById('addButton');
-const closeButtons = document.querySelectorAll('.close');
-const submitPasswordButton = document.getElementById('submitPassword');
-const passwordInput = document.getElementById('passwordInput');
-const addForm = document.getElementById('addForm');
-const editForm = document.getElementById('editForm');
-
-addButton.addEventListener('click', () => showPasswordModal('add'));
-closeButtons.forEach(button => {
-    button.addEventListener('click', closeModal);
-});
-submitPasswordButton.addEventListener('click', checkPassword);
-
 function showPasswordModal(action, index = -1) {
     currentAction = action;
     currentEditIndex = index;
+    const passwordModal = document.getElementById('passwordModal');
     passwordModal.style.display = 'block';
-    passwordInput.value = '';
+    document.getElementById('passwordInput').value = '';
+    console.log('Password modal opened for action:', action);
 }
 
 function closeModal() {
-    passwordModal.style.display = 'none';
-    addForm.style.display = 'none';
-    editForm.style.display = 'none';
+    document.getElementById('passwordModal').style.display = 'none';
+    document.getElementById('addForm').style.display = 'none';
+    document.getElementById('editForm').style.display = 'none';
+    console.log('All modals closed');
 }
 
 function checkPassword() {
     console.log('Checking password for action:', currentAction);
+    const passwordInput = document.getElementById('passwordInput');
     if (passwordInput.value === '0000') {
         closeModal();
         if (currentAction === 'add') {
@@ -249,17 +227,20 @@ function checkPassword() {
 }
 
 function showAddForm() {
+    const addForm = document.getElementById('addForm');
     addForm.style.display = 'block';
+    console.log('Add form opened');
 }
 
 function showEditForm(index) {
+    const editForm = document.getElementById('editForm');
     const item = filteredData[index];
     document.getElementById('editProductName').value = item.nombre_producto;
     document.getElementById('editProductCategory').value = item.categoria;
     document.getElementById('editProductUnits').value = item.cantidad;
     document.getElementById('editProductWarehouse').value = item.almacen_id.toString();
     editForm.style.display = 'block';
-    console.log('Edit form should be visible now');
+    console.log('Edit form opened for item:', item);
 }
 
 function deleteProduct(index) {
@@ -283,12 +264,14 @@ function deleteProduct(index) {
         });
 }
 
-document.getElementById('saveNewProduct').addEventListener('click', (e) => {
+function saveNewProduct(e) {
     e.preventDefault();
     const newProduct = {
         nombre_producto: document.getElementById('newProductName').value,
         categoria: document.getElementById('newProductCategory').value,
-        cantidad: parseInt(document.getElementById('newProductUnits').value),
+        cantidad: parseInt(document.getElementById('newProductUn
+
+its').value),
         almacen_id: document.getElementById('newProductWarehouse').value
     };
     
@@ -323,9 +306,9 @@ document.getElementById('saveNewProduct').addEventListener('click', (e) => {
     .finally(() => {
         hideLoadingIndicator();
     });
-});
+}
 
-document.getElementById('saveEditProduct').addEventListener('click', (e) => {
+function saveEditProduct(e) {
     e.preventDefault();
     console.log('Save edit button clicked');
     const editedProduct = {
@@ -369,7 +352,7 @@ document.getElementById('saveEditProduct').addEventListener('click', (e) => {
     .finally(() => {
         hideLoadingIndicator();
     });
-});
+}
 
 function populateCategoryDropdowns() {
     const categories = [
@@ -396,16 +379,13 @@ function populateCategoryDropdowns() {
 function generatePDF() {
     const doc = new jsPDF();
     
-    // Set font size and style for the title
     doc.setFontSize(18);
     doc.setFont(undefined, 'bold');
     doc.text('Inventario de Productos por Categoría', 14, 20);
     
-    // Reset font for the content
     doc.setFontSize(12);
     doc.setFont(undefined, 'normal');
 
-    // Group products by category
     const groupedProducts = inventoryData.reduce((acc, product) => {
         if (!acc[product.categoria]) {
             acc[product.categoria] = [];
@@ -416,25 +396,20 @@ function generatePDF() {
 
     let yOffset = 30;
 
-    // Iterate through each category
     Object.keys(groupedProducts).sort().forEach(category => {
-        // Add a new page if there's not enough space
         if (yOffset > 250) {
             doc.addPage();
             yOffset = 20;
         }
 
-        // Write category name
         doc.setFont(undefined, 'bold');
         doc.text(category, 14, yOffset);
         yOffset += 10;
 
-        // Sort products alphabetically
         const sortedProducts = groupedProducts[category].sort((a, b) => 
             a.nombre_producto.localeCompare(b.nombre_producto)
         );
 
-        // Create table for products in this category
         const tableData = sortedProducts.map(product => [
             product.nombre_producto,
             product.cantidad.toString()
@@ -451,7 +426,6 @@ function generatePDF() {
         yOffset = doc.lastAutoTable.finalY + 15;
     });
 
-    // Save the PDF
     doc.save('inventario_por_categoria.pdf');
 }
 
@@ -481,13 +455,37 @@ function addNewWarehouse() {
     }
 }
 
-// Add event listeners for the PDF generation button and add warehouse button
-document.getElementById('generatePdfButton').addEventListener('click', generatePDF);
-document.getElementById('addWarehouseButton').addEventListener('click', addNewWarehouse);
-
 document.addEventListener('DOMContentLoaded', () => {
     loadInventoryDataWithRetry();
     loadWarehouseData();
     populateCategoryDropdowns();
+
+    document.getElementById('addButton').addEventListener('click', () => showPasswordModal('add'));
+
+    document.querySelectorAll('.close').forEach(button => {
+        button.addEventListener('click', closeModal);
+    });
+
+    document.getElementById('submitPassword').addEventListener('click', checkPassword);
+
+    document.getElementById('saveNewProduct').addEventListener('click', saveNewProduct);
+    document.getElementById('saveEditProduct').addEventListener('click', saveEditProduct);
+
+    document.getElementById('generatePdfButton').addEventListener('click', generatePDF);
+    document.getElementById('addWarehouseButton').addEventListener('click', addNewWarehouse);
+
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        filterBySearch(e.target.value);
+    });
+
+    document.querySelectorAll('.category-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const category = e.target.dataset.category;
+            console.log('Categoría seleccionada:', category);
+            filterByCategory(category);
+        });
+    });
+
+    console.log('All event listeners set up');
 });
 //nada
