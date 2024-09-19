@@ -128,7 +128,9 @@ function addEventListenersToButtons() {
     document.querySelectorAll('.edit-btn').forEach(button => {
         button.addEventListener('click', (e) => {
             e.stopPropagation();
-            showPasswordModal('edit', e.target.dataset.index);
+            const index = e.target.dataset.index;
+            console.log('Edit button clicked for index:', index);
+            showPasswordModal('edit', index);
         });
     });
 
@@ -230,11 +232,13 @@ function closeModal() {
 }
 
 function checkPassword() {
+    console.log('Checking password for action:', currentAction);
     if (passwordInput.value === '0000') {
         closeModal();
         if (currentAction === 'add') {
             showAddForm();
         } else if (currentAction === 'edit') {
+            console.log('Password correct, showing edit form');
             showEditForm(currentEditIndex);
         } else if (currentAction === 'delete') {
             deleteProduct(currentEditIndex);
@@ -253,8 +257,9 @@ function showEditForm(index) {
     document.getElementById('editProductName').value = item.nombre_producto;
     document.getElementById('editProductCategory').value = item.categoria;
     document.getElementById('editProductUnits').value = item.cantidad;
-    document.getElementById('editProductWarehouse').value = item.almacen_id.toString(); // Convertir a string
+    document.getElementById('editProductWarehouse').value = item.almacen_id.toString();
     editForm.style.display = 'block';
+    console.log('Edit form should be visible now');
 }
 
 function deleteProduct(index) {
@@ -322,12 +327,15 @@ document.getElementById('saveNewProduct').addEventListener('click', (e) => {
 
 document.getElementById('saveEditProduct').addEventListener('click', (e) => {
     e.preventDefault();
+    console.log('Save edit button clicked');
     const editedProduct = {
         nombre_producto: document.getElementById('editProductName').value,
         categoria: document.getElementById('editProductCategory').value,
         cantidad: parseInt(document.getElementById('editProductUnits').value),
-        almacen_id: document.getElementById('editProductWarehouse').value // No convertir a entero aquí
+        almacen_id: document.getElementById('editProductWarehouse').value
     };
+
+    console.log('Edited product:', editedProduct);
 
     try {
         validateProductData(editedProduct);
@@ -482,5 +490,4 @@ document.addEventListener('DOMContentLoaded', () => {
     loadWarehouseData();
     populateCategoryDropdowns();
 });
-
 //nada
