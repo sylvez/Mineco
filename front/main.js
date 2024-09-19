@@ -184,7 +184,7 @@ function validateProductData(product) {
     if (isNaN(product.cantidad) || product.cantidad < 0) {
         throw new Error('La cantidad debe ser un número no negativo');
     }
-    if (!product.almacen_id || isNaN(product.almacen_id)) {
+    if (!product.almacen_id || (isNaN(product.almacen_id) && typeof product.almacen_id !== 'string')) {
         throw new Error('Debe seleccionar un almacén válido');
     }
     return true;
@@ -253,7 +253,7 @@ function showEditForm(index) {
     document.getElementById('editProductName').value = item.nombre_producto;
     document.getElementById('editProductCategory').value = item.categoria;
     document.getElementById('editProductUnits').value = item.cantidad;
-    document.getElementById('editProductWarehouse').value = item.almacen_id;
+    document.getElementById('editProductWarehouse').value = item.almacen_id.toString(); // Convertir a string
     editForm.style.display = 'block';
 }
 
@@ -284,7 +284,7 @@ document.getElementById('saveNewProduct').addEventListener('click', (e) => {
         nombre_producto: document.getElementById('newProductName').value,
         categoria: document.getElementById('newProductCategory').value,
         cantidad: parseInt(document.getElementById('newProductUnits').value),
-        almacen_id: parseInt(document.getElementById('newProductWarehouse').value)
+        almacen_id: document.getElementById('newProductWarehouse').value
     };
     
     try {
@@ -326,7 +326,7 @@ document.getElementById('saveEditProduct').addEventListener('click', (e) => {
         nombre_producto: document.getElementById('editProductName').value,
         categoria: document.getElementById('editProductCategory').value,
         cantidad: parseInt(document.getElementById('editProductUnits').value),
-        almacen_id: parseInt(document.getElementById('editProductWarehouse').value)
+        almacen_id: document.getElementById('editProductWarehouse').value // No convertir a entero aquí
     };
 
     try {
