@@ -380,6 +380,32 @@ app.post('/api/revertir/:id', (req, res) => {
     });
 });
 
+// API para obtener todos los almacenes
+app.get('/api/almacenes', (req, res) => {
+    const query = 'SELECT * FROM almacen';
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error al obtener almacenes:', err);
+            return res.status(500).json({ error: 'Error al obtener almacenes' });
+        }
+        res.status(200).json(results);
+    });
+});
+
+// API para insertar un nuevo almacén
+app.post('/api/almacenes', (req, res) => {
+    const { almacen } = req.body;
+    const query = 'INSERT INTO almacen (almacen) VALUES (?)';
+
+    db.query(query, [almacen], (err, result) => {
+        if (err) {
+            console.error('Error al agregar almacén:', err);
+            return res.status(500).json({ error: 'Error al agregar almacén' });
+        }
+        res.status(201).json({ id: result.insertId, almacen });
+    });
+});
 
 
 

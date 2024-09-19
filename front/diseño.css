@@ -22,12 +22,10 @@ h1 {
 }
 
 .flag {
-  width: 120px;  /* Increased from 80px to 120px */
+  width: 120px;
   height: auto;
-  margin: 0 20px;  /* Increased from 10px to 20px */
+  margin: 0 20px;
 }
-
-/* El resto del CSS permanece igual */
 
 .categories {
   display: flex;

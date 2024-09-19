@@ -2,6 +2,7 @@ let inventoryData = [];
 let filteredData = [];
 let currentAction = '';
 let currentEditIndex = -1;
+let warehouseData = [];
 let { jsPDF } = window.jspdf;
 
 function showLoadingIndicator() {
@@ -62,18 +63,49 @@ function loadInventoryDataWithRetry(retries = 3) {
         });
 }
 
+function loadWarehouseData() {
+    fetch('/api/almacenes')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            warehouseData = data;
+            populateWarehouseDropdowns();
+        })
+        .catch(error => {
+            console.error('Error al cargar los almacenes:', error);
+        });
+}
+
+function populateWarehouseDropdowns() {
+    const newProductWarehouse = document.getElementById('newProductWarehouse');
+    const editProductWarehouse = document.getElementById('editProductWarehouse');
+
+    newProductWarehouse.innerHTML = '';
+    editProductWarehouse.innerHTML = '';
+
+    warehouseData.forEach(warehouse => {
+        newProductWarehouse.innerHTML += `<option value="${warehouse.id}">${warehouse.almacen}</option>`;
+        editProductWarehouse.innerHTML += `<option value="${warehouse.id}">${warehouse.almacen}</option>`;
+    });
+}
+
 function renderTable() {
     const tableBody = document.querySelector('#inventoryTable tbody');
     tableBody.innerHTML = '';
     filteredData.forEach((item, index) => {
         const status = getStatus(item.cantidad);
+        const warehouse = warehouseData.find(w => w.id === item.almacen_id) || { almacen: 'Desconocido' };
         const row = `
             <tr>
                 <td>${new Date().toLocaleDateString()}</td>
                 <td>${item.id}</td>
                 <td>${item.nombre_producto}</td>
                 <td>${item.categoria}</td>
-                <td>Almacenes Maybe</td>
+                <td>${warehouse.almacen}</td>
                 <td>${item.cantidad}</td>
                 <td class="${status.class}">${status.icon}</td>
                 <td>1</td>
@@ -152,6 +184,9 @@ function validateProductData(product) {
     if (isNaN(product.cantidad) || product.cantidad < 0) {
         throw new Error('La cantidad debe ser un número no negativo');
     }
+    if (!product.almacen_id || isNaN(product.almacen_id)) {
+        throw new Error('Debe seleccionar un almacén válido');
+    }
     return true;
 }
 
@@ -218,6 +253,7 @@ function showEditForm(index) {
     document.getElementById('editProductName').value = item.nombre_producto;
     document.getElementById('editProductCategory').value = item.categoria;
     document.getElementById('editProductUnits').value = item.cantidad;
+    document.getElementById('editProductWarehouse').value = item.almacen_id;
     editForm.style.display = 'block';
 }
 
@@ -247,7 +283,8 @@ document.getElementById('saveNewProduct').addEventListener('click', (e) => {
     const newProduct = {
         nombre_producto: document.getElementById('newProductName').value,
         categoria: document.getElementById('newProductCategory').value,
-        cantidad: parseInt(document.getElementById('newProductUnits').value)
+        cantidad: parseInt(document.getElementById('newProductUnits').value),
+        almacen_id: parseInt(document.getElementById('newProductWarehouse').value)
     };
     
     try {
@@ -288,7 +325,8 @@ document.getElementById('saveEditProduct').addEventListener('click', (e) => {
     const editedProduct = {
         nombre_producto: document.getElementById('editProductName').value,
         categoria: document.getElementById('editProductCategory').value,
-        cantidad: parseInt(document.getElementById('editProductUnits').value)
+        cantidad: parseInt(document.getElementById('editProductUnits').value),
+        almacen_id: parseInt(document.getElementById('editProductWarehouse').value)
     };
 
     try {
@@ -409,14 +447,40 @@ function generatePDF() {
     doc.save('inventario_por_categoria.pdf');
 }
 
-// Add event listener for the PDF generation button
+function addNewWarehouse() {
+    const warehouseName = prompt("Ingrese el nombre del nuevo almacén:");
+    if (warehouseName) {
+        fetch('/api/almacenes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ almacen: warehouseName })
+        })
+        .then(response => {
+            if (!response.ok)
+                throw new Error(`HTTP error! status: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            loadWarehouseData();
+            alert('Nuevo almacén agregado con éxito');
+        })
+        .catch(error => {
+            console.error('Error al agregar el almacén:', error);
+            alert('No se pudo agregar el almacén. Por favor, intente de nuevo.');
+        });
+    }
+}
+
+// Add event listeners for the PDF generation button and add warehouse button
 document.getElementById('generatePdfButton').addEventListener('click', generatePDF);
+document.getElementById('addWarehouseButton').addEventListener('click', addNewWarehouse);
 
 document.addEventListener('DOMContentLoaded', () => {
     loadInventoryDataWithRetry();
+    loadWarehouseData();
     populateCategoryDropdowns();
 });
-
-
 
 //nada

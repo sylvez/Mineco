@@ -9,8 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
-
-    <div id="flags"></div>
+    <div id="flags">
         <img src="https://flagcdn.com/w80/eu.png" alt="Bandera de la Unión Europea" class="flag">
         <img src="https://flagcdn.com/w80/gt.png" alt="Bandera de Guatemala" class="flag">
     </div>
@@ -19,6 +18,7 @@
     
     <button id="addButton" class="add-btn">Agregar Producto</button>
     <button id="generatePdfButton" class="add-btn">Generar PDF</button>
+    <button id="addWarehouseButton" class="add-btn">Agregar Almacén</button>
 
     <input type="text" id="searchInput" placeholder="Buscar por producto o código">
 
@@ -80,15 +80,13 @@
             <div class="form-group">
                 <label for="newProductCategory">Categoría</label>
                 <select id="newProductCategory">
-                    <option value="PAPELERÍA">PAPELERÍA</option>
-                    <option value="ALIMENTOS">ALIMENTOS</option>
-                    <option value="COMUNICACIÓN Y VIDEO">COMUNICACIÓN Y VIDEO</option>
-                    <option value="ENCESER DE OFICINA">ENCESER DE OFICINA</option>
-                    <option value="ENCERES DE LIMPIEZA">ENCERES DE LIMPIEZA</option>
-                    <option value="MATERIALES ELECTRÓNICOS">MATERIALES ELECTRÓNICOS</option>
-                    <option value="MATERIALES DE LIMPIEZA">MATERIALES DE LIMPIEZA</option>
-                    <option value="ÚTILES DE OFICINA">ÚTILES DE OFICINA</option>
-                    <option value="OTROS">OTROS</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="newProductWarehouse">Almacén</label>
+                <select id="newProductWarehouse">
+                    <!-- Options will be populated dynamically -->
                 </select>
             </div>
             <div class="form-group">
@@ -112,15 +110,13 @@
             <div class="form-group">
                 <label for="editProductCategory">Categoría</label>
                 <select id="editProductCategory">
-                    <option value="PAPELERÍA">PAPELERÍA</option>
-                    <option value="ALIMENTOS">ALIMENTOS</option>
-                    <option value="COMUNICACIÓN Y VIDEO">COMUNICACIÓN Y VIDEO</option>
-                    <option value="ENCESER DE OFICINA">ENCESER DE OFICINA</option>
-                    <option value="ENCERES DE LIMPIEZA">ENCERES DE LIMPIEZA</option>
-                    <option value="MATERIALES ELECTRÓNICOS">MATERIALES ELECTRÓNICOS</option>
-                    <option value="MATERIALES DE LIMPIEZA">MATERIALES DE LIMPIEZA</option>
-                    <option value="ÚTILES DE OFICINA">ÚTILES DE OFICINA</option>
-                    <option value="OTROS">OTROS</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="editProductWarehouse">Almacén</label>
+                <select id="editProductWarehouse">
+                    <!-- Options will be populated dynamically -->
                 </select>
             </div>
             <div class="form-group">
