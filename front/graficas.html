@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventario y Pronóstico</title>
+    <title>Existencias de Almacen</title>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3185363034944534"
      crossorigin="anonymous"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
@@ -32,7 +31,7 @@
             height: 800px;
             margin: 0 auto;
         }
-        #categorySelect {
+        #categorySelect, #colorSelect {
             margin-bottom: 20px;
             padding: 10px;
             font-size: 16px;
@@ -51,12 +50,47 @@
         #printPdfButton:hover {
             background-color: #45a049;
         }
+        .color-description {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .color-item {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+        .color-box {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Inventario y Pronóstico</h1>
+        <div class="color-description">
+            <div class="color-item">
+                <div class="color-box" style="background-color: #FF0000;"></div>
+                <span>Agotado (0)</span>
+            </div>
+            <div class="color-item">
+                <div class="color-box" style="background-color: #FFFF00;"></div>
+                <span>Bajo (1-10)</span>
+            </div>
+            <div class="color-item">
+                <div class="color-box" style="background-color: #00FF00;"></div>
+                <span>Disponible (>10)</span>
+            </div>
+        </div>
         <select id="categorySelect"></select>
+        <select id="colorSelect">
+            <option value="all">Todos los colores</option>
+            <option value="#FF0000">Rojo (Agotado)</option>
+            <option value="#FFFF00">Amarillo (Bajo)</option>
+            <option value="#00FF00">Verde (Disponible)</option>
+        </select>
         <div id="chartContainer">
             <canvas id="inventoryChart"></canvas>
         </div>
@@ -95,15 +129,23 @@
                 categorySelect.appendChild(option);
             });
 
-            categorySelect.addEventListener('change', () => updateChart(categorySelect.value));
+            categorySelect.addEventListener('change', updateChartWithFilters);
+            document.getElementById('colorSelect').addEventListener('change', updateChartWithFilters);
 
-            updateChart('all');
+            updateChartWithFilters();
         }
 
-        function updateChart(selectedCategory) {
-            const filteredData = selectedCategory === 'all' 
+        function updateChartWithFilters() {
+            const selectedCategory = document.getElementById('categorySelect').value;
+            const selectedColor = document.getElementById('colorSelect').value;
+
+            let filteredData = selectedCategory === 'all' 
                 ? inventoryData 
                 : inventoryData.filter(item => item.categoria === selectedCategory);
+
+            if (selectedColor !== 'all') {
+                filteredData = filteredData.filter(item => getColor(item.cantidad) === selectedColor);
+            }
 
             createChart(filteredData);
         }
