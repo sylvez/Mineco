@@ -87,18 +87,51 @@ app.get('/', (req, res) => {
 
 // APIS REGISTRO
 
+// Update the POST request handler
 app.post('/api/productos', (req, res) => {
-    const { categoria, nombre_producto, cantidad } = req.body;
-    const query = 'INSERT INTO productos (categoria, nombre_producto, cantidad) VALUES (?, ?, ?)';
+    const { categoria, nombre_producto, cantidad, almacen_id } = req.body;
+    const query = 'INSERT INTO productos (categoria, nombre_producto, cantidad, almacen_id) VALUES (?, ?, ?, ?)';
 
-    db.query(query, [categoria, nombre_producto, cantidad], (err, result) => {
+    db.query(query, [categoria, nombre_producto, cantidad, almacen_id], (err, result) => {
         if (err) {
             console.error('Error al agregar producto:', err);
             return res.status(500).json({ error: 'Error al agregar producto' });
         }
-        res.status(201).json({ id: result.insertId, categoria, nombre_producto, cantidad });
+        res.status(201).json({ id: result.insertId, categoria, nombre_producto, cantidad, almacen_id });
     });
 });
+
+// Update the PUT request handler
+app.put('/api/productos/:id', (req, res) => {
+    const { id } = req.params;
+    const { categoria, nombre_producto, cantidad, almacen_id } = req.body;
+    const query = 'UPDATE productos SET categoria = ?, nombre_producto = ?, cantidad = ?, almacen_id = ? WHERE id = ?';
+
+    db.query(query, [categoria, nombre_producto, cantidad, almacen_id, id], (err, result) => {
+        if (err) {
+            console.error('Error al actualizar producto:', err);
+            return res.status(500).json({ error: 'Error al actualizar producto' });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Producto no encontrado' });
+        }
+        res.status(200).json({ id, categoria, nombre_producto, cantidad, almacen_id });
+    });
+});
+
+// Update the GET request handler to include almacen_id
+app.get('/api/productos', (req, res) => {
+    const query = 'SELECT * FROM productos';
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error al obtener productos:', err);
+            return res.status(500).json({ error: 'Error al obtener productos' });
+        }
+        res.status(200).json(results);
+    });
+});
+
 
 app.delete('/api/productos/:id', (req, res) => {
     const { id } = req.params;
@@ -116,34 +149,7 @@ app.delete('/api/productos/:id', (req, res) => {
     });
 });
 
-app.put('/api/productos/:id', (req, res) => {
-    const { id } = req.params;
-    const { categoria, nombre_producto, cantidad } = req.body;
-    const query = 'UPDATE productos SET categoria = ?, nombre_producto = ?, cantidad = ? WHERE id = ?';
 
-    db.query(query, [categoria, nombre_producto, cantidad, id], (err, result) => {
-        if (err) {
-            console.error('Error al actualizar producto:', err);
-            return res.status(500).json({ error: 'Error al actualizar producto' });
-        }
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Producto no encontrado' });
-        }
-        res.status(200).json({ id, categoria, nombre_producto, cantidad });
-    });
-});
-
-app.get('/api/productos', (req, res) => {
-    const query = 'SELECT * FROM productos';
-
-    db.query(query, (err, results) => {
-        if (err) {
-            console.error('Error al obtener productos:', err);
-            return res.status(500).json({ error: 'Error al obtener productos' });
-        }
-        res.status(200).json(results);
-    });
-});
 
 // Ruta para obtener la bitácora de productos
 app.get('/api/bitacora', (req, res) => {

@@ -4,6 +4,7 @@ let currentAction = '';
 let currentEditIndex = -1;
 let warehouseData = [];
 let { jsPDF } = window.jspdf;
+
 function showLoadingIndicator() {
     let loadingIndicator = document.getElementById('loadingIndicator');
     if (!loadingIndicator) {
@@ -23,12 +24,14 @@ function showLoadingIndicator() {
     }
     loadingIndicator.style.display = 'block';
 }
+
 function hideLoadingIndicator() {
     const loadingIndicator = document.getElementById('loadingIndicator');
     if (loadingIndicator) {
         loadingIndicator.style.display = 'none';
     }
 }
+
 function loadInventoryDataWithRetry(retries = 3) {
     showLoadingIndicator();
     fetch('/api/productos')
@@ -40,7 +43,10 @@ function loadInventoryDataWithRetry(retries = 3) {
         })
         .then(data => {
             console.log('Datos recibidos:', data);
-            inventoryData = data;
+            inventoryData = data.map(item => ({
+                ...item,
+                almacen_id: item.almacen_id ? item.almacen_id.toString() : ''
+            }));
             filteredData = inventoryData;
             renderTable();
             console.log('Datos renderizados:', filteredData);
@@ -59,6 +65,7 @@ function loadInventoryDataWithRetry(retries = 3) {
             hideLoadingIndicator();
         });
 }
+
 function loadWarehouseData() {
     fetch('/api/almacenes')
         .then(response => {
@@ -75,22 +82,26 @@ function loadWarehouseData() {
             console.error('Error al cargar los almacenes:', error);
         });
 }
+
 function populateWarehouseDropdowns() {
     const newProductWarehouse = document.getElementById('newProductWarehouse');
     const editProductWarehouse = document.getElementById('editProductWarehouse');
+
     newProductWarehouse.innerHTML = '';
     editProductWarehouse.innerHTML = '';
+
     warehouseData.forEach(warehouse => {
         newProductWarehouse.innerHTML += `<option value="${warehouse.id}">${warehouse.almacen}</option>`;
         editProductWarehouse.innerHTML += `<option value="${warehouse.id}">${warehouse.almacen}</option>`;
     });
 }
+
 function renderTable() {
     const tableBody = document.querySelector('#inventoryTable tbody');
     tableBody.innerHTML = '';
     filteredData.forEach((item, index) => {
         const status = getStatus(item.cantidad);
-        const warehouse = warehouseData.find(w => w.id === item.almacen_id) || { almacen: 'Desconocido' };
+        const warehouse = warehouseData.find(w => w.id.toString() === item.almacen_id) || { almacen: 'Desconocido' };
         const row = `
             <tr>
                 <td>${new Date().toLocaleDateString()}</td>
@@ -114,6 +125,7 @@ function renderTable() {
     });
     addEventListenersToButtons();
 }
+
 function addEventListenersToButtons() {
     document.querySelectorAll('.edit-btn').forEach(button => {
         button.addEventListener('click', (e) => {
@@ -130,6 +142,7 @@ function addEventListenersToButtons() {
         });
     });
 }
+
 function getStatus(cantidad) {
     if (cantidad === 0) {
         return { class: 'status-red', icon: '↓' };
@@ -139,9 +152,11 @@ function getStatus(cantidad) {
         return { class: 'status-green', icon: '↑' };
     }
 }
+
 function getDescription(producto) {
     return `Descripción breve de ${producto}`;
 }
+
 function filterByCategory(category) {
     console.log('Filtrando por categoría:', category);
     filteredData = inventoryData.filter(item => {
@@ -153,6 +168,7 @@ function filterByCategory(category) {
     console.log('Datos filtrados:', filteredData);
     renderTable();
 }
+
 function filterBySearch(searchTerm) {
     filteredData = inventoryData.filter(item =>
         item.nombre_producto.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -160,6 +176,7 @@ function filterBySearch(searchTerm) {
     );
     renderTable();
 }
+
 function validateProductData(product) {
     if (!product.nombre_producto || product.nombre_producto.trim() === '') {
         throw new Error('El nombre del producto no puede estar vacío');
@@ -175,6 +192,7 @@ function validateProductData(product) {
     }
     return true;
 }
+
 function showPasswordModal(action, index = -1) {
     currentAction = action;
     currentEditIndex = index;
@@ -183,12 +201,14 @@ function showPasswordModal(action, index = -1) {
     document.getElementById('passwordInput').value = '';
     console.log('Password modal opened for action:', action);
 }
+
 function closeModal() {
     document.getElementById('passwordModal').style.display = 'none';
     document.getElementById('addForm').style.display = 'none';
     document.getElementById('editForm').style.display = 'none';
     console.log('All modals closed');
 }
+
 function checkPassword() {
     console.log('Checking password for action:', currentAction);
     const passwordInput = document.getElementById('passwordInput');
@@ -206,18 +226,20 @@ function checkPassword() {
         alert('Contraseña incorrecta');
     }
 }
+
 function showAddForm() {
     const addForm = document.getElementById('addForm');
     addForm.style.display = 'block';
     console.log('Add form opened');
 }
+
 function showEditForm(index) {
     const editForm = document.getElementById('editForm');
     const item = filteredData[index];
     document.getElementById('editProductName').value = item.nombre_producto;
     document.getElementById('editProductCategory').value = item.categoria;
     document.getElementById('editProductUnits').value = item.cantidad;
-    document.getElementById('editProductWarehouse').value = item.almacen_id.toString();
+    document.getElementById('editProductWarehouse').value = item.almacen_id;
     editForm.style.display = 'block';
     console.log('Edit form opened for item:', item);
 }
@@ -331,7 +353,6 @@ function saveEditProduct(e) {
     });
 }
 
-
 function populateCategoryDropdowns() {
     const categories = [
         "PAPELERIA",
@@ -346,11 +367,16 @@ function populateCategoryDropdowns() {
     ];
     const newProductCategory = document.getElementById('newProductCategory');
     const editProductCategory = document.getElementById('editProductCategory');
+
+    newProductCategory.innerHTML = '';
+    editProductCategory.innerHTML = '';
+
     categories.forEach(category => {
         newProductCategory.innerHTML += `<option value="${category}">${category}</option>`;
         editProductCategory.innerHTML += `<option value="${category}">${category}</option>`;
     });
 }
+
 function generatePDF() {
     const doc = new jsPDF();
     doc.setFontSize(18);
@@ -393,9 +419,9 @@ function generatePDF() {
     });
     doc.save('inventario_por_categoria.pdf');
 }
+
 function addNewWarehouse() {
-    const 
-ouseName = prompt("Ingrese el nombre del nuevo almacén:");
+    const warehouseName = prompt("Ingrese el nombre del nuevo almacén:");
     if (warehouseName) {
         fetch('/api/almacenes', {
             method: 'POST',
@@ -419,6 +445,7 @@ ouseName = prompt("Ingrese el nombre del nuevo almacén:");
         });
     }
 }
+
 document.addEventListener('DOMContentLoaded', () => {
     loadInventoryDataWithRetry();
     loadWarehouseData();
@@ -429,7 +456,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('submitPassword').addEventListener('click', checkPassword);
     document.getElementById('saveNewProduct').addEventListener('click', saveNewProduct);
-    document.getElementById('saveEditProduct').addEventListener('click', saveEditProduct)
+    document.getElementById('saveEditProduct').addEventListener('click', saveEditProduct);
     document.getElementById('generatePdfButton').addEventListener('click', generatePDF);
     document.getElementById('addWarehouseButton').addEventListener('click', addNewWarehouse);
     document.getElementById('searchInput').addEventListener('input', (e) => {
@@ -444,4 +471,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     console.log('All event listeners set up');
 });
-
