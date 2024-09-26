@@ -87,7 +87,7 @@ app.get('/', (req, res) => {
 
 // APIS REGISTRO
 
-// Update the POST request handler
+// Productos
 app.post('/api/productos', (req, res) => {
     const { categoria, nombre_producto, cantidad, almacen_id } = req.body;
     const query = 'INSERT INTO productos (categoria, nombre_producto, cantidad, almacen_id) VALUES (?, ?, ?, ?)';
@@ -100,38 +100,6 @@ app.post('/api/productos', (req, res) => {
         res.status(201).json({ id: result.insertId, categoria, nombre_producto, cantidad, almacen_id });
     });
 });
-
-// Update the PUT request handler
-app.put('/api/productos/:id', (req, res) => {
-    const { id } = req.params;
-    const { categoria, nombre_producto, cantidad, almacen_id } = req.body;
-    const query = 'UPDATE productos SET categoria = ?, nombre_producto = ?, cantidad = ?, almacen_id = ? WHERE id = ?';
-
-    db.query(query, [categoria, nombre_producto, cantidad, almacen_id, id], (err, result) => {
-        if (err) {
-            console.error('Error al actualizar producto:', err);
-            return res.status(500).json({ error: 'Error al actualizar producto' });
-        }
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Producto no encontrado' });
-        }
-        res.status(200).json({ id, categoria, nombre_producto, cantidad, almacen_id });
-    });
-});
-
-// Update the GET request handler to include almacen_id
-app.get('/api/productos', (req, res) => {
-    const query = 'SELECT * FROM productos';
-
-    db.query(query, (err, results) => {
-        if (err) {
-            console.error('Error al obtener productos:', err);
-            return res.status(500).json({ error: 'Error al obtener productos' });
-        }
-        res.status(200).json(results);
-    });
-});
-
 
 app.delete('/api/productos/:id', (req, res) => {
     const { id } = req.params;
@@ -149,6 +117,60 @@ app.delete('/api/productos/:id', (req, res) => {
     });
 });
 
+app.put('/api/productos/:id', (req, res) => {
+    const { id } = req.params;
+    const { categoria, nombre_producto, cantidad, almacen_id } = req.body;
+    const query = 'UPDATE productos SET categoria = ?, nombre_producto = ?, cantidad = ?, almacen_id = ? WHERE id = ?';
+
+    db.query(query, [categoria, nombre_producto, cantidad, almacen_id, id], (err, result) => {
+        if (err) {
+            console.error('Error al actualizar producto:', err);
+            return res.status(500).json({ error: 'Error al actualizar producto' });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Producto no encontrado' });
+        }
+        res.status(200).json({ id, categoria, nombre_producto, cantidad, almacen_id });
+    });
+});
+
+app.get('/api/productos', (req, res) => {
+    const query = 'SELECT p.*, a.almacen FROM productos p LEFT JOIN almacen a ON p.almacen_id = a.id';
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error al obtener productos:', err);
+            return res.status(500).json({ error: 'Error al obtener productos' });
+        }
+        res.status(200).json(results);
+    });
+});
+
+// Almacenes
+app.post('/api/almacenes', (req, res) => {
+    const { almacen } = req.body;
+    const query = 'INSERT INTO almacen (almacen) VALUES (?)';
+
+    db.query(query, [almacen], (err, result) => {
+        if (err) {
+            console.error('Error al agregar almacén:', err);
+            return res.status(500).json({ error: 'Error al agregar almacén' });
+        }
+        res.status(201).json({ id: result.insertId, almacen });
+    });
+});
+
+app.get('/api/almacenes', (req, res) => {
+    const query = 'SELECT * FROM almacen';
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error al obtener almacenes:', err);
+            return res.status(500).json({ error: 'Error al obtener almacenes' });
+        }
+        res.status(200).json(results);
+    });
+});
 
 
 // Ruta para obtener la bitácora de productos
@@ -383,33 +405,6 @@ app.post('/api/revertir/:id', (req, res) => {
                 res.status(200).json({ message: 'Producto revertido a estado anterior correctamente' });
             });
         }
-    });
-});
-
-// API para obtener todos los almacenes
-app.get('/api/almacenes', (req, res) => {
-    const query = 'SELECT * FROM almacen';
-
-    db.query(query, (err, results) => {
-        if (err) {
-            console.error('Error al obtener almacenes:', err);
-            return res.status(500).json({ error: 'Error al obtener almacenes' });
-        }
-        res.status(200).json(results);
-    });
-});
-
-// API para insertar un nuevo almacén
-app.post('/api/almacenes', (req, res) => {
-    const { almacen } = req.body;
-    const query = 'INSERT INTO almacen (almacen) VALUES (?)';
-
-    db.query(query, [almacen], (err, result) => {
-        if (err) {
-            console.error('Error al agregar almacén:', err);
-            return res.status(500).json({ error: 'Error al agregar almacén' });
-        }
-        res.status(201).json({ id: result.insertId, almacen });
     });
 });
 

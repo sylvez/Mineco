@@ -3,7 +3,6 @@ let filteredData = [];
 let currentAction = '';
 let currentEditIndex = -1;
 let warehouseData = [];
-let { jsPDF } = window.jspdf;
 
 function showLoadingIndicator() {
     let loadingIndicator = document.getElementById('loadingIndicator');
@@ -43,10 +42,7 @@ function loadInventoryDataWithRetry(retries = 3) {
         })
         .then(data => {
             console.log('Datos recibidos:', data);
-            inventoryData = data.map(item => ({
-                ...item,
-                almacen_id: item.almacen_id ? item.almacen_id.toString() : ''
-            }));
+            inventoryData = data;
             filteredData = inventoryData;
             renderTable();
             console.log('Datos renderizados:', filteredData);
@@ -101,14 +97,13 @@ function renderTable() {
     tableBody.innerHTML = '';
     filteredData.forEach((item, index) => {
         const status = getStatus(item.cantidad);
-        const warehouse = warehouseData.find(w => w.id.toString() === item.almacen_id) || { almacen: 'Desconocido' };
         const row = `
             <tr>
                 <td>${new Date().toLocaleDateString()}</td>
                 <td>${item.id}</td>
                 <td>${item.nombre_producto}</td>
                 <td>${item.categoria}</td>
-                <td>${warehouse.almacen}</td>
+                <td>${item.almacen || 'No asignado'}</td>
                 <td>${item.cantidad}</td>
                 <td class="${status.class}">${status.icon}</td>
                 <td>1</td>
@@ -187,8 +182,8 @@ function validateProductData(product) {
     if (isNaN(product.cantidad) || product.cantidad < 0) {
         throw new Error('La cantidad debe ser un número no negativo');
     }
-    if (!product.almacen_id || product.almacen_id === '') {
-        throw new Error('Debe seleccionar un almacén válido');
+    if (!product.almacen_id) {
+        throw new Error('Debe seleccionar un almacén');
     }
     return true;
 }
@@ -377,49 +372,6 @@ function populateCategoryDropdowns() {
     });
 }
 
-function generatePDF() {
-    const doc = new jsPDF();
-    doc.setFontSize(18);
-    doc.setFont(undefined, 'bold');
-    doc.text('Inventario de Productos por Categoría', 14, 20);
-    doc.setFontSize(12);
-    doc.setFont(undefined, 'normal');
-    const groupedProducts = inventoryData.reduce((acc, product) => {
-        if (!acc[product.categoria]) {
-            acc[product.categoria] = [];
-        }
-        acc[product.categoria].push(product);
-        return acc;
-    }, {});
-    let yOffset = 30;
-    Object.keys(groupedProducts).sort().forEach(category => {
-        if (yOffset > 250) {
-            doc.addPage();
-            yOffset = 20;
-        }
-        doc.setFont(undefined, 'bold');
-        doc.text(category, 14, yOffset);
-        yOffset += 10;
-        const sortedProducts = groupedProducts[category].sort((a, b) => 
-            a.nombre_producto.localeCompare(b.nombre_producto)
-        );
-        const tableData = sortedProducts.map(product => [
-            product.nombre_producto,
-            product.cantidad.toString()
-        ]);
-        doc.autoTable({
-            startY: yOffset,
-            head: [['Producto', 'Cantidad']],
-            body: tableData,
-            margin: { left: 14 },
-            tableWidth: 180
-        });
-
-        yOffset = doc.lastAutoTable.finalY + 15;
-    });
-    doc.save('inventario_por_categoria.pdf');
-}
-
 function addNewWarehouse() {
     const warehouseName = prompt("Ingrese el nombre del nuevo almacén:");
     if (warehouseName) {
@@ -457,7 +409,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('submitPassword').addEventListener('click', checkPassword);
     document.getElementById('saveNewProduct').addEventListener('click', saveNewProduct);
     document.getElementById('saveEditProduct').addEventListener('click', saveEditProduct);
-    document.getElementById('generatePdfButton').addEventListener('click', generatePDF);
     document.getElementById('addWarehouseButton').addEventListener('click', addNewWarehouse);
     document.getElementById('searchInput').addEventListener('input', (e) => {
         filterBySearch(e.target.value);
