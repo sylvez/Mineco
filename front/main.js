@@ -242,22 +242,32 @@ function showEditForm(index) {
 function deleteProduct(index) {
     const productId = filteredData[index].id;
     showLoadingIndicator();
-    fetch(`/api/productos/${productId}`, { method: 'DELETE' })
-        .then(response => {
-            if (!response.ok)
-                throw new Error(`HTTP error! status: ${response.status}`);
-            return response.json();
-        })
-        .then(data => {
-            loadInventoryDataWithRetry();
-        })
-        .catch(error => {
-            console.error('Error al eliminar el producto:', error);
-            alert('No se pudo eliminar el producto. Por favor, intente de nuevo.');
-        })
-        .finally(() => {
-            hideLoadingIndicator();
-        });
+    fetch(`/api/productos/${productId}`, { 
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Producto eliminado:', data);
+        inventoryData = inventoryData.filter(item => item.id !== productId);
+        filteredData = filteredData.filter(item => item.id !== productId);
+        renderTable();
+        alert('Producto eliminado con éxito');
+    })
+    .catch(error => {
+        console.error('Error al eliminar el producto:', error);
+        alert('No se pudo eliminar el producto. Por favor, intente de nuevo.');
+    })
+    .finally(() => {
+        hideLoadingIndicator();
+    });
 }
 
 function saveNewProduct(e) {
