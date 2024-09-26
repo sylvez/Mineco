@@ -31,7 +31,7 @@
             height: 800px;
             margin: 0 auto;
         }
-        #categorySelect, #colorSelect {
+        #categorySelect {
             margin-bottom: 20px;
             padding: 10px;
             font-size: 16px;
@@ -50,47 +50,53 @@
         #printPdfButton:hover {
             background-color: #45a049;
         }
-        .color-description {
+        .color-buttons {
             display: flex;
             justify-content: center;
             margin-bottom: 20px;
         }
-        .color-item {
+        .color-button {
             display: flex;
             align-items: center;
             margin-right: 20px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
         }
         .color-box {
             width: 20px;
             height: 20px;
             margin-right: 5px;
+            border-radius: 3px;
+        }
+        .active {
+            outline: 2px solid #000;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Inventario y Pronóstico</h1>
-        <div class="color-description">
-            <div class="color-item">
+        <div class="color-buttons">
+            <button class="color-button" data-color="all">
+                <span>Todos los colores</span>
+            </button>
+            <button class="color-button" data-color="#FF0000">
                 <div class="color-box" style="background-color: #FF0000;"></div>
                 <span>Agotado (0)</span>
-            </div>
-            <div class="color-item">
+            </button>
+            <button class="color-button" data-color="#FFFF00">
                 <div class="color-box" style="background-color: #FFFF00;"></div>
                 <span>Bajo (1-10)</span>
-            </div>
-            <div class="color-item">
+            </button>
+            <button class="color-button" data-color="#00FF00">
                 <div class="color-box" style="background-color: #00FF00;"></div>
                 <span>Disponible (>10)</span>
-            </div>
+            </button>
         </div>
         <select id="categorySelect"></select>
-        <select id="colorSelect">
-            <option value="all">Todos los colores</option>
-            <option value="#FF0000">Rojo (Agotado)</option>
-            <option value="#FFFF00">Amarillo (Bajo)</option>
-            <option value="#00FF00">Verde (Disponible)</option>
-        </select>
         <div id="chartContainer">
             <canvas id="inventoryChart"></canvas>
         </div>
@@ -101,6 +107,7 @@
         let inventoryData = [];
         let categories = new Set();
         let chart;
+        let selectedColor = 'all';
 
         // Fetch data from the API
         fetch('/api/productos')
@@ -130,14 +137,32 @@
             });
 
             categorySelect.addEventListener('change', updateChartWithFilters);
-            document.getElementById('colorSelect').addEventListener('change', updateChartWithFilters);
+
+            // Add event listeners to color buttons
+            document.querySelectorAll('.color-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    selectedColor = e.currentTarget.dataset.color;
+                    updateChartWithFilters();
+                    updateActiveButton();
+                });
+            });
 
             updateChartWithFilters();
+            updateActiveButton();
+        }
+
+        function updateActiveButton() {
+            document.querySelectorAll('.color-button').forEach(button => {
+                if (button.dataset.color === selectedColor) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
         }
 
         function updateChartWithFilters() {
             const selectedCategory = document.getElementById('categorySelect').value;
-            const selectedColor = document.getElementById('colorSelect').value;
 
             let filteredData = selectedCategory === 'all' 
                 ? inventoryData 
