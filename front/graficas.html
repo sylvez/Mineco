@@ -15,36 +15,37 @@
             margin: 0;
             padding: 20px;
             background-color: #f0f0f0;
+            font-size: 18px;
         }
         .container {
             background-color: white;
             border-radius: 8px;
-            padding: 20px;
+            padding: 30px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         h1 {
             color: #333;
             text-align: center;
-            font-size: 24px;
-            margin-bottom: 20px;
+            font-size: 32px;
+            margin-bottom: 30px;
         }
         #chartContainer {
             width: 100%;
-            height: 1000px; /* Increased height for larger chart */
+            height: 1200px; /* Increased height for larger chart */
             margin: 0 auto;
         }
         #categorySelect {
-            margin-bottom: 20px;
-            padding: 10px;
-            font-size: 16px;
+            margin-bottom: 30px;
+            padding: 15px;
+            font-size: 18px;
             width: 100%;
-            max-width: 300px;
+            max-width: 400px;
         }
         #printPdfButton {
             display: block;
-            margin: 20px auto;
-            padding: 10px 20px;
-            font-size: 18px;
+            margin: 30px auto;
+            padding: 15px 30px;
+            font-size: 20px;
             background-color: #4CAF50;
             color: white;
             border: none;
@@ -57,26 +58,26 @@
         .color-buttons {
             display: flex;
             justify-content: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
         .color-button {
             display: flex;
             align-items: center;
-            margin-right: 20px;
-            padding: 10px;
+            margin-right: 30px;
+            padding: 15px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
         }
         .color-box {
-            width: 24px;
-            height: 24px;
-            margin-right: 8px;
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
             border-radius: 3px;
         }
         .active {
-            outline: 2px solid #000;
+            outline: 3px solid #000;
         }
     </style>
 </head>
@@ -211,6 +212,7 @@
                     indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
+                    barThickness: 40, // Increased bar thickness
                     scales: {
                         x: {
                             beginAtZero: true,
@@ -218,12 +220,12 @@
                                 display: true,
                                 text: 'Cantidad',
                                 font: {
-                                    size: 16
+                                    size: 20
                                 }
                             },
                             ticks: {
                                 font: {
-                                    size: 14
+                                    size: 16
                                 }
                             }
                         },
@@ -232,12 +234,12 @@
                                 display: true,
                                 text: 'Productos',
                                 font: {
-                                    size: 16
+                                    size: 20
                                 }
                             },
                             ticks: {
                                 font: {
-                                    size: 14
+                                    size: 16
                                 }
                             }
                         }
@@ -248,7 +250,7 @@
                             position: 'top',
                             labels: {
                                 font: {
-                                    size: 14
+                                    size: 18
                                 }
                             }
                         },
@@ -259,11 +261,19 @@
                                 }
                             },
                             titleFont: {
-                                size: 16
+                                size: 18
                             },
                             bodyFont: {
-                                size: 14
+                                size: 16
                             }
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            left: 20,
+                            right: 50,
+                            top: 0,
+                            bottom: 0
                         }
                     }
                 },
@@ -271,7 +281,7 @@
                     afterDraw: chart => {
                         const ctx = chart.ctx;
                         ctx.save();
-                        ctx.font = '14px Arial';
+                        ctx.font = 'bold 16px Arial';
                         ctx.fillStyle = 'black';
                         ctx.textAlign = 'left';
                         ctx.textBaseline = 'middle';
