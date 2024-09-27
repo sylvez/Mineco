@@ -204,25 +204,21 @@
                     }]
                 },
                 options: {
+                    indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        y: {
+                        x: {
                             beginAtZero: true,
                             title: {
                                 display: true,
                                 text: 'Cantidad'
                             }
                         },
-                        x: {
+                        y: {
                             title: {
                                 display: true,
                                 text: 'Productos'
-                            },
-                            ticks: {
-                                autoSkip: false,
-                                maxRotation: 90,
-                                minRotation: 90
                             }
                         }
                     },
@@ -234,12 +230,31 @@
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    return `Cantidad: ${context.parsed.y}`;
+                                    return `Cantidad: ${context.parsed.x}`;
                                 }
                             }
                         }
                     }
-                }
+                },
+                plugins: [{
+                    afterDraw: chart => {
+                        const ctx = chart.ctx;
+                        ctx.save();
+                        ctx.font = '12px Arial';
+                        ctx.fillStyle = 'black';
+                        ctx.textAlign = 'left';
+                        ctx.textBaseline = 'middle';
+                        
+                        chart.data.datasets.forEach((dataset, datasetIndex) => {
+                            const meta = chart.getDatasetMeta(datasetIndex);
+                            meta.data.forEach((bar, index) => {
+                                const data = dataset.data[index];
+                                ctx.fillText(data, bar.x + 5, bar.y);
+                            });
+                        });
+                        ctx.restore();
+                    }
+                }]
             });
         }
 
