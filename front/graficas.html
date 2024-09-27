@@ -204,25 +204,21 @@
                     }]
                 },
                 options: {
+                    indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        y: {
+                        x: {
                             beginAtZero: true,
                             title: {
                                 display: true,
                                 text: 'Cantidad'
                             }
                         },
-                        x: {
+                        y: {
                             title: {
                                 display: true,
                                 text: 'Productos'
-                            },
-                            ticks: {
-                                autoSkip: false,
-                                maxRotation: 90,
-                                minRotation: 90
                             }
                         }
                     },
@@ -234,9 +230,24 @@
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    return `Cantidad: ${context.parsed.y}`;
+                                    return `Cantidad: ${context.parsed.x}`;
                                 }
                             }
+                        }
+                    },
+                    animation: {
+                        onComplete: function() {
+                            var chartInstance = this.chart,
+                            ctx = chartInstance.ctx;
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'bottom';
+                            this.data.datasets.forEach(function(dataset, i) {
+                                var meta = chartInstance.controller.getDatasetMeta(i);
+                                meta.data.forEach(function(bar, index) {
+                                    var data = dataset.data[index];
+                                    ctx.fillText(data, bar.x + 5, bar.y + (bar.height / 2));
+                                });
+                            });
                         }
                     }
                 }
