@@ -1,121 +1,126 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    
-    <!-- Código de AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3185363034944534"
-    crossorigin="anonymous"></script>
-    
+    <title>Retro Login</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        body, html {
+            height: 100%;
             margin: 0;
-            background: linear-gradient(to bottom right, #2c3e50, #34495e);
+            font-family: Arial, sans-serif;
+            overflow: hidden;
         }
-
-        .form-container {
-            background-color: #2c3e50;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #2b1055, #7597de);
+            perspective: 1000px;
+        }
+        .grid {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            bottom: -50%;
+            left: -50%;
+            background-image: 
+                linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: rotateX(60deg);
+        }
+        .login-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             width: 300px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
         }
-
-        .avatar {
-            width: 80px;
-            height: 80px;
-            background-color: #34495e;
-            border-radius: 50%;
-            margin: 0 auto 1rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .avatar svg {
-            width: 60%;
-            height: 60%;
-            fill: #ecf0f1;
-        }
-
-        .form-title {
-            color: #ecf0f1;
+        .login-title {
+            color: #ff00ff;
             text-align: center;
-            margin-bottom: 1.5rem;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #ff00ff;
         }
-
-        .input-container {
-            margin-bottom: 1rem;
+        .input-group {
+            margin-bottom: 15px;
         }
-
-        .input-container input {
+        .input-group input {
             width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #34495e;
-            border-radius: 5px;
-            background-color: #34495e;
-            color: #ecf0f1;
-            font-size: 1rem;
+            padding: 10px;
+            border: 2px solid #ff00ff;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            outline: none;
         }
-
-        .input-container input::placeholder {
-            color: #bdc3c7;
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
         }
-
-        .submit-btn {
+        .sign-in-btn {
             width: 100%;
-            padding: 0.75rem;
+            padding: 10px;
             border: none;
-            border-radius: 5px;
-            background-color: #3498db;
-            color: #ffffff;
-            font-size: 1rem;
+            border-radius: 25px;
+            background: #ff00ff;
+            color: white;
+            font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background 0.3s;
         }
-
-        .submit-btn:hover {
-            background-color: #2980b9;
+        .sign-in-btn:hover {
+            background: #ff33ff;
+        }
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+            color: white;
+        }
+        .remember-me input {
+            margin-right: 5px;
         }
     </style>
 </head>
 <body>
-    <div class="form-container">
-        <div class="avatar">
-            <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
-            </svg>
-        </div>
-        <h2 class="form-title">Bienvenido Usuario</h2>
+    <div class="background">
+        <div class="grid"></div>
+    </div>
+    <div class="login-container">
+        <h2 class="login-title">LOGIN</h2>
         <form id="loginForm">
-            <div class="input-container">
-                <input type="email" id="email" placeholder="Email o nombre de usuario" required>
+            <div class="input-group">
+                <input type="text" id="username" placeholder="login" required>
             </div>
-            <div class="input-container">
-                <input type="password" id="password" placeholder="Contraseña" required>
+            <div class="input-group">
+                <input type="password" id="password" placeholder="password" required>
             </div>
-            <button type="submit" class="submit-btn">Iniciar Sesión</button>
+            <button type="submit" class="sign-in-btn">sign in</button>
+            <div class="remember-me">
+                <input type="checkbox" id="rememberMe">
+                <label for="rememberMe">remember me</label>
+            </div>
         </form>
     </div>
 
     <script>
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault();
-            var email = document.getElementById('email').value;
+            var username = document.getElementById('username').value;
             var password = document.getElementById('password').value;
 
-            if (email === 'admin@gmail.com' && password === 'admin123') {
+            if (username === 'admin@gmail.com' && password === 'admin123') {
                 window.location.href = 'https://programa-f5ac50e1f085.herokuapp.com/control';
-            } else if (email === 'usuario@gmail.com' && password === 'usuario123') {
+            } else if (username === 'usuario@gmail.com' && password === 'usuario123') {
                 window.location.href = 'https://programa-f5ac50e1f085.herokuapp.com/control2';
-            } else if (email === 'tecnico@gmail.com' && password === 'tecnico123') {
+            } else if (username === 'tecnico@gmail.com' && password === 'tecnico123') {
                 window.location.href = 'http://localhost/Auditoria/inicio3.php';
             } else {
                 alert('Credenciales incorrectas. Por favor, intente de nuevo.');
