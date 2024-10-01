@@ -12,23 +12,45 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
     <style>
+        :root {
+            --background-color: #f4f4f4;
+            --container-bg: #fff;
+            --text-color: #333;
+            --table-border: #ddd;
+            --table-header-bg: #f4f4f4;
+            --table-row-even: #f9f9f9;
+            --table-row-hover: #e9e9e9;
+        }
+
+        .dark-mode {
+            --background-color: #333;
+            --container-bg: #444;
+            --text-color: #f4f4f4;
+            --table-border: #555;
+            --table-header-bg: #2c2c2c;
+            --table-row-even: #3a3a3a;
+            --table-row-hover: #4a4a4a;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .container {
             width: 80%;
             margin: 0 auto;
             padding: 20px;
-            background: #fff;
+            background: var(--container-bg);
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
         }
 
         h1 {
             text-align: center;
-            color: #333;
+            color: var(--text-color);
         }
 
         table {
@@ -38,7 +60,7 @@
         }
 
         table, th, td {
-            border: 1px solid #ddd;
+            border: 1px solid var(--table-border);
         }
 
         th, td {
@@ -47,15 +69,15 @@
         }
 
         thead {
-            background-color: #f4f4f4;
+            background-color: var(--table-header-bg);
         }
 
         tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: var(--table-row-even);
         }
 
         tbody tr:hover {
-            background-color: #e9e9e9;
+            background-color: var(--table-row-hover);
         }
 
         #printButton {
@@ -63,18 +85,29 @@
         }
 
         .estado-confirmado {
-            color: green;
+            color: #28a745;
             font-weight: bold;
         }
 
         .estado-denegado {
-            color: red;
+            color: #dc3545;
             font-weight: bold;
         }
 
         .estado-pendiente {
-            color: orange;
+            color: #ffc107;
             font-weight: bold;
+        }
+
+        .dark-mode .form-select,
+        .dark-mode .form-control {
+            background-color: var(--container-bg);
+            color: var(--text-color);
+            border-color: var(--table-border);
+        }
+
+        .dark-mode .form-select option {
+            background-color: var(--container-bg);
         }
     </style>
 </head>
@@ -88,7 +121,7 @@
                 <option value="Denegado">Denegado</option>
             </select>
         </div>
-        <table id="historial-table">
+        <table id="historial-table" class="table">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -102,15 +135,30 @@
             </tbody>
         </table>
         <button id="printButton" class="btn btn-primary">Imprimir PDF</button>
+        <button id="darkModeToggle" class="btn btn-secondary ms-2">Cambiar Modo</button>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const estadoSelect = document.getElementById('estadoSelect');
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const body = document.body;
+
             estadoSelect.addEventListener('change', fetchHistorialPedidos);
             fetchHistorialPedidos(); // Llamar por defecto al cargar la página
 
             document.getElementById('printButton').addEventListener('click', generatePDF);
+
+            // Check for saved dark mode preference
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (isDarkMode) {
+                body.classList.add('dark-mode');
+            }
+
+            darkModeToggle.addEventListener('click', () => {
+                body.classList.toggle('dark-mode');
+                localStorage.setItem('darkMode', body.classList.contains('dark-mode'));
+            });
         });
 
         function fetchHistorialPedidos() {
