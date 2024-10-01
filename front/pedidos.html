@@ -12,23 +12,47 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
     <style>
+        :root {
+            --background-color: #f4f4f4;
+            --container-bg: #fff;
+            --text-color: #333;
+            --table-border: #ddd;
+            --table-header-bg: #f4f4f4;
+            --table-row-even: #f9f9f9;
+            --table-row-hover: #e9e9e9;
+            --button-text: #fff;
+        }
+
+        .dark-mode {
+            --background-color: #333;
+            --container-bg: #444;
+            --text-color: #f4f4f4;
+            --table-border: #555;
+            --table-header-bg: #2c2c2c;
+            --table-row-even: #3a3a3a;
+            --table-row-hover: #4a4a4a;
+            --button-text: #f4f4f4;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .container {
             width: 80%;
             margin: 0 auto;
             padding: 20px;
-            background: #fff;
+            background: var(--container-bg);
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
         }
 
         h1 {
             text-align: center;
-            color: #333;
+            color: var(--text-color);
         }
 
         table {
@@ -38,7 +62,7 @@
         }
 
         table, th, td {
-            border: 1px solid #ddd;
+            border: 1px solid var(--table-border);
         }
 
         th, td {
@@ -47,15 +71,15 @@
         }
 
         thead {
-            background-color: #f4f4f4;
+            background-color: var(--table-header-bg);
         }
 
         tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: var(--table-row-even);
         }
 
         tbody tr:hover {
-            background-color: #e9e9e9;
+            background-color: var(--table-row-hover);
         }
 
         .action-buttons {
@@ -63,16 +87,25 @@
             gap: 10px;
         }
 
-        #printButton, #redirectButton {
+        #printButton, #redirectButton, #darkModeToggle {
             margin-top: 20px;
+        }
+
+        .btn {
+            color: var(--button-text);
+        }
+
+        .dark-mode .table {
+            color: var(--text-color);
         }
     </style>
 </head>
 <body>
     <div class="container">
         <button id="redirectButton" class="btn btn-info">Ir a Historial</button>
+        <button id="darkModeToggle" class="btn btn-secondary float-end">Cambiar Modo</button>
         <h1>Historial de Pedidos</h1>
-        <table id="pedidos-table">
+        <table id="pedidos-table" class="table">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -96,6 +129,20 @@
             document.getElementById('printButton').addEventListener('click', generatePDF);
             document.getElementById('redirectButton').addEventListener('click', () => {
                 window.location.href = 'https://programa-f5ac50e1f085.herokuapp.com/pedidos2';
+            });
+
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const body = document.body;
+
+            // Check for saved dark mode preference
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (isDarkMode) {
+                body.classList.add('dark-mode');
+            }
+
+            darkModeToggle.addEventListener('click', () => {
+                body.classList.toggle('dark-mode');
+                localStorage.setItem('darkMode', body.classList.contains('dark-mode'));
             });
         });
 
@@ -193,5 +240,3 @@
     </script>
 </body>
 </html>
-
-
