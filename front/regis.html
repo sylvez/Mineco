@@ -4,89 +4,167 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventario de Productos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --background-color: #f5f7fa;
+            --text-color: #333;
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --card-bg: #ffffff;
+            --input-bg: #ffffff;
+            --table-header-bg: #f1f3f5;
+            --table-row-hover: #f8f9fa;
+            --modal-bg: rgba(0, 0, 0, 0.5);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode {
+            --background-color: #1a1a1a;
+            --text-color: #f5f7fa;
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --card-bg: #2c2c2c;
+            --input-bg: #3c3c3c;
+            --table-header-bg: #2c2c2c;
+            --table-row-hover: #3c3c3c;
+            --modal-bg: rgba(0, 0, 0, 0.8);
+            --shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f0f0f0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
         }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
         h1 {
             text-align: center;
+            margin-bottom: 30px;
+            font-weight: 300;
+            font-size: 2.5em;
         }
+
         .categories, .status-buttons {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 20px;
         }
+
         .category-btn, .status-btn {
-            padding: 10px;
+            padding: 10px 15px;
             border: none;
-            border-radius: 5px;
+            border-radius: 25px;
             cursor: pointer;
-            flex-grow: 1;
-            text-align: center;
+            font-size: 14px;
+            transition: all 0.3s ease;
         }
+
         .category-btn {
-            background-color: #e0e0e0;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            box-shadow: var(--shadow);
         }
-        .category-btn.active, .status-btn.active {
-            color: white;
-        }
+
         .category-btn.active {
-            background-color: #007bff;
+            background-color: var(--primary-color);
+            color: white;
         }
+
+        .status-btn {
+            color: white;
+        }
+
         .status-btn-disponible {
-            background-color: #28a745;
-            color: white;
+            background-color: var(--secondary-color);
         }
+
         .status-btn-agotado {
-            background-color: #dc3545;
-            color: white;
+            background-color: var(--danger-color);
         }
+
         .status-btn-bajo {
-            background-color: #ffc107;
-            color: black;
+            background-color: var(--warning-color);
         }
+
         #searchInput {
             width: 100%;
-            padding: 10px;
+            padding: 12px 20px;
             margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            border: none;
+            border-radius: 25px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            box-shadow: var(--shadow);
+            font-size: 16px;
         }
+
         table {
             width: 100%;
-            border-collapse: collapse;
-            background-color: white;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            background-color: var(--card-bg);
+            box-shadow: var(--shadow);
+            border-radius: 10px;
+            overflow: hidden;
         }
+
         th, td {
-            padding: 12px;
+            padding: 15px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
         }
+
         th {
-            background-color: #f2f2f2;
-            font-weight: bold;
+            background-color: var(--table-header-bg);
+            font-weight: 500;
         }
+
+        tr {
+            background-color: var(--card-bg);
+            transition: all 0.3s ease;
+        }
+
         tr:hover {
-            background-color: #f5f5f5;
-            cursor: pointer;
+            background-color: var(--table-row-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
         }
+
+        .status-red, .status-yellow, .status-green {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 15px;
+            display: inline-block;
+        }
+
         .status-red {
-            color: #dc3545;
-            font-weight: bold;
+            background-color: var(--danger-color);
+            color: white;
         }
+
         .status-yellow {
-            color: #ffc107;
-            font-weight: bold;
+            background-color: var(--warning-color);
+            color: black;
         }
+
         .status-green {
-            color: #28a745;
-            font-weight: bold;
+            background-color: var(--secondary-color);
+            color: white;
         }
+
         .modal {
             display: none;
             position: fixed;
@@ -95,74 +173,109 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: var(--modal-bg);
             justify-content: center;
             align-items: center;
         }
+
         .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
             width: 300px;
+            box-shadow: var(--shadow);
         }
+
         .modal-form {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 15px;
         }
+
         .modal-form input[type="number"] {
             width: 100%;
-            padding: 5px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
         }
+
         .modal-buttons {
             display: flex;
             justify-content: space-between;
             margin-top: 20px;
         }
+
         .modal-buttons button {
-            padding: 10px;
+            padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            flex: 1;
-            margin: 0 5px;
+            font-size: 14px;
+            transition: all 0.3s ease;
         }
+
         .modal-buttons button.confirm {
-            background-color: #007bff;
+            background-color: var(--primary-color);
             color: white;
         }
+
         .modal-buttons button.cancel {
-            background-color: #ccc;
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        #darkModeToggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        #darkModeToggle:hover {
+            transform: scale(1.1);
         }
     </style>
 </head>
 <body>
-    <h1>Inventario de Productos</h1>
-    
-    <input type="text" id="searchInput" placeholder="Buscar por producto o código">
+    <div class="container">
+        <h1>Inventario de Productos</h1>
+        
+        <input type="text" id="searchInput" placeholder="Buscar por producto o código">
 
-    <div class="categories" id="categoryButtons"></div>
+        <div class="categories" id="categoryButtons"></div>
 
-    <div class="status-buttons">
-        <button class="status-btn status-btn-disponible" data-status="disponible">Disponible</button>
-        <button class="status-btn status-btn-agotado" data-status="agotado">Agotado</button>
-        <button class="status-btn status-btn-bajo" data-status="bajo">Bajo</button>
+        <div class="status-buttons">
+            <button class="status-btn status-btn-disponible" data-status="disponible">Disponible</button>
+            <button class="status-btn status-btn-agotado" data-status="agotado">Agotado</button>
+            <button class="status-btn status-btn-bajo" data-status="bajo">Bajo</button>
+        </div>
+
+        <table id="inventoryTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Categoría</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table rows will be dynamically added here -->
+            </tbody>
+        </table>
     </div>
-
-    <table id="inventoryTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Categoría</th>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Estado</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Table rows will be dynamically added here -->
-        </tbody>
-    </table>
 
     <!-- Modal para confirmar pedido -->
     <div id="orderModal" class="modal">
@@ -181,6 +294,8 @@
             </form>
         </div>
     </div>
+
+    <button id="darkModeToggle">🌓</button>
 
     <script>
         let inventoryData = [];
@@ -225,7 +340,7 @@
                         <td>${item.categoria}</td>
                         <td>${item.nombre_producto}</td>
                         <td>${item.cantidad}</td>
-                        <td class="${status.class}">${status.text}</td>
+                        <td><span class="${status.class}">${status.text}</span></td>
                     </tr>
                 `;
                 tableBody.innerHTML += row;
@@ -299,7 +414,6 @@
             });
         });
 
-        // Función para abrir el modal
         function openOrderModal(productId, productName) {
             const modal = document.getElementById('orderModal');
             const form = document.getElementById('orderForm');
@@ -310,19 +424,16 @@
 
             modal.style.display = 'flex';
 
-            // Cerrar modal en cancelar
             document.querySelector('.cancel').addEventListener('click', () => {
                 modal.style.display = 'none';
             });
 
-            // Manejar el envío del formulario
             form.onsubmit = function(e) {
                 e.preventDefault();
                 submitOrder();
             };
         }
 
-        // Función para enviar el pedido
         function submitOrder() {
             const formData = new FormData(document.getElementById('orderForm'));
             const orderData = {
@@ -347,6 +458,20 @@
                 console.error('Error:', error);
                 alert('Hubo un error al realizar el pedido. Por favor, intente nuevamente.');
             });
+        }
+
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+
+        darkModeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', body.classList.contains('dark-mode'));
+        });
+
+        // Check for saved dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            body.classList.add('dark-mode');
         }
     </script>
 </body>
