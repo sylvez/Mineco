@@ -192,7 +192,8 @@
             gap: 15px;
         }
 
-        .modal-form input[type="number"] {
+        .modal-form input[type="number"],
+        .modal-form input[type="text"] {
             width: 100%;
             padding: 10px;
             border: none;
@@ -283,6 +284,8 @@
             <h2>Realizar Pedido</h2>
             <form id="orderForm" class="modal-form">
                 <input type="hidden" id="producto_id" name="producto_id">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required>
                 <label for="nombre_producto">Producto:</label>
                 <input type="text" id="nombre_producto" name="nombre_producto" readonly>
                 <label for="cantidad">Cantidad:</label>
@@ -421,6 +424,7 @@
             document.getElementById('producto_id').value = productId;
             document.getElementById('nombre_producto').value = productName;
             document.getElementById('cantidad').value = 1;
+            document.getElementById('nombre').value = '';
 
             modal.style.display = 'flex';
 
@@ -438,6 +442,7 @@
             const formData = new FormData(document.getElementById('orderForm'));
             const orderData = {
                 producto_id: formData.get('producto_id'),
+                nombre: formData.get('nombre'),
                 nombre_producto: formData.get('nombre_producto'),
                 cantidad: formData.get('cantidad')
             };

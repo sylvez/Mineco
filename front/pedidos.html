@@ -113,6 +113,7 @@
                     <th>Nombre del Producto</th>
                     <th>Cantidad</th>
                     <th>Fecha de Solicitud</th>
+                    <th>Nombre del Usuario</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -162,6 +163,7 @@
                             <td>${pedido.nombre_producto}</td>
                             <td>${pedido.cantidad}</td>
                             <td>${new Date(pedido.fecha_solicitud).toLocaleString()}</td>
+                            <td>${pedido.nombre}</td>
                             <td class="action-buttons">
                                 <button class="btn btn-danger btn-sm" onclick="denegarPedido(${pedido.id})">Denegar</button>
                                 <button class="btn btn-secondary btn-sm" onclick="confirmarPedido(${pedido.id})">Confirmar</button>
@@ -188,7 +190,36 @@
             const table = document.getElementById('pedidos-table');
             
             // Generar la tabla en el PDF
-            doc.autoTable({ html: table });
+            doc.autoTable({
+                html: table,
+                startY: 30,
+                theme: 'grid',
+                styles: { fontSize: 8 },
+                columnStyles: {
+                    0: { cellWidth: 20 },
+                    1: { cellWidth: 20 },
+                    2: { cellWidth: 40 },
+                    3: { cellWidth: 20 },
+                    4: { cellWidth: 40 },
+                    5: { cellWidth: 30 }
+                },
+                columns: [
+                    { header: 'ID', dataKey: 'id' },
+                    { header: 'Producto ID', dataKey: 'producto_id' },
+                    { header: 'Nombre del Producto', dataKey: 'nombre_producto' },
+                    { header: 'Cantidad', dataKey: 'cantidad' },
+                    { header: 'Fecha de Solicitud', dataKey: 'fecha_solicitud' },
+                    { header: 'Nombre del Usuario', dataKey: 'nombre' }
+                ],
+                body: Array.from(table.querySelectorAll('tbody tr')).map(row => ({
+                    id: row.cells[0].textContent,
+                    producto_id: row.cells[1].textContent,
+                    nombre_producto: row.cells[2].textContent,
+                    cantidad: row.cells[3].textContent,
+                    fecha_solicitud: row.cells[4].textContent,
+                    nombre: row.cells[5].textContent
+                }))
+            });
 
             // Guardar el PDF
             doc.save('historial_pedidos.pdf');

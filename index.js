@@ -1,5 +1,5 @@
 const express = require('express');
-const mysql = require('mysql2');  // Cambié a mysql2 para mejor compatibilidad
+const mysql = require('mysql2');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -18,7 +18,7 @@ const db = mysql.createConnection({
     user: 'du5pwoiajvdsl7zx',
     password: 'p0zutpb7umrxfais',
     database: 'txc02wsymohsmhxu',
-    port: 3306 // Puerto predeterminado de MySQL
+    port: 3306
 });
 
 db.connect(err => {
@@ -30,7 +30,6 @@ db.connect(err => {
 });
 
 // Rutas para servir el HTML
-
 app.get('/pedidos2', (req, res) => {
     res.sendFile(path.join(__dirname, 'front', 'pedCD.html'));
 });
@@ -82,8 +81,6 @@ app.get('/pedidos', (req, res) => {
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'front', 'index.html'));
 });
-
-
 
 // APIS REGISTRO
 
@@ -172,7 +169,6 @@ app.get('/api/almacenes', (req, res) => {
     });
 });
 
-
 // Ruta para obtener la bitácora de productos
 app.get('/api/bitacora', (req, res) => {
     const query = 'SELECT * FROM bitacora_productos ORDER BY fecha DESC';
@@ -190,15 +186,15 @@ app.get('/api/bitacora', (req, res) => {
 
 // Crear un nuevo pedido
 app.post('/api/pedidos', (req, res) => {
-    const { producto_id, nombre_producto, cantidad } = req.body;
-    const query = 'INSERT INTO nuevos_pedidos (producto_id, nombre_producto, cantidad) VALUES (?, ?, ?)';
+    const { producto_id, nombre, nombre_producto, cantidad } = req.body;
+    const query = 'INSERT INTO nuevos_pedidos (producto_id, nombre, nombre_producto, cantidad) VALUES (?, ?, ?, ?)';
 
-    db.query(query, [producto_id, nombre_producto, cantidad], (err, result) => {
+    db.query(query, [producto_id, nombre, nombre_producto, cantidad], (err, result) => {
         if (err) {
             console.error('Error al agregar pedido:', err);
             return res.status(500).json({ error: 'Error al agregar pedido' });
         }
-        res.status(201).json({ id: result.insertId, producto_id, nombre_producto, cantidad });
+        res.status(201).json({ id: result.insertId, producto_id, nombre, nombre_producto, cantidad, estado: 'Pendiente' });
     });
 });
 
@@ -235,10 +231,10 @@ app.get('/api/pedidos/:id', (req, res) => {
 // Actualizar un pedido por ID
 app.put('/api/pedidos/:id', (req, res) => {
     const { id } = req.params;
-    const { producto_id, nombre_producto, cantidad } = req.body;
-    const query = 'UPDATE nuevos_pedidos SET producto_id = ?, nombre_producto = ?, cantidad = ? WHERE id = ?';
+    const { producto_id, nombre, nombre_producto, cantidad, estado } = req.body;
+    const query = 'UPDATE nuevos_pedidos SET producto_id = ?, nombre = ?, nombre_producto = ?, cantidad = ?, estado = ? WHERE id = ?';
 
-    db.query(query, [producto_id, nombre_producto, cantidad, id], (err, result) => {
+    db.query(query, [producto_id, nombre, nombre_producto, cantidad, estado, id], (err, result) => {
         if (err) {
             console.error('Error al actualizar el pedido:', err);
             return res.status(500).json({ error: 'Error al actualizar el pedido' });
@@ -246,7 +242,7 @@ app.put('/api/pedidos/:id', (req, res) => {
         if (result.affectedRows === 0) {
             return res.status(404).json({ error: 'Pedido no encontrado' });
         }
-        res.status(200).json({ id, producto_id, nombre_producto, cantidad });
+        res.status(200).json({ id, producto_id, nombre, nombre_producto, cantidad, estado });
     });
 });
 
@@ -301,18 +297,16 @@ app.put('/api/pedidos/:id/denegar', (req, res) => {
     });
 });
 
-// pedidos 2
-// API para obtener pedidos confirmados o denegados
+// API para obtener pedidos por estado
 app.get('/api/pedidos/estado/:estado', (req, res) => {
     const { estado } = req.params;
-    const validEstados = ['Confirmado', 'Denegado'];
+    const validEstados = ['Pendiente', 'Confirmado', 'Denegado'];
     
-    // Validar el estado
     if (!validEstados.includes(estado)) {
         return res.status(400).json({ error: 'Estado inválido' });
     }
 
-    const query = 'SELECT id, producto_id, fecha_solicitud FROM nuevos_pedidos WHERE estado = ?';
+    const query = 'SELECT * FROM nuevos_pedidos WHERE estado = ?';
     
     db.query(query, [estado], (err, results) => {
         if (err) {
@@ -327,7 +321,6 @@ app.get('/api/pedidos/estado/:estado', (req, res) => {
         res.status(200).json(results);
     });
 });
-
 
 // API para obtener la bitácora de pedidos
 app.get('/api/bitacora_pedidos', (req, res) => {
@@ -408,10 +401,8 @@ app.post('/api/revertir/:id', (req, res) => {
     });
 });
 
-
-
 // Iniciar el servidor
-const PORT = process.env.PORT || 3000; // Usa el puerto proporcionado por Heroku o 3000 por defecto
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
