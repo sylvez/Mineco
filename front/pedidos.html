@@ -182,46 +182,83 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
-            doc.setFontSize(18);
-            doc.text("Requerimiento de Insumos", 105, 15, null, null, "center");
+            // Configuración de la página
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+
+            // Título
+            doc.setFontSize(16);
+            doc.text("Programa Empleo Digno", 105, 20, null, null, "center");
+            doc.setFontSize(14);
+            doc.text("REQUERIMIENTO DE INSUMOS", 105, 30, null, null, "center");
+            doc.setFontSize(12);
+            doc.text("Área Administrativa y Financiera", 105, 40, null, null, "center");
+
+            // Información del formulario
+            doc.text("Fecha:", 20, 55);
+            doc.text(new Date().toLocaleDateString(), 40, 55);
+            doc.text("No. Requerimiento:", 120, 55);
+            doc.text("*", 160, 55);
+
+            doc.text("Nombre del Solicitante:", 20, 65);
+            doc.text("Área de donde se solicita:", 20, 75);
+            doc.text("Financiera", 80, 75);
+
+            // Tabla
+            const headers = [["Cantidad Solicitada", "Código", "Producto", "Unidad de Medida", "Cantidad Entregada"]];
 
             fetch('/api/pedidos')
                 .then(response => response.json())
                 .then(data => {
-                    // Group orders by user name
-                    const ordersByUser = data.reduce((acc, order) => {
-                        if (!acc[order.nombre]) {
-                            acc[order.nombre] = [];
+                    const tableData = data.map(pedido => [
+                        pedido.cantidad,
+                        pedido.producto_id,
+                        pedido.nombre_producto,
+                        "Unidad",
+                        ""  // Cantidad Entregada (vacío)
+                    ]);
+
+                    doc.autoTable({
+                        startY: 85,
+                        head: headers,
+                        body: tableData,
+                        theme: 'grid',
+                        styles: { fontSize: 8, cellPadding: 2 },
+                        columnStyles: {
+                            0: { cellWidth: 30 },
+                            1: { cellWidth: 30 },
+                            2: { cellWidth: 60 },
+                            3: { cellWidth: 30 },
+                            4: { cellWidth: 30 }
+                        },
+                        didDrawPage: function (data) {
+                            // Pie de página
+                            doc.setFontSize(8);
+                            doc.text("10a. Calle 5-69, zona1, Edificio Plaza Vivar, 4to. Nivel, oficina 4-4", 20, 280);
+                            doc.text("Teléfono: +502 2209-8600", 20, 285);
+                            doc.text("www.empleodigno.gob.gt", 20, 290);
+                            doc.text("info@empleodigno.gob.gt", 20, 295);
                         }
-                        acc[order.nombre].push(order);
-                        return acc;
-                    }, {});
-
-                    let yPos = 30;
-
-                    Object.entries(ordersByUser).forEach(([userName, userOrders], userIndex) => {
-                        if (yPos > 250) {
-                            doc.addPage();
-                            yPos = 30;
-                        }
-
-                        doc.setFontSize(14);
-                        doc.text(`Solicitante: ${userName}`, 10, yPos);
-                        yPos += 10;
-
-                        doc.autoTable({
-                            startY: yPos,
-                            head: [['Cantidad', 'Código', 'Producto', 'Unidad de Medida']],
-                            body: userOrders.map(order => [
-                                order.cantidad,
-                                order.producto_id,
-                                order.nombre_producto,
-                                'Unidad'
-                            ]),
-                        });
-
-                        yPos = doc.lastAutoTable.finalY + 20;
                     });
+
+                    // Campos adicionales
+                    const finalY = doc.lastAutoTable.finalY || 85;
+                    doc.text("Observaciones:", 20, finalY + 20);
+                    doc.line(20, finalY + 25, 190, finalY + 25);
+                    doc.line(20, finalY + 35, 190, finalY + 35);
+                    doc.line(20, finalY + 45, 190, finalY + 45);
+
+                    doc.text("Aprobado por:", 20, finalY + 60);
+                    doc.line(50, finalY + 60, 190, finalY + 60);
+                    doc.text("Nombre y Firma", 140, finalY + 65);
+
+                    doc.text("Recibido por:", 20, finalY + 75);
+                    doc.line(50, finalY + 75, 190, finalY + 75);
+
+                    doc.text("Actualizado registros Almacén", 20, finalY + 90);
+                    doc.rect(100, finalY + 85, 5, 5);
+                    doc.text("Fecha de entrega:", 120, finalY + 90);
+                    doc.line(155, finalY + 90, 190, finalY + 90);
 
                     doc.save('requerimiento_de_insumos.pdf');
                 })
