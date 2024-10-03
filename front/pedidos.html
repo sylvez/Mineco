@@ -192,10 +192,16 @@
                 doc.setFontSize(16);
                 doc.setFont("helvetica", "bold");
                 doc.text("Programa Empleo Digno", 105, 20, null, null, "center");
+            }
 
-                // Línea separadora
-                doc.setLineWidth(0.5);
-                doc.line(20, 25, 190, 25);
+            // Función para agregar el pie de página a cada página
+            function addFooter(doc) {
+                doc.setFontSize(8);
+                doc.setFont("helvetica", "normal");
+                doc.text("10a. Calle 5-69, zona1, Edificio Plaza Vivar, 4to. Nivel, oficina 4-4", 20, 280);
+                doc.text("Teléfono: +502 2209-8600", 20, 285);
+                doc.text("www.empleodigno.gob.gt", 20, 290);
+                doc.text("info@empleodigno.gob.gt", 20, 295);
             }
 
             fetch('/api/pedidos')
@@ -248,9 +254,9 @@
                             ""  // Cantidad Entregada (vacío)
                         ]);
 
-                        // Asegurar que haya 12 filas
+                        // Asegurar que haya 12 filas y agregar líneas diagonales en las filas vacías
                         while (tableData.length < 12) {
-                            tableData.push(["", "", "", "", ""]);
+                            tableData.push([{content: '', styles: {lineWidth: 0.1, lineColor: [0, 0, 0]}}]);
                         }
 
                         doc.autoTable({
@@ -266,9 +272,25 @@
                                 3: { cellWidth: 30 },
                                 4: { cellWidth: 30 }
                             },
+                            didParseCell: function(data) {
+                                if (data.section === 'body' && data.row.raw[0] === '') {
+                                    data.cell.styles.fillColor = [255, 255, 255];
+                                    if (data.column.index === 0) {
+                                        data.cell.styles.lineWidth = 0.1;
+                                        data.cell.styles.lineColor = [0, 0, 0];
+                                    }
+                                }
+                            },
+                            didDrawCell: function(data) {
+                                if (data.section === 'body' && data.row.raw[0] === '' && data.column.index === 0) {
+                                    var cell = data.cell;
+                                    doc.line(cell.x, cell.y, cell.x + cell.width, cell.y + cell.height);
+                                }
+                            },
                             didDrawPage: function(data) {
-                                // Agregar encabezado a cada nueva página de la tabla
+                                // Agregar encabezado y pie de página a cada nueva página de la tabla
                                 addHeader(doc);
+                                addFooter(doc);
                             }
                         });
 
@@ -291,12 +313,8 @@
                         doc.text("Fecha de entrega:", 120, finalY + 90);
                         doc.line(155, finalY + 90, 190, finalY + 90);
 
-                        // Pie de página
-                        doc.setFontSize(8);
-                        doc.text("10a. Calle 5-69, zona1, Edificio Plaza Vivar, 4to. Nivel, oficina 4-4", 20, 280);
-                        doc.text("Teléfono: +502 2209-8600", 20, 285);
-                        doc.text("www.empleodigno.gob.gt", 20, 290);
-                        doc.text("info@empleodigno.gob.gt", 20, 295);
+                        // Agregar pie de página
+                        addFooter(doc);
                     });
 
                     doc.save('requerimiento_de_insumos.pdf');
