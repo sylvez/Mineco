@@ -182,47 +182,12 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
-            // Set font
-            doc.setFont("helvetica");
+            doc.setFontSize(18);
+            doc.text("Requerimiento de Insumos", 105, 15, null, null, "center");
 
-            // Add logos (assuming you have these images)
-            doc.addImage("path_to_guatemala_logo.png", "PNG", 10, 10, 20, 20);
-            doc.addImage("path_to_eu_logo.png", "PNG", 35, 10, 20, 20);
-
-            // Add title
-            doc.setFontSize(16);
-            doc.text("Programa Empleo Digno", 60, 20);
-
-            // Add form title
-            doc.setFontSize(14);
-            doc.text("REQUERIMIENTO DE INSUMOS", 60, 30);
-            doc.setFontSize(12);
-            doc.text("Área Administrativa y Financiera", 60, 38);
-
-            // Add form fields
-            doc.setFontSize(10);
-            doc.text("Fecha:", 10, 50);
-            doc.text("Nombre del Solicitante:", 10, 60);
-            doc.text("Área de donde se solicita:", 10, 70);
-
-            // Add table
-            doc.rect(10, 80, 190, 120); // Main rectangle
-            doc.line(10, 90, 200, 90); // Header line
-
-            // Table headers
-            doc.text("Cantidad\nSolicitada", 12, 86);
-            doc.text("Código", 40, 86);
-            doc.text("Producto", 70, 86);
-            doc.text("Unidad de Medida", 130, 86);
-            doc.text("Cantidad\nEntregada", 170, 86);
-
-            // Fetch data and populate the PDF
             fetch('/api/pedidos')
                 .then(response => response.json())
                 .then(data => {
-                    let yPos = 100;
-                    let pageHeight = doc.internal.pageSize.height;
-
                     // Group orders by user name
                     const ordersByUser = data.reduce((acc, order) => {
                         if (!acc[order.nombre]) {
@@ -232,35 +197,32 @@
                         return acc;
                     }, {});
 
-                    // Generate a page for each user
+                    let yPos = 30;
+
                     Object.entries(ordersByUser).forEach(([userName, userOrders], userIndex) => {
-                        if (userIndex > 0) {
+                        if (yPos > 250) {
                             doc.addPage();
-                            yPos = 100;
+                            yPos = 30;
                         }
 
-                        // Fill in form details
-                        doc.text(new Date().toLocaleDateString(), 30, 50);
-                        doc.text(userName, 60, 60);
-                        doc.text("Financiera", 60, 70);
+                        doc.setFontSize(14);
+                        doc.text(`Solicitante: ${userName}`, 10, yPos);
+                        yPos += 10;
 
-                        userOrders.forEach((order, index) => {
-                            if (yPos > pageHeight - 20) {
-                                doc.addPage();
-                                yPos = 100;
-                            }
-
-                            doc.text(order.cantidad.toString(), 20, yPos);
-                            doc.text(order.producto_id.toString(), 45, yPos);
-                            doc.text(order.nombre_producto, 70, yPos);
-                            doc.text("Unidad", 140, yPos);
-                            // Leave "Cantidad Entregada" blank as per the image
-
-                            yPos += 10;
+                        doc.autoTable({
+                            startY: yPos,
+                            head: [['Cantidad', 'Código', 'Producto', 'Unidad de Medida']],
+                            body: userOrders.map(order => [
+                                order.cantidad,
+                                order.producto_id,
+                                order.nombre_producto,
+                                'Unidad'
+                            ]),
                         });
+
+                        yPos = doc.lastAutoTable.finalY + 20;
                     });
 
-                    // Save the PDF
                     doc.save('requerimiento_de_insumos.pdf');
                 })
                 .catch(error => {
