@@ -182,21 +182,21 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
-            // Configuración de la página
-            doc.setFontSize(12);
-            doc.setFont("helvetica", "normal");
+            // Función para agregar el encabezado a cada página
+            function addHeader(doc) {
+                // Añadir logos
+                doc.addImage("guatemala_logo.png", "PNG", 20, 10, 20, 20);
+                doc.addImage("eu_logo.png", "PNG", 50, 10, 20, 20);
 
-            // Añadir logos (asumiendo que tienes las imágenes)
-            doc.addImage("guatemala_logo.png", "PNG", 20, 10, 20, 20);
-            doc.addImage("eu_logo.png", "PNG", 50, 10, 20, 20);
+                // Título
+                doc.setFontSize(16);
+                doc.setFont("helvetica", "bold");
+                doc.text("Programa Empleo Digno", 105, 20, null, null, "center");
 
-            // Título
-            doc.setFontSize(16);
-            doc.text("Programa Empleo Digno", 105, 20, null, null, "center");
-            doc.setFontSize(14);
-            doc.text("REQUERIMIENTO DE INSUMOS", 105, 30, null, null, "center");
-            doc.setFontSize(12);
-            doc.text("Área Administrativa y Financiera", 105, 40, null, null, "center");
+                // Línea separadora
+                doc.setLineWidth(0.5);
+                doc.line(20, 25, 190, 25);
+            }
 
             fetch('/api/pedidos')
                 .then(response => response.json())
@@ -214,6 +214,19 @@
                         if (index > 0) {
                             doc.addPage();
                         }
+
+                        // Agregar encabezado a cada página
+                        addHeader(doc);
+
+                        // Configuración de la página
+                        doc.setFontSize(12);
+                        doc.setFont("helvetica", "normal");
+
+                        // Subtítulos
+                        doc.setFontSize(14);
+                        doc.text("REQUERIMIENTO DE INSUMOS", 105, 35, null, null, "center");
+                        doc.setFontSize(12);
+                        doc.text("Área Administrativa y Financiera", 105, 42, null, null, "center");
 
                         // Información del formulario
                         doc.text("Fecha:", 20, 55);
@@ -253,6 +266,10 @@
                                 3: { cellWidth: 30 },
                                 4: { cellWidth: 30 }
                             },
+                            didDrawPage: function(data) {
+                                // Agregar encabezado a cada nueva página de la tabla
+                                addHeader(doc);
+                            }
                         });
 
                         // Campos adicionales
