@@ -142,20 +142,6 @@
             text-align: center;
         }
 
-        .flags {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .flag {
-            width: 80px;
-            height: auto;
-            border-radius: 4px;
-            box-shadow: var(--shadow);
-        }
-
         .credit {
             font-size: 14px;
             color: var(--text-color);
@@ -230,10 +216,6 @@
         </table>
 
         <div class="footer-content">
-            <div class="flags">
-                <img src="https://flagcdn.com/w320/eu.png" alt="Bandera de la Unión Europea" class="flag">
-                <img src="https://flagcdn.com/w320/gt.png" alt="Bandera de Guatemala" class="flag">
-            </div>
             <div class="credit">
                 Creado por Alejandro Ramos<br>
                 Email: kv233308@gmail.com<br>
@@ -491,41 +473,15 @@
 
         populateTable(inventoryData);
 
-        // Función para cargar una imagen como base64
-        function loadImage(url) {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                img.crossOrigin = 'anonymous';
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0);
-                    resolve(canvas.toDataURL('image/png'));
-                };
-                img.onerror = reject;
-                img.src = url;
-            });
-        }
-
-        async function generatePDF() {
+        function generatePDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
             try {
-                // Cargar las imágenes como base64
-                const euFlagBase64 = await loadImage('https://flagcdn.com/w320/eu.png');
-                const gtFlagBase64 = await loadImage('https://flagcdn.com/w320/gt.png');
-
                 // Configuración de la página
                 doc.setFont("helvetica", "bold");
                 doc.setFontSize(18);
                 doc.text("Inventario de Almacen", 105, 15, null, null, "center");
-
-                // Agregar logos
-                doc.addImage(euFlagBase64, "PNG", 10, 10, 20, 13);
-                doc.addImage(gtFlagBase64, "PNG", 180, 10, 20, 13);
 
                 // Configurar la tabla
                 doc.autoTable({
