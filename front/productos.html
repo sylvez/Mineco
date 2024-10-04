@@ -246,7 +246,18 @@
 
     <script>
         const inventoryData = [
-            { "no": 1, "description": "Aceite Rojo, para limpiar muebles, Maderas, Molduras y pisos, bote de 8oz. (240ml)", "existencia31Jul": 0, "existencia31Aug": 0 },
+            
+
+        const tableBody = document.querySelector('#inventoryTable tbody');
+        const searchInput = document.getElementById('searchInput');
+        const okButton = document.getElementById('okButton');
+        const agotadosButton = document.getElementById('agotadosButton');
+        const minimoButton = document.getElementById('minimoButton');
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const generatePdfButton = document.getElementById('generatePdfButton');
+
+        function populateTable(data) {
+            tableBody.innerHTML = '';{ "no": 1, "description": "Aceite Rojo, para limpiar muebles, Maderas, Molduras y pisos, bote de 8oz. (240ml)", "existencia31Jul": 0, "existencia31Aug": 0 },
             { "no": 2, "description": "Aerosol Pledge, para limpieza de muebles, 378ml", "existencia31Jul": 33, "existencia31Aug": 33 },
             { "no": 3, "description": "Aire comprimido para computadoras", "existencia31Jul": 6, "existencia31Aug": 6 },
             { "no": 4, "description": "Alcohol liquido (galon) Silver", "existencia31Jul": 4, "existencia31Aug": 4 },
@@ -368,75 +379,64 @@
             { "no": 120, "description": "Tinta para almohadilla para sellos gotero color azul", "existencia31Jul": 2, "existencia31Aug": 2 },
             { "no": 121, "description": "Tinta para impresoras Laserjet HP M501/ color negro CF287A", "existencia31Jul": 12, "existencia31Aug": 12 },
             { "no": 122, "description": "Tinta, cartucho de tinta para impresoras Canon, 140 color negro", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 123, "description": "Tinta, cartucho de tinta para impresoras Canon, 141 color", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 124, "description": "Tinta, cartucho de tinta para impresoras Canon, 210 color negro", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 125, "description": "Tinta, cartucho de tinta para impresoras Canon, 211 color", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 126, "description": "Tinta, cartucho de tinta para impresoras Canon, 240 color negro", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 127, "description": "Tinta, cartucho de tinta para impresoras Canon, 241 color", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 128, "description": "Tinta, cartucho de tinta para impresoras Canon, 245 color negro", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 129, "description": "Tinta, cartucho de tinta para impresoras Canon, 246 color", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 130, "description": "Tinta, cartucho de tinta para impresoras Canon, 280 color negro", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 131, "description": "Tinta, cartucho de tinta para impresoras Canon, 281 color", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 132, "description": "Tinta, cartucho de tinta para impresoras Canon, 440 color negro", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 133, "description": "Tinta, cartucho de tinta para impresoras Canon, 441 color", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 134, "description": "Tinta, cartucho de tinta para impresoras Canon, 540 color negro", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 135, "description": "Tinta, cartucho de tinta para impresoras Canon, 541 color", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 136, "description": "Tinta, cartucho de tinta para impresoras Canon, 640 color negro", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 137, "description": "Tinta, cartucho de tinta para impresoras Canon, 641 color", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 138, "description": "Tinta, cartucho de tinta para impresoras Canon, 740 color negro", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 139, "description": "Tinta, cartucho de tinta para impresoras Canon, 741 color", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 140, "description": "Tinta, cartucho de tinta para impresoras Canon, 840 color negro", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 141, "description": "Tinta, cartucho de tinta para impresoras Canon, 841 color", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 142, "description": "Tinta, cartucho de tinta para impresoras Canon, 940 color negro", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 143, "description": "Tinta, cartucho de tinta para impresoras Canon, 941 color", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 144, "description": "Tinta, cartucho de tinta para impresoras HP, 122 color negro", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 145, "description": "Tinta, cartucho de tinta para impresoras HP, 122 color", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 146, "description": "Tinta, cartucho de tinta para impresoras HP, 21 color negro", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 147, "description": "Tinta, cartucho de tinta para impresoras HP, 22 color", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 148, "description": "Tinta, cartucho de tinta para impresoras HP, 60 color negro", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 149, "description": "Tinta, cartucho de tinta para impresoras HP, 60 color", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 150, "description": "Tinta, cartucho de tinta para impresoras HP, 662 color negro", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 151, "description": "Tinta, cartucho de tinta para impresoras HP, 662 color", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 152, "description": "Tinta, cartucho de tinta para impresoras HP, 664 color negro", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 153, "description": "Tinta, cartucho de tinta para impresoras HP, 664 color", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 154, "description": "Tinta, cartucho de tinta para impresoras HP, 74 color negro", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 155, "description": "Tinta, cartucho de tinta para impresoras HP, 75 color", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 156, "description": "Tinta, cartucho de tinta para impresoras HP, 901 color negro", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 157, "description": "Tinta, cartucho de tinta para impresoras HP, 901 color", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 158, "description": "Tinta, cartucho de tinta para impresoras HP, 950 color negro", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 159, "description": "Tinta, cartucho de tinta para impresoras HP, 951 color", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 160, "description": "Tinta, cartucho de tinta para impresoras HP, 96 color negro", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 161, "description": "Tinta, cartucho de tinta para impresoras HP, 97 color", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 162, "description": "Tinta, cartucho de tinta para impresoras HP, 98 color negro", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 163, "description": "Tinta, cartucho de tinta para impresoras HP, 99 color", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 164, "description": "Toallas de papel para manos, paquete de 150 unidades", "existencia31Jul": 0, "existencia31Aug": 0 },
-            { "no": 165, "description": "Toallas de tela para manos", "existencia31Jul": 0, "existencia31Aug": 0 },
-            { "no": 166, "description": "Toner para impresoras Laserjet HP/ 508x color Cyan CF361XC", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 167, "description": "Toner para impresoras Laserjet HP/ color Amarillo CF362XC", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 168, "description": "Toner para impresoras Laserjet HP/ color Magenta CF363XC", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 169, "description": "Toner para impresoras Laserjet HP/ color negro CF360XC", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 170, "description": "Toner para impresoras Laserjet HP/ color negro CF400X", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 171, "description": "Toner para impresoras Laserjet HP/ color Cyan CF401X", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 172, "description": "Toner para impresoras Laserjet HP/ color Amarillo CF402X", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 173, "description": "Toner para impresoras Laserjet HP/ color Magenta CF403X", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 174, "description": "Toner para impresoras Laserjet HP/ color negro CF410X", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 175, "description": "Toner para impresoras Laserjet HP/ color Cyan CF411X", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 176, "description": "Toner para impresoras Laserjet HP/ color Amarillo CF412X", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 177, "description": "Toner para impresoras Laserjet HP/ color Magenta CF413X", "existencia31Jul": 1, "existencia31Aug": 1 },
-            { "no": 178, "description": "Vasos desechables de 7 onzas, paquete de 25 unidades", "existencia31Jul": 0, "existencia31Aug": 0 },
-            { "no": 179, "description": "Vasos desechables de 8 onzas, paquete de 25 unidades", "existencia31Jul": 0, "existencia31Aug": 0 },
-            { "no": 180, "description": "Vasos Material: Vidrio Capacidad: 8 onzas", "existencia31Jul": 0, "existencia31Aug": 0 }
-        ];
-
-        const tableBody = document.querySelector('#inventoryTable tbody');
-        const searchInput = document.getElementById('searchInput');
-        const okButton = document.getElementById('okButton');
-        const agotadosButton = document.getElementById('agotadosButton');
-        const minimoButton = document.getElementById('minimoButton');
-        const darkModeToggle = document.getElementById('darkModeToggle');
-
-        function populateTable(data) {
-            tableBody.innerHTML = '';
+            { "no": 123, "description": "Tinta, cartucho de tinta para impresoras Canon, 141 colores", "existencia31Jul": 25, "existencia31Aug": 25 },
+            { "no": 124, "description": "Tinta, cartucho de tinta para impresoras Canon, 146 colores", "existencia31Jul": 4, "existencia31Aug": 4 },
+            { "no": 125, "description": "Tinta, cartucho de tinta para impresoras Canon, 210 color negro", "existencia31Jul": 3, "existencia31Aug": 3 },
+            { "no": 126, "description": "Tinta, cartucho de tinta para impresoras Canon, 211 colores", "existencia31Jul": 4, "existencia31Aug": 4 },
+            { "no": 127, "description": "Tinta, cartucho de tinta para impresoras HP/ Color negro 96", "existencia31Jul": 1, "existencia31Aug": 1 },
+            { "no": 128, "description": "Tinta, tóner 1VV22AL HP GT53 Negro 24", "existencia31Jul": 24, "existencia31Aug": 24 },
+            { "no": 129, "description": "Tinta, tóner Cartucho HP CE312A/ 126 A Yellow", "existencia31Jul": 1, "existencia31Aug": 1 },
+            { "no": 130, "description": "Tinta, tóner Cartucho HP CE313A/126 A Magenta", "existencia31Jul": 1, "existencia31Aug": 1 },
+            { "no": 131, "description": "Tinta, tóner MOHS4AL GT52 Cyan 26", "existencia31Jul": 26, "existencia31Aug": 26 },
+            { "no": 132, "description": "Tinta, tóner MOH55AL GT52 Magenta 26", "existencia31Jul": 26, "existencia31Aug": 26 },
+            { "no": 133, "description": "Tinta, tóner MOH56AL GT52 Amarillo 23", "existencia31Jul": 23, "existencia31Aug": 23 },
+            { "no": 134, "description": "Toalla doble para trapear 18", "existencia31Jul": 18, "existencia31Aug": 18 },
+            { "no": 135, "description": "Tóner, Tinta marca Konica Minulta tn 114", "existencia31Jul": 1, "existencia31Aug": 1 },
+            { "no": 136, "description": "Tóner, Tinta para impresora XEROX Phaser 3320", "existencia31Jul": 6, "existencia31Aug": 6 },
+            { "no": 137, "description": "Vaso de vidrio capacidad 12 onzas", "existencia31Jul": 0, "existencia31Aug": 0 },
+            { "no": 138, "description": "Vaso de vidrio capacidad, 10.59 onzas", "existencia31Jul": 0, "existencia31Aug": 0 },
+            { "no": 139, "description": "vasos plásticos desechables, paquete de 25 unidades (10 onzas)", "existencia31Jul": 0, "existencia31Aug": 0 },
+            { "no": 140, "description": "vasos plásticos desechables, paquete de 25 unidades (8 onzas)", "existencia31Jul": 13, "existencia31Aug": 13 },
+            { "no": 141, "description": "Wipe (Bola) 10", "existencia31Jul": 10, "existencia31Aug": 10 },
+            { "no": 142, "description": "Archivadores t/oficio 125", "existencia31Jul": 125, "existencia31Aug": 119 },
+            { "no": 143, "description": "Tinta Cartucho para impresoras Laserjet HP/ 508x color cyan CF361X", "existencia31Jul": 1, "existencia31Aug": 1 },
+            { "no": 144, "description": "Papel Higiénico Jumbo Roll de 500 m., caja de 12 Rollos) unidades", "existencia31Jul": 35, "existencia31Aug": 35 },
+            { "no": 145, "description": "Toalla de papel para manos (250 mts Caja de 12) unidades", "existencia31Jul": 28, "existencia31Aug": 28 },
+            { "no": 146, "description": "Jabón para trastos 450g, tarro de 425 gr", "existencia31Jul": 0, "existencia31Aug": 0 },
+            { "no": 147, "description": "Tijeras", "existencia31Jul": 12, "existencia31Aug": 12 },
+            { "no": 148, "description": "Espiral para encuadernar (diferentes medidas) unidades", "existencia31Jul": 2022, "existencia31Aug": 2022 },
+            { "no": 149, "description": "Folder Colgantes (cajas 25 unidades)", "existencia31Jul": 20, "existencia31Aug": 20 },
+            { "no": 150, "description": "Plástico autoadherible transparente (rollos)", "existencia31Jul": 4, "existencia31Aug": 4 },
+            { "no": 151, "description": "Marcador fluorecente (resaltador varios colores)", "existencia31Jul": 52, "existencia31Aug": 50 },
+            { "no": 152, "description": "Jabon en bola unidad", "existencia31Jul": 8, "existencia31Aug": 8 },
+            { "no": 153, "description": "Pastillas aromatizantes para baños", "existencia31Jul": 225, "existencia31Aug": 225 },
+            { "no": 154, "description": "Base metalica para mopa", "existencia31Jul": 0, "existencia31Aug": 0 },
+            { "no": 155, "description": "Limpiador en polvo (multiusos ajax)", "existencia31Jul": 36, "existencia31Aug": 36 },
+            { "no": 156, "description": "Mopa", "existencia31Jul": 4, "existencia31Aug": 4 },
+            { "no": 157, "description": "Jabón gel liquido para manos (Galones)", "existencia31Jul": 7, "existencia31Aug": 7 },
+            { "no": 158, "description": "Desinfectante para pisos", "existencia31Jul": 9, "existencia31Aug": 9 },
+            { "no": 159, "description": "Bote plastico para basura 60 litros", "existencia31Jul": 0, "existencia31Aug": 0 },
+            { "no": 160, "description": "Servilletas (fardo) paquetes de 100 unidades", "existencia31Jul": 100, "existencia31Aug": 100 },
+            { "no": 161, "description": "Filtros de Papel para cafetera (caja 100 un)", "existencia31Jul": 5, "existencia31Aug": 5 },
+            { "no": 162, "description": "Té de manzanilla, caja de 20 sobres", "existencia31Jul": 5, "existencia31Aug": 5 },
+            { "no": 163, "description": "Té de pericón, caja de 20 sobres", "existencia31Jul": 13, "existencia31Aug": 13 },
+            { "no": 164, "description": "Bolsa para basura pequeña color blanca, (paquetes de 50 unidades)", "existencia31Jul": 649, "existencia31Aug": 649 },
+            { "no": 165, "description": "Bolsas para basura extra grandes color negro, paquetes de 100 bolsas) unidades", "existencia31Jul": 359, "existencia31Aug": 359 },
+            { "no": 166, "description": "Sobres Manila Media Carta", "existencia31Jul": 100, "existencia31Aug": 90 },
+            { "no": 167, "description": "Archivadores /carta", "existencia31Jul": 76, "existencia31Aug": 76 },
+            { "no": 168, "description": "Caja Plastica", "existencia31Jul": 36, "existencia31Aug": 36 },
+            { "no": 169, "description": "Jabón liquido para trastos (Galon)", "existencia31Jul": 11, "existencia31Aug": 11 },
+            { "no": 170, "description": "Refuerzo para hojas perforadas 200 unidades (c", "existencia31Jul": 24, "existencia31Aug": 24 },
+            { "no": 171, "description": "Portaminas (0", "existencia31Jul": 23, "existencia31Aug": 23 },
+            { "no": 172, "description": "Marcador varios colores unidades (Plzarra)", "existencia31Jul": 29, "existencia31Aug": 29 },
+            { "no": 173, "description": "Binder Clip de 19 mm caja 12 unidades", "existencia31Jul": 17, "existencia31Aug": 16 },
+            { "no": 174, "description": "Binder Clip de 25mm caja 12 unidades", "existencia31Jul": 18, "existencia31Aug": 18 },
+            { "no": 175, "description": "Binder Clip de 32 mm caja 12 unidades", "existencia31Jul": 17, "existencia31Aug": 16 },
+            { "no": 176, "description": "Binder Clip de 41 mm caja 12 unidades", "existencia31Jul": 18, "existencia31Aug": 18 },
+            { "no": 177, "description": "Binder Clip de 51 mm caja 12 unidades", "existencia31Jul": 17, "existencia31Aug": 17 },
+            { "no": 178, "description": "Café Molido, paquete de 340 gr Full Roast", "existencia31Jul": 50, "existencia31Aug": 50 },
+            { "no": 179, "description": "Café Molido, paquete de 340 gr Exclusive Blend", "existencia31Jul": 50, "existencia31Aug": 50 },
+            { "no": 180, "description": "Café Molido, paquete de 340 gr Exclusive Legendary", "existencia31Jul": 50, "existencia31Aug": 50 }
             data.forEach(item => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -490,47 +490,74 @@
 
         populateTable(inventoryData);
 
-        function generatePDF() {
+        // Función para cargar una imagen como base64
+        function loadImage(url) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    resolve(canvas.toDataURL('image/png'));
+                };
+                img.onerror = reject;
+                img.src = url;
+            });
+        }
+
+        async function generatePDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
-            // Configuración de la página
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(18);
-            doc.text("Inventario de Almacen", 105, 15, null, null, "center");
+            try {
+                // Cargar las imágenes como base64
+                const euFlagBase64 = await loadImage('https://flagcdn.com/w320/eu.png');
+                const gtFlagBase64 = await loadImage('https://flagcdn.com/w320/gt.png');
 
-            // Agregar logos
-            doc.addImage("https://flagcdn.com/w320/eu.png", "PNG", 10, 10, 20, 13);
-            doc.addImage("https://flagcdn.com/w320/gt.png", "PNG", 180, 10, 20, 13);
+                // Configuración de la página
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(18);
+                doc.text("Inventario de Almacen", 105, 15, null, null, "center");
 
-            // Configurar la tabla
-            doc.autoTable({
-                head: [['No.', 'Descripción', 'Existencia al 31/07/2024', 'Existencia al 31/08/2024']],
-                body: inventoryData.map(item => [item.no, item.description, item.existencia31Jul, item.existencia31Aug]),
-                startY: 30,
-                styles: { fontSize: 8, cellPadding: 1.5 },
-                columnStyles: {
-                    0: { cellWidth: 10 },
-                    1: { cellWidth: 'auto' },
-                    2: { cellWidth: 30 },
-                    3: { cellWidth: 30 }
-                },
-                didDrawPage: function (data) {
-                    //Encabezado en cada página
-                    doc.setFontSize(10);
-                    doc.text("Programa Empleo Digno", 105, 10, null, null, "center");
-                    
-                    // Pie de página en cada página
-                    doc.setFontSize(8);
-                    doc.text("Página " + data.pageNumber, data.settings.margin.left, doc.internal.pageSize.height - 10);
-                }
-            });
+                // Agregar logos
+                doc.addImage(euFlagBase64, "PNG", 10, 10, 20, 13);
+                doc.addImage(gtFlagBase64, "PNG", 180, 10, 20, 13);
 
-            // Guardar el PDF
-            doc.save("Inventario_Almacen.pdf");
+                // Configurar la tabla
+                doc.autoTable({
+                    head: [['No.', 'Descripción', 'Existencia al 31/07/2024', 'Existencia al 31/08/2024']],
+                    body: inventoryData.map(item => [item.no, item.description, item.existencia31Jul, item.existencia31Aug]),
+                    startY: 30,
+                    styles: { fontSize: 8, cellPadding: 1.5 },
+                    columnStyles: {
+                        0: { cellWidth: 10 },
+                        1: { cellWidth: 'auto' },
+                        2: { cellWidth: 30 },
+                        3: { cellWidth: 30 }
+                    },
+                    didDrawPage: function (data) {
+                        // Encabezado en cada página
+                        doc.setFontSize(10);
+                        doc.text("Programa Empleo Digno", 105, 10, null, null, "center");
+                        
+                        // Pie de página en cada página
+                        doc.setFontSize(8);
+                        doc.text("Página " + data.pageNumber, data.settings.margin.left, doc.internal.pageSize.height - 10);
+                    }
+                });
+
+                // Guardar el PDF
+                doc.save("Inventario_Almacen.pdf");
+            } catch (error) {
+                console.error("Error al generar el PDF:", error);
+                alert("Hubo un error al generar el PDF. Por favor, intente de nuevo.");
+            }
         }
 
-        document.getElementById('generatePdfButton').addEventListener('click', generatePDF);
+        generatePdfButton.addEventListener('click', generatePDF);
     </script>
 </body>
 </html>
