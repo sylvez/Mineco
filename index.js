@@ -100,16 +100,19 @@ app.post('/api/productos', (req, res) => {
 
 app.delete('/api/productos/:id', (req, res) => {
     const { id } = req.params;
+    console.log(`Intentando eliminar producto con id: ${id}`);
     const query = 'DELETE FROM productos WHERE id = ?';
 
     db.query(query, [id], (err, result) => {
         if (err) {
             console.error('Error al eliminar producto:', err);
-            return res.status(500).json({ error: 'Error al eliminar producto' });
+            return res.status(500).json({ error: 'Error al eliminar producto', details: err.message });
         }
         if (result.affectedRows === 0) {
+            console.log(`Producto con id ${id} no encontrado`);
             return res.status(404).json({ error: 'Producto no encontrado' });
         }
+        console.log(`Producto con id ${id} eliminado exitosamente`);
         res.status(200).json({ message: 'Producto eliminado' });
     });
 });
