@@ -156,6 +156,7 @@
 
                     data.forEach(pedido => {
                         const row = document.createElement('tr');
+                        row.setAttribute('data-id', pedido.id);
                         
                         row.innerHTML = `
                             <td>${pedido.id}</td>
@@ -334,15 +335,20 @@
             .then(response => {
                 if (response.ok) {
                     alert('Pedido denegado correctamente');
-                    fetchPedidos(); // Actualiza la tabla después de denegar
+                    // Eliminar la fila de la tabla
+                    const row = document.querySelector(`tr[data-id="${id}"]`);
+                    if (row) {
+                        row.remove();
+                    }
                 } else {
                     return response.json().then(data => {
-                        alert(data.error || 'Error al denegar el pedido');
+                        throw new Error(data.error || 'Error al denegar el pedido');
                     });
                 }
             })
             .catch(error => {
                 console.error('Error al denegar el pedido:', error);
+                alert(error.message);
             });
         }
 
@@ -356,15 +362,20 @@
             .then(response => {
                 if (response.ok) {
                     alert('Pedido confirmado correctamente');
-                    fetchPedidos();
+                    // Eliminar la fila de la tabla
+                    const row = document.querySelector(`tr[data-id="${id}"]`);
+                    if (row) {
+                        row.remove();
+                    }
                 } else {
                     return response.json().then(data => {
-                        alert(data.error || 'Error al confirmar el pedido');
+                        throw new Error(data.error || 'Error al confirmar el pedido');
                     });
                 }
             })
             .catch(error => {
                 console.error('Error al confirmar el pedido:', error);
+                alert(error.message);
             });
         }
     </script>
