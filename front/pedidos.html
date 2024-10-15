@@ -326,57 +326,61 @@
         }
 
         function denegarPedido(id) {
-            fetch(`/api/pedidos/${id}/denegar`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert('Pedido denegado correctamente');
-                    // Eliminar la fila de la tabla
-                    const row = document.querySelector(`tr[data-id="${id}"]`);
-                    if (row) {
-                        row.remove();
+            if (confirm('¿Estás seguro de que quieres denegar y eliminar este pedido?')) {
+                fetch(`/api/pedidos/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
                     }
-                } else {
-                    return response.json().then(data => {
-                        throw new Error(data.error || 'Error al denegar el pedido');
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error al denegar el pedido:', error);
-                alert(error.message);
-            });
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Pedido denegado y eliminado correctamente');
+                        // Eliminar la fila de la tabla
+                        const row = document.querySelector(`tr[data-id="${id}"]`);
+                        if (row) {
+                            row.remove();
+                        }
+                    } else {
+                        return response.json().then(data => {
+                            throw new Error(data.error || 'Error al denegar y eliminar el pedido');
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al denegar y eliminar el pedido:', error);
+                    alert(error.message);
+                });
+            }
         }
 
         function confirmarPedido(id) {
-            fetch(`/api/pedidos/${id}/confirmar`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert('Pedido confirmado correctamente');
-                    // Eliminar la fila de la tabla
-                    const row = document.querySelector(`tr[data-id="${id}"]`);
-                    if (row) {
-                        row.remove();
+            if (confirm('¿Estás seguro de que quieres confirmar y eliminar este pedido?')) {
+                fetch(`/api/pedidos/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
                     }
-                } else {
-                    return response.json().then(data => {
-                        throw new Error(data.error || 'Error al confirmar el pedido');
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error al confirmar el pedido:', error);
-                alert(error.message);
-            });
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Pedido confirmado y eliminado correctamente');
+                        // Eliminar la fila de la tabla
+                        const row = document.querySelector(`tr[data-id="${id}"]`);
+                        if (row) {
+                            row.remove();
+                        }
+                    } else {
+                        return response.json().then(data => {
+                            throw new Error(data.error || 'Error al confirmar y eliminar el pedido');
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al confirmar y eliminar el pedido:', error);
+                    alert(error.message);
+                });
+            }
         }
     </script>
 </body>

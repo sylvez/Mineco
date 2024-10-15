@@ -249,7 +249,7 @@ app.put('/api/pedidos/:id', (req, res) => {
     });
 });
 
-// Eliminar un pedido por ID
+// Eliminar un pedido por ID (usado tanto para denegar como para confirmar)
 app.delete('/api/pedidos/:id', (req, res) => {
     const { id } = req.params;
     const query = 'DELETE FROM nuevos_pedidos WHERE id = ?';
@@ -262,41 +262,7 @@ app.delete('/api/pedidos/:id', (req, res) => {
         if (result.affectedRows === 0) {
             return res.status(404).json({ error: 'Pedido no encontrado' });
         }
-        res.status(200).json({ message: 'Pedido eliminado' });
-    });
-});
-
-// API para confirmar un pedido
-app.put('/api/pedidos/:id/confirmar', (req, res) => {
-    const { id } = req.params;
-    const query = 'UPDATE nuevos_pedidos SET estado = ? WHERE id = ?';
-
-    db.query(query, ['Confirmado', id], (err, result) => {
-        if (err) {
-            console.error('Error al confirmar el pedido:', err);
-            return res.status(500).json({ error: 'Error al confirmar el pedido' });
-        }
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Pedido no encontrado' });
-        }
-        res.status(200).json({ message: 'Pedido confirmado correctamente' });
-    });
-});
-
-// API para denegar un pedido
-app.put('/api/pedidos/:id/denegar', (req, res) => {
-    const { id } = req.params;
-    const query = 'UPDATE nuevos_pedidos SET estado = ? WHERE id = ?';
-
-    db.query(query, ['Denegado', id], (err, result) => {
-        if (err) {
-            console.error('Error al denegar el pedido:', err);
-            return res.status(500).json({ error: 'Error al denegar el pedido' });
-        }
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Pedido no encontrado' });
-        }
-        res.status(200).json({ message: 'Pedido denegado correctamente' });
+        res.status(200).json({ message: 'Pedido eliminado correctamente' });
     });
 });
 
